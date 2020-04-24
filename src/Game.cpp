@@ -21,11 +21,12 @@ Game::Game()
 
     Entity* tmp = new Entity();
 
-    tmp->set_pos({10.0f, 10.0f});
+    tmp->set_local_pos({10.0f, 10.0f});
 
     entity.add_child(tmp);
 
     entity.add_force({10.0f, 10.0f});
+    tmp->add_force({10.0f, 10.0f});
 }
 
 Game::~Game()

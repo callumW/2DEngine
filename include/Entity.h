@@ -13,36 +13,44 @@ public:
     virtual void render();
     virtual void update(float delta);
 
-    virtual void set_pos(vec2f_t new_pos)
-    {
-        position = new_pos;
-        update_render_position();
-    }
-    virtual void set_rot(double new_rot) { rotation = new_rot; }
+    virtual void set_world_pos(vec2f_t new_pos);
+
+    virtual void set_local_pos(vec2f_t new_pos);
+
+    virtual void set_world_rot(double new_rot);
+
+    virtual void set_local_rot(double new_rot);
+
     virtual void set_hidden(bool hide = true) { hidden = hide; }
 
     virtual void set_force(vec2f_t new_force) { force = new_force; }
     virtual void add_force(vec2f_t add) { force += add; }
 
-    virtual void add_child(Entity* node)
-    {
-        if (node) {
-            children.push_back(node);
-        }
-    }
+    virtual void add_child(Entity* node);
+
+    virtual void remove_child(Entity* node);
 
     bool is_hidden() const { return hidden; }
-    vec2f_t pos() const { return position; }
-    double rot() const { return rotation; }
+
+    vec2f_t world_position() const { return world_pos; }
+    vec2f_t local_position() const { return local_pos; }
+
+    double world_rotation() const { return world_rot; }
+    double local_rotation() const { return local_rot; }
 
 protected:
     void update_render_position();
     void apply_forces(float const delta_time);
+    void update_children_positions();
+    void update_relative_position();
 
     std::vector<Entity*> children;
+    Entity* parent = nullptr;
 
-    vec2f_t position;
-    double rotation = 0.0f; // rotation in degrees
+    vec2f_t world_pos;
+    vec2f_t local_pos;
+    double local_rot = 0.0f; // rotation in degrees
+    double world_rot = 0.0f;
 
     bool hidden = false;
 

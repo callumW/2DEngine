@@ -30,7 +30,7 @@ void Entity::render()
 {
     if (!hidden) {
         if (tex) {
-            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, rotation, &rot_pivot,
+            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, world_rot, &rot_pivot,
                              SDL_FLIP_NONE);
         }
 
@@ -48,14 +48,100 @@ void Entity::update(float delta)
     }
 }
 
+void Entity::set_world_pos(vec2f_t new_pos)
+{
+    world_pos = new_pos;
+    if (parent != nullptr) {
+        local_pos = world_pos - parent->world_pos;
+    }
+    else {
+        local_pos = world_pos;
+    }
+    update_render_position();
+    update_children_positions();
+}
+
+void Entity::set_local_pos(vec2f_t new_pos)
+{
+    local_pos = new_pos;
+    if (parent != nullptr) {
+        world_pos = parent->world_pos + local_pos;
+    }
+    else {
+        world_pos = local_pos;
+    }
+    update_render_position();
+    update_children_positions();
+}
+
+void Entity::set_world_rot(double new_rot)
+{
+    world_rot = new_rot;
+
+    if (parent != nullptr) {
+        local_rot = world_rot - parent->world_rot;
+    }
+    else {
+        local_rot = world_rot;
+    }
+}
+
+void Entity::set_local_rot(double new_rot)
+{
+    local_rot = new_rot;
+    if (parent != nullptr) {
+        world_rot = parent->world_rot + local_rot;
+    }
+    else {
+        world_rot = local_rot;
+    }
+}
+
+void Entity::add_child(Entity* node)
+{
+    if (node) {
+        children.push_back(node);
+        node->parent = this;
+    }
+}
+
 void Entity::update_render_position()
 {
-    draw_dest.x = static_cast<Sint32>(position.x);
-    draw_dest.y = static_cast<Sint32>(position.y);
+    draw_dest.x = static_cast<Sint32>(world_pos.x);
+    draw_dest.y = static_cast<Sint32>(world_pos.y);
 }
 
 void Entity::apply_forces(float const delta_time)
 {
-    position += (force * delta_time);
+    vec2f_t new_pos = world_pos + (force * delta_time);
+    set_world_pos(new_pos);
+}
+
+void Entity::update_children_positions()
+{
+    for (auto& child : children) {
+        child->update_relative_position();
+    }
+}
+
+void Entity::update_relative_position()
+{
+    world_pos = parent->world_pos + local_pos;
     update_render_position();
+}
+
+void Entity::remove_child(Entity* node)
+{
+    if (node == nullptr) {
+        return;
+    }
+
+    auto end = children.end();
+    for (auto it = children.begin(); it != end; it++) {
+        if (*it == node) {
+            children.erase(it);
+            (*it)->parent = nullptr;
+            return;
+        }
+    }
 }
