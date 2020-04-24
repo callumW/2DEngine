@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "input.h"
 
-Uint32 const FRAME_DELTA = 8;
+Uint32 const TARGET_FRAME_DELTA = 8;
 
 int main(int argc, char* argv[])
 {
@@ -87,8 +87,8 @@ int main(int argc, char* argv[])
         frame_count++;
         // Sleep to maintain constant FPS
         render_time = SDL_GetTicks() - now;
-        if (render_time < FRAME_DELTA) {
-            sleep_time = FRAME_DELTA - render_time;
+        if (render_time < TARGET_FRAME_DELTA) {
+            sleep_time = TARGET_FRAME_DELTA - render_time;
             SDL_Delay(sleep_time);
         }
     }
