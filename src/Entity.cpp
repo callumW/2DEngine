@@ -90,8 +90,8 @@ void Entity::add_child(Entity* node)
 
 void Entity::update_render_position()
 {
-    draw_dest.x = static_cast<Sint32>(world_pos.x);
-    draw_dest.y = static_cast<Sint32>(world_pos.y);
+    draw_dest.x = static_cast<Sint32>(world_pos.x) - (tex_src.w / 2);
+    draw_dest.y = static_cast<Sint32>(world_pos.y) - (tex_src.h / 2);
 }
 
 void Entity::apply_forces(float const delta_time)

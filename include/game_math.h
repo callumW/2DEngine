@@ -23,7 +23,8 @@ typedef struct vec2f_t {
     vec2f_t(float xy);
     vec2f_t() : vec2f_t(0.0f){};
 
-    float length();
+    float length() const;
+    vec2f_t normalised() const;
 } vec2f_t;
 
 vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs);

@@ -42,7 +42,7 @@ vec2f_t::vec2f_t(float xy)
     y = xy;
 }
 
-float vec2f_t::length() { return std::sqrt(x * x + y * y); }
+float vec2f_t::length() const { return std::sqrt(x * x + y * y); }
 
 vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs)
 {
@@ -62,4 +62,19 @@ std::ostream& operator<<(std::ostream& lhs, vec2f_t const& rhs)
 {
     lhs << "(" << rhs.x << "," << rhs.y << ")";
     return lhs;
+}
+
+vec2f_t vec2f_t::normalised() const
+{
+    float len = length();
+    vec2f_t ret;
+    if (len != 0) {
+        if (x != 0) {
+            ret.x = x / len;
+        }
+        if (y != 0) {
+            ret.y = y / len;
+        }
+    }
+    return ret;
 }
