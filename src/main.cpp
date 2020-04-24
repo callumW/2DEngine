@@ -3,7 +3,15 @@
 #include <iostream>
 
 #include "Game.h"
+#include "Globals.h"
 #include "input.h"
+
+
+SDL_Renderer* g_renderer;
+SDL_Window* g_window;
+
+int const WINDOW_WIDTH = 600;
+int const WINDOW_HEIGHT = 400;
 
 Uint32 const TARGET_FRAME_DELTA = 8;
 
@@ -29,25 +37,24 @@ int main(int argc, char* argv[])
         }
     }
 
-    SDL_Window* window =
-        SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600,
-                         400, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
+    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
 
-    if (window == nullptr) {
+    if (g_window == nullptr) {
         std::cout << "failed to create window: " << SDL_GetError() << std::endl;
         return 1;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
 
-    if (renderer == nullptr) {
+    if (g_renderer == nullptr) {
         std::cout << "Failed to create renderer: " << SDL_GetError() << std::endl;
-        return -1;
+        return 1;
     }
 
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    Game game(renderer, -1, -1);
+    Game game;
 
     SDL_Event e;
     bool quit = false;
@@ -80,9 +87,9 @@ int main(int argc, char* argv[])
         game.update(delta);
 
         // render
-        SDL_RenderClear(renderer);
+        SDL_RenderClear(g_renderer);
         game.render();
-        SDL_RenderPresent(renderer);
+        SDL_RenderPresent(g_renderer);
 
         frame_count++;
         // Sleep to maintain constant FPS
@@ -93,7 +100,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(g_renderer);
+    SDL_DestroyWindow(g_window);
 
     if (wave_file)
         Mix_FreeChunk(wave_file);

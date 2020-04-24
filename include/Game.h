@@ -1,11 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
-
 #include <SDL2/SDL.h>
+
+#include "Entity.h"
+#include "game_math.h"
 
 class Game {
 public:
-    Game(SDL_Renderer* renderer, int win_width, int win_height);
+    Game();
     ~Game();
 
     void render();
@@ -13,16 +15,12 @@ public:
     void update(Uint32 delta);
 
 private:
-    SDL_Renderer* m_renderer = nullptr;
-
-    int m_window_width = 0;
-    int m_window_height = 0;
-
-
     SDL_Texture* m_player_tex = nullptr;
     SDL_Rect player_rect = {};
 
-    float player_pos[2] = {0.0f};
+    vec2f_t player_pos = {0.0f, 0.0f};
     double player_rotation = 0.0f;
+
+    Entity entity;
 };
 #endif
