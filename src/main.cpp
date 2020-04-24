@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
             // render
 
             frame_count++;
-            // Sleep to main constant FPS
+            // Sleep to maintain constant FPS
             if (delta < FRAME_DELTA) {
                 sleep_time = FRAME_DELTA - delta;
                 SDL_Delay(sleep_time);
