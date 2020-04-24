@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
         std::cout << "Failed to open audio system" << std::endl;
     }
     else {
-        wave_file = Mix_LoadWAV("./more_good_wind.wav");
+        wave_file = Mix_LoadWAV("./assets/more_good_wind.wav");
         if (wave_file == nullptr) {
             std::cout << "Failed to load wav file" << std::endl;
         }

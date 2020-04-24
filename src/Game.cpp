@@ -3,7 +3,7 @@
 
 float const PLAYER_MOVEMENT_SPEED = 250.0f; // pixels per second
 
-Game::Game() { player_surface = SDL_LoadBMP("./G.bmp"); }
+Game::Game() { player_surface = SDL_LoadBMP("./assets/G.bmp"); }
 
 void Game::render_to(SDL_Surface* surface)
 {
