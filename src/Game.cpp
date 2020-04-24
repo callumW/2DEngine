@@ -1,14 +1,41 @@
 #include "Game.h"
 #include "input.h"
 
+#include <iostream>
+
 float const PLAYER_MOVEMENT_SPEED = 250.0f; // pixels per second
 
-Game::Game() { player_surface = SDL_LoadBMP("./assets/G.bmp"); }
-
-void Game::render_to(SDL_Surface* surface)
+Game::Game(SDL_Renderer* renderer, int win_width, int win_height) :
+    m_renderer(renderer),
+    m_window_width(win_width),
+    m_window_height(win_height)
 {
-    if (player_surface && surface) {
-        SDL_BlitSurface(player_surface, nullptr, surface, &player_rect);
+    SDL_Surface* tmp = SDL_LoadBMP("./assets/G.bmp");
+
+    if (tmp) {
+        m_player_tex = SDL_CreateTextureFromSurface(m_renderer, tmp);
+        if (m_player_tex == nullptr) {
+            std::cout << "Failed to load player texture" << std::endl;
+        }
+
+        SDL_FreeSurface(tmp);
+    }
+
+    player_rect.w = 40;
+    player_rect.h = 40;
+}
+
+Game::~Game()
+{
+    if (m_player_tex) {
+        SDL_DestroyTexture(m_player_tex);
+    }
+}
+
+void Game::render()
+{
+    if (m_renderer && m_player_tex) {
+        SDL_RenderCopy(m_renderer, m_player_tex, nullptr, &player_rect);
     }
 }
 

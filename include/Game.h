@@ -5,15 +5,21 @@
 
 class Game {
 public:
-    Game();
+    Game(SDL_Renderer* renderer, int win_width, int win_height);
+    ~Game();
 
-    void render_to(SDL_Surface* surface);
+    void render();
 
     void update(Uint32 delta);
 
 private:
-    SDL_Surface* game_surface = nullptr;
-    SDL_Surface* player_surface = nullptr;
+    SDL_Renderer* m_renderer = nullptr;
+
+    int m_window_width = 0;
+    int m_window_height = 0;
+
+
+    SDL_Texture* m_player_tex = nullptr;
     SDL_Rect player_rect = {};
 
     float player_pos[2] = {0.0f};
