@@ -1,4 +1,5 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2_mixer/SDL_mixer.h>
 #include <iostream>
 
 
@@ -9,6 +10,19 @@ int main(int argc, char* argv[])
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         std::cout << "failed to init SDL" << std::endl;
         return 1;
+    }
+    Mix_Chunk* wave_file = nullptr;
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) != 0) {
+        std::cout << "Failed to open audio system" << std::endl;
+    }
+    else {
+        wave_file = Mix_LoadWAV("./more_good_wind.wav");
+        if (wave_file == nullptr) {
+            std::cout << "Failed to load wav file" << std::endl;
+        }
+        else {
+            Mix_PlayChannel(-1, wave_file, -1);
+        }
     }
 
     SDL_Window* window =
@@ -54,7 +68,10 @@ int main(int argc, char* argv[])
         SDL_DestroyWindow(window);
     }
 
+    if (wave_file)
+        Mix_FreeChunk(wave_file);
 
+    Mix_CloseAudio();
     SDL_Quit();
 
     return 0;

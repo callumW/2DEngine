@@ -15,9 +15,10 @@ INCLUDE_FILES=$(wildcard include/*.h)
 
 INCLUDES=-Iinclude
 
-THIRD_PARTY_INCLUDES=-I/Users/cwilson/Libs/SDL/SDL2.framework/Headers
+THIRD_PARTY_INCLUDES= \
+-F/Users/cwilson/Libs/SDL/
 
-LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2
+LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/
 
 BINARY_NAME=terminal-reboot-${VERSION}.app
