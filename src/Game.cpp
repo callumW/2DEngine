@@ -18,6 +18,12 @@ Game::Game()
 
     player_rect.w = 40;
     player_rect.h = 40;
+
+    Entity* tmp = new Entity();
+
+    tmp->set_pos({10.0f, 10.0f});
+
+    entity.add_child(tmp);
 }
 
 Game::~Game()

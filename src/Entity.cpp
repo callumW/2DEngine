@@ -28,8 +28,20 @@ Entity::Entity()
 
 void Entity::render()
 {
-    if (tex && !hidden) {
-        SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, rotation, &rot_pivot,
-                         SDL_FLIP_NONE);
+    if (!hidden) {
+        if (tex) {
+            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, rotation, &rot_pivot,
+                             SDL_FLIP_NONE);
+        }
+
+        for (auto& child : children) {
+            child->render();
+        }
     }
+}
+
+void Entity::update_render_position()
+{
+    draw_dest.x = static_cast<Sint32>(position.x);
+    draw_dest.y = static_cast<Sint32>(position.y);
 }
