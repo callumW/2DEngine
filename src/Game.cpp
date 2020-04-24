@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "input.h"
+#include "loading_helpers.h"
 #include "math_helpers.h"
 
 #include <cmath>
@@ -12,15 +13,9 @@ Game::Game(SDL_Renderer* renderer, int win_width, int win_height) :
     m_window_width(win_width),
     m_window_height(win_height)
 {
-    SDL_Surface* tmp = SDL_LoadBMP("./assets/G.bmp");
-
-    if (tmp) {
-        m_player_tex = SDL_CreateTextureFromSurface(m_renderer, tmp);
-        if (m_player_tex == nullptr) {
-            std::cout << "Failed to load player texture" << std::endl;
-        }
-
-        SDL_FreeSurface(tmp);
+    m_player_tex = load_texture("./assets/G.bmp", m_renderer);
+    if (m_player_tex == nullptr) {
+        std::cout << "Failed to load player texture" << std::endl;
     }
 
     player_rect.w = 40;
@@ -68,5 +63,4 @@ void Game::update(Uint32 delta)
     float rot = rad_to_degrees(atan2((mouse_y - player_pos[1]), (mouse_x - player_pos[0])));
 
     player_rotation = static_cast<double>(rot);
-    std::cout << "Player rotation: " << player_rotation << std::endl;
 }
