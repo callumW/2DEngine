@@ -2,6 +2,7 @@
 #include <SDL2_mixer/SDL_mixer.h>
 #include <iostream>
 
+#include "input.h"
 
 int main(int argc, char* argv[])
 {
@@ -63,6 +64,8 @@ int main(int argc, char* argv[])
                 if (e.type == SDL_QUIT) {
                     quit = true;
                 }
+
+                update_input_struct(e);
             }
         }
         SDL_DestroyWindow(window);
