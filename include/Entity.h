@@ -11,6 +11,7 @@ public:
     Entity();
 
     virtual void render();
+    virtual void update(float delta);
 
     virtual void set_pos(vec2f_t new_pos)
     {
@@ -19,6 +20,9 @@ public:
     }
     virtual void set_rot(double new_rot) { rotation = new_rot; }
     virtual void set_hidden(bool hide = true) { hidden = hide; }
+
+    virtual void set_force(vec2f_t new_force) { force = new_force; }
+    virtual void add_force(vec2f_t add) { force += add; }
 
     virtual void add_child(Entity* node)
     {
@@ -33,6 +37,7 @@ public:
 
 protected:
     void update_render_position();
+    void apply_forces(float const delta_time);
 
     std::vector<Entity*> children;
 
@@ -45,5 +50,7 @@ protected:
     SDL_Rect tex_src = {0};
     SDL_Rect draw_dest = {0};
     SDL_Point rot_pivot = {0};
+
+    vec2f_t force = {0.0f, 0.0f};
 };
 #endif

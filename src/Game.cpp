@@ -24,6 +24,8 @@ Game::Game()
     tmp->set_pos({10.0f, 10.0f});
 
     entity.add_child(tmp);
+
+    entity.add_force({10.0f, 10.0f});
 }
 
 Game::~Game()
@@ -69,4 +71,6 @@ void Game::update(Uint32 delta)
     float rot = rad_to_degrees(atan2((mouse_y - player_pos.y), (mouse_x - player_pos.x)));
 
     player_rotation = static_cast<double>(rot);
+
+    entity.update(delta_f);
 }

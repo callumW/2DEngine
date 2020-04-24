@@ -40,8 +40,22 @@ void Entity::render()
     }
 }
 
+void Entity::update(float delta)
+{
+    apply_forces(delta);
+    for (auto& child : children) {
+        child->update(delta);
+    }
+}
+
 void Entity::update_render_position()
 {
     draw_dest.x = static_cast<Sint32>(position.x);
     draw_dest.y = static_cast<Sint32>(position.y);
+}
+
+void Entity::apply_forces(float const delta_time)
+{
+    position += (force * delta_time);
+    update_render_position();
 }
