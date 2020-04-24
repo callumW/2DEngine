@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "Entity.h"
+#include "Player.h"
 #include "game_math.h"
 
 class Game {
@@ -22,5 +23,6 @@ private:
     double player_rotation = 0.0f;
 
     Entity entity;
+    Player player;
 };
 #endif

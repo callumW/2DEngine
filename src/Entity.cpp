@@ -1,12 +1,13 @@
 #include "Entity.h"
 #include "Globals.h"
+#include "loading_helpers.h"
 
 #include <cmath>
 #include <iostream>
 
 Entity::Entity()
 {
-    tex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, 40, 40);
+    tex = load_default_texture();
 
     tex_src.w = 40;
     tex_src.h = 40;
@@ -14,17 +15,20 @@ Entity::Entity()
     draw_dest.w = 40;
     draw_dest.h = 40;
 
-    if (tex == nullptr) {
-        std::cout << "Failed to create default texture" << std::endl;
-    }
-    else {
-        SDL_SetRenderTarget(g_renderer, tex);
-        SDL_SetRenderDrawColor(g_renderer, 255, 0, 0, 255);
-        SDL_RenderClear(g_renderer);
-        SDL_RenderDrawRect(g_renderer, &tex_src);
-        SDL_SetRenderTarget(g_renderer, nullptr);
-        SDL_SetRenderDrawColor(g_renderer, 255, 255, 255, 255);
-    }
+    rot_pivot.x = tex_src.w / 2;
+    rot_pivot.y = tex_src.h / 2;
+}
+
+Entity::Entity(std::string const& texture_path, SDL_Rect const& src)
+{
+    tex = load_texture(texture_path);
+    tex_src = src;
+
+    draw_dest.w = tex_src.w;
+    draw_dest.h = tex_src.h;
+
+    rot_pivot.x = tex_src.w / 2;
+    rot_pivot.y = tex_src.h / 2;
 }
 
 void Entity::render()

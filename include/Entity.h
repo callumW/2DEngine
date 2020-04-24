@@ -2,6 +2,7 @@
 #define ENTITY_H
 #include <SDL2/SDL.h>
 
+#include <string>
 #include <vector>
 
 #include "game_math.h"
@@ -9,6 +10,8 @@
 class Entity {
 public:
     Entity();
+
+    Entity(std::string const& texture_path, SDL_Rect const& src);
 
     virtual void render();
     virtual void update(float delta);

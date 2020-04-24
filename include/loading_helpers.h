@@ -5,6 +5,7 @@
 
 #include <string>
 
-SDL_Texture* load_texture(std::string const& path, SDL_Renderer* renderer);
+SDL_Texture* load_texture(std::string const& path);
+SDL_Texture* load_default_texture();
 
 #endif

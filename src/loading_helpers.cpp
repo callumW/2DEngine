@@ -1,13 +1,12 @@
 #include "loading_helpers.h"
+#include "Globals.h"
+#include "TextureLoader.h"
 
-SDL_Texture* load_texture(std::string const& path, SDL_Renderer* renderer)
+TextureLoader texture_loader;
+
+SDL_Texture* load_texture(std::string const& path)
 {
-    SDL_Texture* ret = nullptr;
-    SDL_Surface* tmp = SDL_LoadBMP(path.c_str());
-
-    if (tmp) {
-        ret = SDL_CreateTextureFromSurface(renderer, tmp);
-        SDL_FreeSurface(tmp);
-    }
-    return ret;
+    return texture_loader.load_texture_cached(path);
 }
+
+SDL_Texture* load_default_texture() { return texture_loader.default_texture(); }

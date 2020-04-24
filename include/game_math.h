@@ -1,5 +1,7 @@
-#ifndef MATH_HELPERS_H
-#define MATH_HELPERS_H
+#ifndef GAME_MATH_H
+#define GAME_MATH_H
+
+#include <ostream>
 
 double const pi_d = 3.1415926;
 double const pi_f = 3.1415926f;
@@ -29,4 +31,5 @@ vec2f_t operator-(vec2f_t const& lhs, vec2f_t const& rhs);
 vec2f_t operator*(vec2f_t const& lhs, float const& rhs);
 vec2f_t operator*(float const& lhs, vec2f_t const& rhs);
 
+std::ostream& operator<<(std::ostream& lhs, vec2f_t const& rhs);
 #endif
