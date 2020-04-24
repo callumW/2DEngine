@@ -4,6 +4,8 @@
 
 #include "input.h"
 
+Uint32 const FRAME_DELTA = 16;
+
 int main(int argc, char* argv[])
 {
     std::cout << "Welcome to " << argv[0] << std::endl;
@@ -59,11 +61,12 @@ int main(int argc, char* argv[])
 
         SDL_Event e;
         bool quit = false;
-        int64_t frame_count = 0;
+        int frame_count = 0;
         Uint32 last_frame_count_time = SDL_GetTicks();
         Uint32 now = 0;
-        Uint32 last = 0;
+        Uint32 last = last_frame_count_time;
         Uint32 delta = 0;
+        Uint32 sleep_time = 0;
         while (!quit) {
             while (SDL_PollEvent(&e)) {
                 if (e.type == SDL_QUIT) {
@@ -77,7 +80,7 @@ int main(int argc, char* argv[])
             delta = now - last;
             last = now;
 
-            if (now - last_frame_count_time >= 1000) {
+            if ((now - last_frame_count_time) >= 1000) {
                 std::cout << "FPS: " << frame_count << std::endl;
                 frame_count = 0;
                 last_frame_count_time = now;
@@ -86,6 +89,11 @@ int main(int argc, char* argv[])
             // render
 
             frame_count++;
+            // Sleep to main constant FPS
+            if (delta < FRAME_DELTA) {
+                sleep_time = FRAME_DELTA - delta;
+                SDL_Delay(sleep_time);
+            }
         }
         SDL_DestroyWindow(window);
     }
