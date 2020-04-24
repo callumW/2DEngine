@@ -59,14 +59,33 @@ int main(int argc, char* argv[])
 
         SDL_Event e;
         bool quit = false;
+        int64_t frame_count = 0;
+        Uint32 last_frame_count_time = SDL_GetTicks();
+        Uint32 now = 0;
+        Uint32 last = 0;
+        Uint32 delta = 0;
         while (!quit) {
             while (SDL_PollEvent(&e)) {
                 if (e.type == SDL_QUIT) {
                     quit = true;
+                    continue;
                 }
-
                 update_input_struct(e);
             }
+
+            now = SDL_GetTicks();
+            delta = now - last;
+            last = now;
+
+            if (now - last_frame_count_time >= 1000) {
+                std::cout << "FPS: " << frame_count << std::endl;
+                frame_count = 0;
+                last_frame_count_time = now;
+            }
+
+            // render
+
+            frame_count++;
         }
         SDL_DestroyWindow(window);
     }
