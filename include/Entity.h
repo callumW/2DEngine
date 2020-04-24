@@ -17,9 +17,7 @@ public:
 
     virtual void set_local_pos(vec2f_t new_pos);
 
-    virtual void set_world_rot(double new_rot);
-
-    virtual void set_local_rot(double new_rot);
+    virtual void set_rotation(double new_rot);
 
     virtual void set_hidden(bool hide = true) { hidden = hide; }
 
@@ -35,12 +33,12 @@ public:
     vec2f_t world_position() const { return world_pos; }
     vec2f_t local_position() const { return local_pos; }
 
-    double world_rotation() const { return world_rot; }
-    double local_rotation() const { return local_rot; }
+    double rotation() const { return rot; }
 
 protected:
     void update_render_position();
     void apply_forces(float const delta_time);
+
     void update_children_positions();
     void update_relative_position();
 
@@ -49,8 +47,7 @@ protected:
 
     vec2f_t world_pos;
     vec2f_t local_pos;
-    double local_rot = 0.0f; // rotation in degrees
-    double world_rot = 0.0f;
+    double rot = 0.0f; // rotation in degrees
 
     bool hidden = false;
 

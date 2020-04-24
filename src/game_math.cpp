@@ -1,5 +1,7 @@
 #include "game_math.h"
 
+#include <cmath>
+
 vec2f_t& vec2f_t::operator+=(vec2f_t const& other)
 {
     x += other.x;
@@ -39,6 +41,8 @@ vec2f_t::vec2f_t(float xy)
     x = xy;
     y = xy;
 }
+
+float vec2f_t::length() { return std::sqrt(x * x + y * y); }
 
 vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs)
 {

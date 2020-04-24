@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Globals.h"
 
+#include <cmath>
 #include <iostream>
 
 Entity::Entity()
@@ -30,8 +31,7 @@ void Entity::render()
 {
     if (!hidden) {
         if (tex) {
-            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, world_rot, &rot_pivot,
-                             SDL_FLIP_NONE);
+            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, rot, &rot_pivot, SDL_FLIP_NONE);
         }
 
         for (auto& child : children) {
@@ -74,28 +74,7 @@ void Entity::set_local_pos(vec2f_t new_pos)
     update_children_positions();
 }
 
-void Entity::set_world_rot(double new_rot)
-{
-    world_rot = new_rot;
-
-    if (parent != nullptr) {
-        local_rot = world_rot - parent->world_rot;
-    }
-    else {
-        local_rot = world_rot;
-    }
-}
-
-void Entity::set_local_rot(double new_rot)
-{
-    local_rot = new_rot;
-    if (parent != nullptr) {
-        world_rot = parent->world_rot + local_rot;
-    }
-    else {
-        world_rot = local_rot;
-    }
-}
+void Entity::set_rotation(double new_rot) { rot = new_rot; }
 
 void Entity::add_child(Entity* node)
 {
