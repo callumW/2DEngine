@@ -66,6 +66,7 @@ int main(int argc, char* argv[])
         Uint32 now = 0;
         Uint32 last = last_frame_count_time;
         Uint32 delta = 0;
+        Uint32 render_time = 0;
         Uint32 sleep_time = 0;
         while (!quit) {
             while (SDL_PollEvent(&e)) {
@@ -88,10 +89,12 @@ int main(int argc, char* argv[])
 
             // render
 
+
             frame_count++;
             // Sleep to maintain constant FPS
-            if (delta < FRAME_DELTA) {
-                sleep_time = FRAME_DELTA - delta;
+            render_time = SDL_GetTicks() - now;
+            if (render_time < FRAME_DELTA) {
+                sleep_time = FRAME_DELTA - render_time;
                 SDL_Delay(sleep_time);
             }
         }
