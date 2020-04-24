@@ -23,5 +23,6 @@ private:
     SDL_Rect player_rect = {};
 
     float player_pos[2] = {0.0f};
+    double player_rotation = 0.0f;
 };
 #endif
