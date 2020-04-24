@@ -2,6 +2,7 @@
 #include <SDL2_mixer/SDL_mixer.h>
 #include <iostream>
 
+#include "Game.h"
 #include "input.h"
 
 Uint32 const FRAME_DELTA = 16;
@@ -41,23 +42,11 @@ int main(int argc, char* argv[])
 
         SDL_FillRect(surface, nullptr, 0xffffff);
 
-        if (surface) {
-            SDL_Surface* img_surface = SDL_LoadBMP("./G.bmp");
-            if (img_surface == nullptr) {
-                std::cout << "Failed to load bitmap: " << SDL_GetError() << std::endl;
-            }
-            else {
-                if (0 != SDL_BlitSurface(img_surface, nullptr, surface, nullptr)) {
-                    std::cout << "Failed to blit surface" << std::endl;
-                }
-                else {
-                    SDL_UpdateWindowSurface(window);
-                }
-            }
-        }
-        else {
+        if (surface == nullptr) {
             std::cout << "Failed to load window surface: " << SDL_GetError() << std::endl;
         }
+
+        Game game;
 
         SDL_Event e;
         bool quit = false;
@@ -87,8 +76,12 @@ int main(int argc, char* argv[])
                 last_frame_count_time = now;
             }
 
-            // render
+            game.update(delta);
 
+            // render
+            SDL_FillRect(surface, nullptr, 0xffffff);
+            game.render_to(surface);
+            SDL_UpdateWindowSurface(window);
 
             frame_count++;
             // Sleep to maintain constant FPS
