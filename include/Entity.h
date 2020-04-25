@@ -20,7 +20,7 @@ public:
 
     virtual void set_local_pos(vec2f_t const& new_pos);
 
-    virtual void set_rotation(double new_rot);
+    virtual void set_relative_rotation(float new_rot);
 
     virtual void set_hidden(bool hide = true) { hidden = hide; }
 
@@ -30,6 +30,9 @@ public:
     virtual void add_child(Entity* node);
 
     virtual void remove_child(Entity* node);
+
+    virtual void face(Entity const& entity);
+    virtual void face(vec2f_t const& vec);
 
     bool is_hidden() const { return hidden; }
 

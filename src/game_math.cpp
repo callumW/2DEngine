@@ -84,17 +84,23 @@ float vec2f_t::dot(vec2f_t const& other) const { return x * other.x + y * other.
 
 float vec2f_t::angle() const
 {
-    vec2f_t const x_axis{0.0f, 1.0f};
-    return x_axis.angle(normalised());
+    // static vec2f_t const origin{0.0f, 0.0f};
+    return rad_to_degrees(std::atan2(y, x));
 }
 
-float vec2f_t::angle(vec2f_t const& other) const
+float vec2f_t::inner_angle(vec2f_t const& other) const
 {
-    return rad_to_degrees(std::atan2(other.x * y - other.y * x, other.x * x + other.y * y));
+    return rad_to_degrees(std::atan2(x * other.y - y * other.x, x * other.x + y * other.y));
 }
 
 vec2f_t vec2f_t::get_rotated(float const& angle) const
 {
     float const rads = degress_to_radians(angle);
     return {x * std::cos(rads) - y * std::sin(rads), x * std::sin(rads) + y * std::cos(rads)};
+}
+
+vec2f_t vec2f_t::from_angle(float angle, float len)
+{
+    float rad = degress_to_radians(angle);
+    return {len * std::cos(rad), len * std::sin(rad)};
 }

@@ -14,16 +14,6 @@ inline double degress_to_radians(double degrees) { return degrees * pi_d / 180.0
 
 inline float degress_to_radians(float degrees) { return degrees * pi_f / 180.0; }
 
-// inline float clamp_radians(float rads)
-// {
-//     if (rads > pi)
-// }
-//
-// inline double clamp_radians(double rads)
-// {
-//
-// }
-
 inline float clamp_trig_arg(float arg)
 {
     if (arg < -1.0f) {
@@ -51,10 +41,12 @@ typedef struct vec2f_t {
     float length() const;
     vec2f_t normalised() const;
     float dot(vec2f_t const& other) const;
-    float angle(vec2f_t const& other) const;
+    float inner_angle(vec2f_t const& other) const;
     float angle() const;
 
     vec2f_t get_rotated(float const& angle) const;
+
+    static vec2f_t from_angle(float angle, float len = 1.0f);
 
 } vec2f_t;
 
