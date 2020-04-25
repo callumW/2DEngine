@@ -10,6 +10,31 @@ inline double rad_to_degrees(double radians) { return radians * 180.0 / pi_d; }
 
 inline float rad_to_degrees(float radians) { return radians * 180.0f / pi_f; }
 
+inline double degress_to_radians(double degrees) { return degrees * pi_d / 180.0; }
+
+inline float degress_to_radians(float degrees) { return degrees * pi_f / 180.0; }
+
+// inline float clamp_radians(float rads)
+// {
+//     if (rads > pi)
+// }
+//
+// inline double clamp_radians(double rads)
+// {
+//
+// }
+
+inline float clamp_trig_arg(float arg)
+{
+    if (arg < -1.0f) {
+        arg -= ceilf(arg);
+    }
+    else if (arg > 1.0f) {
+        arg -= floorf(arg);
+    }
+    return arg;
+}
+
 typedef struct vec2f_t {
     float x;
     float y;
@@ -25,6 +50,12 @@ typedef struct vec2f_t {
 
     float length() const;
     vec2f_t normalised() const;
+    float dot(vec2f_t const& other) const;
+    float angle(vec2f_t const& other) const;
+    float angle() const;
+
+    vec2f_t get_rotated(float const& angle) const;
+
 } vec2f_t;
 
 vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs);

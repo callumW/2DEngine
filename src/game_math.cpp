@@ -1,6 +1,7 @@
 #include "game_math.h"
 
 #include <cmath>
+#include <iostream>
 
 vec2f_t& vec2f_t::operator+=(vec2f_t const& other)
 {
@@ -77,4 +78,23 @@ vec2f_t vec2f_t::normalised() const
         }
     }
     return ret;
+}
+
+float vec2f_t::dot(vec2f_t const& other) const { return x * other.x + y * other.y; }
+
+float vec2f_t::angle() const
+{
+    vec2f_t const x_axis{0.0f, 1.0f};
+    return x_axis.angle(normalised());
+}
+
+float vec2f_t::angle(vec2f_t const& other) const
+{
+    return rad_to_degrees(std::atan2(other.x * y - other.y * x, other.x * x + other.y * y));
+}
+
+vec2f_t vec2f_t::get_rotated(float const& angle) const
+{
+    float const rads = degress_to_radians(angle);
+    return {x * std::cos(rads) - y * std::sin(rads), x * std::sin(rads) + y * std::cos(rads)};
 }

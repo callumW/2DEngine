@@ -8,11 +8,9 @@
 
 class TextureLoader {
 public:
-    TextureLoader();
-
     SDL_Texture* load_texture_cached(std::string const& path);
 
-    SDL_Texture* default_texture() { return default_tex; }
+    SDL_Texture* default_texture();
 
     void clean_up_textures();
 

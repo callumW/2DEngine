@@ -16,9 +16,9 @@ public:
     virtual void render();
     virtual void update(float delta);
 
-    virtual void set_world_pos(vec2f_t new_pos);
+    virtual void set_world_pos(vec2f_t const& new_pos);
 
-    virtual void set_local_pos(vec2f_t new_pos);
+    virtual void set_local_pos(vec2f_t const& new_pos);
 
     virtual void set_rotation(double new_rot);
 
@@ -36,7 +36,8 @@ public:
     vec2f_t world_position() const { return world_pos; }
     vec2f_t local_position() const { return local_pos; }
 
-    double rotation() const { return rot; }
+    double screen_rotation() const { return texture_rotation; }
+    double local_rotation() const { return relative_rotation; }
 
 protected:
     void update_render_position();
@@ -45,13 +46,15 @@ protected:
     void update_children_positions();
     void update_relative_position();
 
+    void rotate_children();
+
     std::vector<Entity*> children;
     Entity* parent = nullptr;
 
     vec2f_t world_pos;
     vec2f_t local_pos;
-    double rot = 0.0f; // rotation in degrees
-
+    double texture_rotation = 0.0f; // rotation in degrees
+    float relative_rotation = 0.0f;
     bool hidden = false;
 
     SDL_Texture* tex = nullptr;

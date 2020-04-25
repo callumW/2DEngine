@@ -20,12 +20,7 @@ Game::Game()
     tmp->add_force({10.0f, 10.0f});
 }
 
-Game::~Game()
-{
-    if (m_player_tex) {
-        SDL_DestroyTexture(m_player_tex);
-    }
-}
+Game::~Game() {}
 
 void Game::render()
 {

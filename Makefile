@@ -56,7 +56,7 @@ clean:
 
 .PHONY: format-code
 format-code:
-	clang-format -i ${SRC_FILES} ${INCLUDE_FILES}
+	clang-format --style=file -i ${SRC_FILES} ${INCLUDE_FILES}
 
 ${BUILD_ASSETS}:
 	cp -r assets ${BUILD_DIR}/assets
