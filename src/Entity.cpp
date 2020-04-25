@@ -36,7 +36,10 @@ void Entity::render()
 {
     if (!hidden) {
         if (tex) {
-            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest, texture_rotation, &rot_pivot,
+            draw_dest.x = static_cast<int>(world_transform.position.x) - rot_pivot.x;
+            draw_dest.y = static_cast<int>(world_transform.position.y) - rot_pivot.y;
+            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest,
+                             static_cast<double>(world_transform.rotation), &rot_pivot,
                              SDL_FLIP_NONE);
         }
 
@@ -49,67 +52,11 @@ void Entity::render()
 void Entity::update(float delta)
 {
     apply_forces(delta);
+    update_children_world_transforms();
+
     for (auto& child : children) {
         child->update(delta);
     }
-}
-
-void Entity::set_world_pos(vec2f_t const& new_pos)
-{
-    // world_pos = new_pos;
-    // if (parent != nullptr) {
-    //     local_pos = world_pos - parent->world_pos;
-    // }
-    // else {
-    //     local_pos = world_pos;
-    // }
-    // update_render_position();
-    // update_children_positions();
-
-    // work out new local pos
-    // set local pos
-
-    if (parent != nullptr) {
-        set_local_pos(new_pos - parent->world_pos);
-    }
-    else {
-        set_local_pos(new_pos);
-    }
-}
-
-void Entity::set_local_pos(vec2f_t const& new_pos)
-{
-    local_pos = new_pos;
-
-    if (parent != nullptr) {
-        relative_rotation = local_pos.angle();
-        texture_rotation = parent->texture_rotation + relative_rotation;
-        world_pos = parent->world_pos + local_pos;
-    }
-    else {
-        // relative_rotation = new_pos.angle();
-        texture_rotation = relative_rotation;
-        world_pos = local_pos;
-    }
-
-    // Need to recalculate rotation
-    update_render_position();
-    update_children_positions();
-}
-
-void Entity::set_relative_rotation(float new_rot)
-{
-    vec2f_t new_local_pos{0.0f, local_pos.length()};
-    new_local_pos = new_local_pos.get_rotated(new_rot);
-    relative_rotation = new_rot;
-
-    set_local_pos(new_local_pos);
-
-    std::cout << "Passed Rotation: " << new_rot << " New rotation: " << relative_rotation
-              << " new local pos:" << new_local_pos << std::endl;
-
-    update_render_position();
-    update_children_positions();
 }
 
 void Entity::add_child(Entity* node)
@@ -117,41 +64,24 @@ void Entity::add_child(Entity* node)
     if (node) {
         children.push_back(node);
         node->parent = this;
-        node->set_local_pos(node->local_pos);
+        node->recalc_world_transform();
     }
 }
 
-void Entity::update_render_position()
-{
-    draw_dest.x = static_cast<int>(world_pos.x) - (tex_src.w / 2);
-    draw_dest.y = static_cast<int>(world_pos.y) - (tex_src.h / 2);
-}
 
 void Entity::apply_forces(float const delta_time)
 {
     if (force.length() != 0.0f) {
-        vec2f_t new_pos = world_pos + (force * delta_time);
-        set_world_pos(new_pos);
+        world_transform.position = world_transform.position + (force * delta_time);
+        recalc_local_transform();
     }
 }
 
-void Entity::update_children_positions()
+void Entity::update_children_world_transforms()
 {
     for (auto& child : children) {
-        child->update_relative_position();
+        child->recalc_world_transform();
     }
-}
-
-void Entity::update_relative_position()
-{
-    vec2f_t new_local_pos = vec2f_t::from_angle(relative_rotation, local_pos.length());
-
-    std::cout << "Updating relative potision: " << local_pos << " -> " << new_local_pos
-              << std::endl;
-
-    std::cout << new_local_pos.angle() << " vs. " << relative_rotation << std::endl;
-
-    set_local_pos(new_local_pos);
 }
 
 void Entity::remove_child(Entity* node)
@@ -170,21 +100,53 @@ void Entity::remove_child(Entity* node)
     }
 }
 
-void Entity::rotate_children()
-{
-    for (auto& child : children) {
-        // local position remains constant... (well it's length does anyway)
-    }
-}
-
 void Entity::face(Entity const& entity)
 {
-    float new_rot = (entity.world_pos - world_pos).angle();
-    texture_rotation = static_cast<double>(new_rot);
+    float new_rotation = (entity.world_transform.position - world_transform.position).angle();
+    world_transform.rotation = new_rotation;
+    recalc_local_transform();
 }
 
 void Entity::face(vec2f_t const& vec)
 {
-    float new_rot = (vec - world_pos).angle();
-    texture_rotation = static_cast<double>(new_rot);
+    float new_rotation = (vec - world_transform.position).angle();
+    world_transform.rotation = new_rotation;
+    recalc_local_transform();
+}
+
+void Entity::set_local_transform(transform_t const& transform)
+{
+    local_transform = transform;
+    recalc_world_transform();
+}
+
+void Entity::set_world_transform(transform_t const& transform)
+{
+    world_transform = transform;
+    recalc_local_transform();
+}
+
+void Entity::recalc_local_transform()
+{
+    if (parent != nullptr) {
+        local_transform.position = world_transform.position - parent->world_transform.position;
+    }
+    else {
+        local_transform = world_transform;
+    }
+    update_children_world_transforms();
+}
+
+void Entity::recalc_world_transform()
+{
+    if (parent != nullptr) {
+        world_transform.position = parent->world_transform.position +
+                                   vec2f_t::from_angle(parent->local_transform.rotation,
+                                                       local_transform.position.length());
+        world_transform.rotation = local_transform.rotation + parent->world_transform.rotation;
+    }
+    else {
+        world_transform = local_transform;
+    }
+    update_children_world_transforms();
 }

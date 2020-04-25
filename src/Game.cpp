@@ -12,16 +12,10 @@ Game::Game()
 {
     Entity* tmp = new Entity();
 
-    tmp->set_local_pos({10.0f, 10.0f});
-
     entity.add_child(tmp);
 
     entity.add_force({10.0f, 10.0f});
     tmp->add_force({10.0f, 10.0f});
-
-    entity.set_relative_rotation(50.0f);
-
-    tmp->set_relative_rotation(-50.0f);
 }
 
 Game::~Game() {}

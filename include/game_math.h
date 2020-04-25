@@ -56,4 +56,9 @@ vec2f_t operator*(vec2f_t const& lhs, float const& rhs);
 vec2f_t operator*(float const& lhs, vec2f_t const& rhs);
 
 std::ostream& operator<<(std::ostream& lhs, vec2f_t const& rhs);
+
+typedef struct transform_t {
+    vec2f_t position;
+    float rotation;
+} transform_t;
 #endif

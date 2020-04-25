@@ -16,11 +16,15 @@ public:
     virtual void render();
     virtual void update(float delta);
 
-    virtual void set_world_pos(vec2f_t const& new_pos);
+    /**
+     * Change position local to parent
+     */
+    virtual void set_local_transform(transform_t const& transform);
 
-    virtual void set_local_pos(vec2f_t const& new_pos);
-
-    virtual void set_relative_rotation(float new_rot);
+    /**
+     * Change position in world space (irrelevant of parent position)
+     */
+    virtual void set_world_transform(transform_t const& transform);
 
     virtual void set_hidden(bool hide = true) { hidden = hide; }
 
@@ -36,28 +40,20 @@ public:
 
     bool is_hidden() const { return hidden; }
 
-    vec2f_t world_position() const { return world_pos; }
-    vec2f_t local_position() const { return local_pos; }
-
-    double screen_rotation() const { return texture_rotation; }
-    double local_rotation() const { return relative_rotation; }
-
 protected:
-    void update_render_position();
     void apply_forces(float const delta_time);
 
-    void update_children_positions();
-    void update_relative_position();
+    virtual void recalc_local_transform();
+    virtual void recalc_world_transform();
 
-    void rotate_children();
+    virtual void update_children_world_transforms();
 
     std::vector<Entity*> children;
     Entity* parent = nullptr;
 
-    vec2f_t world_pos;
-    vec2f_t local_pos;
-    double texture_rotation = 0.0f; // rotation in degrees
-    float relative_rotation = 0.0f;
+    transform_t local_transform;
+    transform_t world_transform;
+
     bool hidden = false;
 
     SDL_Texture* tex = nullptr;

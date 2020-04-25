@@ -7,28 +7,28 @@ Player::Player() : Entity("./assets/G.bmp", {0, 0, 40, 40}) {}
 
 void Player::update(float delta)
 {
-    vec2f_t new_pos = world_pos;
+    auto transform = world_transform;
     if (INPUT.KEY_W) {
-        new_pos.y -= PLAYER_MOVEMENT_SPEED * delta;
+        transform.position.y -= PLAYER_MOVEMENT_SPEED * delta;
     }
     else if (INPUT.KEY_S) {
-        new_pos.y += PLAYER_MOVEMENT_SPEED * delta;
+        transform.position.y += PLAYER_MOVEMENT_SPEED * delta;
     }
 
     if (INPUT.KEY_A) {
-        new_pos.x -= PLAYER_MOVEMENT_SPEED * delta;
+        transform.position.x -= PLAYER_MOVEMENT_SPEED * delta;
     }
     else if (INPUT.KEY_D) {
-        new_pos.x += PLAYER_MOVEMENT_SPEED * delta;
+        transform.position.x += PLAYER_MOVEMENT_SPEED * delta;
     }
 
-    set_world_pos(new_pos);
+    set_world_transform(transform);
 
     float mouse_x = static_cast<float>(INPUT.mouse_x);
     float mouse_y = static_cast<float>(INPUT.mouse_y);
 
     vec2f_t mouse_pos{mouse_x, mouse_y};
-    vec2f_t dir = mouse_pos - world_pos;
+    vec2f_t dir = mouse_pos - world_transform.position;
 
     face(mouse_pos);
 
@@ -61,7 +61,7 @@ void Player::fire(vec2f_t const& direction, float impulse)
 {
     Bullet* bullet = new Bullet();
 
-    bullet->set_world_pos(world_pos);
+    bullet->set_world_transform(world_transform);
 
     vec2f_t force = direction.normalised() * impulse;
 
