@@ -62,6 +62,8 @@ void Entity::update(float delta)
 void Entity::add_child(Entity* node)
 {
     if (node) {
+        node->remove_from_parent();
+
         children.push_back(node);
         node->parent = this;
         node->recalc_world_transform();
@@ -149,4 +151,12 @@ void Entity::recalc_world_transform()
         world_transform = local_transform;
     }
     update_children_world_transforms();
+}
+
+void Entity::remove_from_parent()
+{
+    if (parent != nullptr) {
+        parent->remove_child(this);
+        parent = nullptr;
+    }
 }

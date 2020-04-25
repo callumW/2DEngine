@@ -35,6 +35,8 @@ public:
 
     virtual void remove_child(Entity* node);
 
+    virtual void remove_from_parent();
+
     virtual void face(Entity const& entity);
     virtual void face(vec2f_t const& vec);
 
