@@ -28,6 +28,7 @@ public:
 
     virtual void set_hidden(bool hide = true) { hidden = hide; }
 
+    // Add forces, NOTE: forces are in WORLD coordinate space
     virtual void set_force(vec2f_t new_force) { force = new_force; }
     virtual void add_force(vec2f_t add) { force += add; }
 
