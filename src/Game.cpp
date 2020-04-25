@@ -12,10 +12,14 @@ Game::Game()
 {
     Entity* tmp = new Entity();
 
-    entity.add_child(tmp);
+    player.add_child(tmp);
 
-    entity.add_force({10.0f, 10.0f});
-    tmp->add_force({10.0f, 10.0f});
+    tmp->set_local_transform({{50.0f, 50.0f}, 45.0f});
+
+    // entity.add_child(tmp);
+    //
+    // entity.add_force({10.0f, 10.0f});
+    // tmp->add_force({10.0f, 10.0f});
 }
 
 Game::~Game() {}
