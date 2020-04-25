@@ -83,12 +83,12 @@ void Entity::set_local_pos(vec2f_t const& new_pos)
 
     if (parent != nullptr) {
         relative_rotation = local_pos.angle();
-        // texture_rotation = parent->texture_rotation + relative_rotation;
+        texture_rotation = parent->texture_rotation + relative_rotation;
         world_pos = parent->world_pos + local_pos;
     }
     else {
         // relative_rotation = new_pos.angle();
-        // texture_rotation = relative_rotation;
+        texture_rotation = relative_rotation;
         world_pos = local_pos;
     }
 
@@ -101,6 +101,7 @@ void Entity::set_relative_rotation(float new_rot)
 {
     vec2f_t new_local_pos{0.0f, local_pos.length()};
     new_local_pos = new_local_pos.get_rotated(new_rot);
+    relative_rotation = new_rot;
 
     set_local_pos(new_local_pos);
 

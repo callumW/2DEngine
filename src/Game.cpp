@@ -20,6 +20,8 @@ Game::Game()
     tmp->add_force({10.0f, 10.0f});
 
     entity.set_relative_rotation(50.0f);
+
+    tmp->set_relative_rotation(-50.0f);
 }
 
 Game::~Game() {}
