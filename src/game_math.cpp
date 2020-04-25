@@ -104,3 +104,9 @@ vec2f_t vec2f_t::from_angle(float angle, float len)
     float rad = degress_to_radians(angle);
     return {len * std::cos(rad), len * std::sin(rad)};
 }
+
+std::ostream& operator<<(std::ostream& lhs, transform_t const& rhs)
+{
+    lhs << rhs.position << ", " << rhs.rotation << " degrees" << std::endl;
+    return lhs;
+}

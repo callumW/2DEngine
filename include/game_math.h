@@ -61,4 +61,6 @@ typedef struct transform_t {
     vec2f_t position;
     float rotation;
 } transform_t;
+
+std::ostream& operator<<(std::ostream& lhs, transform_t const& rhs);
 #endif

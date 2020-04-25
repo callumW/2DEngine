@@ -142,9 +142,9 @@ void Entity::recalc_local_transform()
 void Entity::recalc_world_transform()
 {
     if (parent != nullptr) {
-        world_transform.position = parent->world_transform.position +
-                                   vec2f_t::from_angle(parent->local_transform.rotation,
-                                                       local_transform.position.length());
+        world_transform.position =
+            parent->world_transform.position +
+            local_transform.position.get_rotated(parent->local_transform.rotation);
         world_transform.rotation = local_transform.rotation + parent->world_transform.rotation;
     }
     else {
