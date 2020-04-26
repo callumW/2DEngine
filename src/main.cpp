@@ -66,6 +66,7 @@ int main(int argc, char* argv[])
     Uint32 render_time = 0;
     Uint32 sleep_time = 0;
     while (!quit) {
+        now = SDL_GetTicks();
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
@@ -74,7 +75,6 @@ int main(int argc, char* argv[])
             update_input_struct(e);
         }
 
-        now = SDL_GetTicks();
         delta = now - last;
         last = now;
 
