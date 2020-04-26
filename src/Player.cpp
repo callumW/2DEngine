@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "EntityManager.h"
 #include "input.h"
 
 #include <iostream>
@@ -58,5 +57,5 @@ void Player::fire(vec2f_t const& direction, float impulse)
 
     bullet->add_force(force);
 
-    g_entity_manager.add_entity(bullet);
+    root_node.add_child(bullet);
 }

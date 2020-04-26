@@ -14,9 +14,5 @@ public:
     void render();
 
     void update(Uint32 delta);
-
-private:
-    Entity entity;
-    Player player;
 };
 #endif

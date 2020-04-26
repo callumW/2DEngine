@@ -24,7 +24,7 @@ public:
 
     virtual void update(float delta);
 
-    virtual void add_child(std::weak_ptr<SceneNode> child);
+    virtual void add_child(SceneNode* child);
 
     virtual void remove_child(SceneNode* child);
 
@@ -33,6 +33,7 @@ public:
     virtual void set_hidden(bool hide = true) { is_hidden = hide; }
 
     bool hidden() const { return is_hidden; }
+    bool alive() const { return is_alive; }
 
 protected:
     virtual void recalc_local_transform();
@@ -45,8 +46,9 @@ protected:
     transform_t world_transform;
 
     bool is_hidden = false;
+    bool is_alive = true;
 
-    std::vector<std::weak_ptr<SceneNode>> children;
+    std::vector<SceneNode*> children;
     SceneNode* parent = nullptr;
 };
 

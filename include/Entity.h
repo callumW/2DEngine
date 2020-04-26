@@ -25,12 +25,8 @@ public:
     virtual void face(Entity const& entity);
     virtual void face(vec2f_t const& vec);
 
-    bool alive() const { return is_alive; }
-
 protected:
     void apply_forces(float const delta_time);
-
-    bool is_alive = true;
 
     SDL_Texture* tex = nullptr;
     SDL_Rect tex_src = {0};
