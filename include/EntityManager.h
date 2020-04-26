@@ -12,7 +12,6 @@ public:
 
     void update(float delta);
     void cull();
-    void render();
 
 private:
     std::vector<std::shared_ptr<Entity>> entities;

@@ -44,7 +44,10 @@ void Entity::render()
         }
 
         for (auto& child : children) {
-            child->render();
+            auto child_ptr = child.lock();
+            if (child_ptr) {
+                child_ptr->render();
+            }
         }
     }
 }
@@ -53,20 +56,17 @@ void Entity::update(float delta)
 {
     apply_forces(delta);
     update_children_world_transforms();
-
-    for (auto& child : children) {
-        child->update(delta);
-    }
 }
 
-void Entity::add_child(Entity* node)
+void Entity::add_child(std::weak_ptr<Entity> child)
 {
-    if (node) {
-        node->remove_from_parent();
+    std::shared_ptr<Entity> child_ptr = child.lock();
+    if (child_ptr) {
+        child_ptr->remove_from_parent();
 
-        children.push_back(node);
-        node->parent = this;
-        node->recalc_world_transform();
+        children.push_back(child_ptr);
+        child_ptr->parent = this;
+        child_ptr->recalc_world_transform();
     }
 }
 
@@ -82,22 +82,25 @@ void Entity::apply_forces(float const delta_time)
 void Entity::update_children_world_transforms()
 {
     for (auto& child : children) {
-        child->recalc_world_transform();
+        auto child_ptr = child.lock();
+        if (child_ptr) {
+            child_ptr->recalc_world_transform();
+        }
     }
 }
 
-void Entity::remove_child(Entity* node)
+void Entity::remove_child(Entity* child)
 {
-    if (node == nullptr) {
-        return;
-    }
-
-    auto end = children.end();
-    for (auto it = children.begin(); it != end; it++) {
-        if (*it == node) {
-            children.erase(it);
-            (*it)->parent = nullptr;
-            return;
+    if (child) {
+        auto end = children.end();
+        for (auto it = children.begin(); it != end; it++) {
+            auto tmp = (*it).lock();
+            if (tmp) {
+                if (tmp.get() == child) {
+                    children.erase(it);
+                    return;
+                }
+            }
         }
     }
 }
@@ -158,5 +161,15 @@ void Entity::remove_from_parent()
     if (parent != nullptr) {
         parent->remove_child(this);
         parent = nullptr;
+    }
+}
+
+Entity::~Entity()
+{
+    for (auto& child : children) {
+        auto child_ptr = child.lock();
+        if (child_ptr) {
+            child_ptr->parent = nullptr;
+        }
     }
 }

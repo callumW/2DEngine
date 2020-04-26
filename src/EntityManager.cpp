@@ -29,10 +29,3 @@ void EntityManager::cull()
         }
     }
 }
-
-void EntityManager::render()
-{
-    for (auto& entity : entities) {
-        entity->render();
-    }
-}

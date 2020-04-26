@@ -13,6 +13,8 @@ public:
 
     Entity(std::string const& texture_path, SDL_Rect const& src);
 
+    ~Entity();
+
     virtual void render();
     virtual void update(float delta);
 
@@ -32,9 +34,9 @@ public:
     virtual void set_force(vec2f_t new_force) { force = new_force; }
     virtual void add_force(vec2f_t add) { force += add; }
 
-    virtual void add_child(Entity* node);
+    virtual void add_child(std::weak_ptr<Entity> child);
 
-    virtual void remove_child(Entity* node);
+    virtual void remove_child(Entity* child);
 
     virtual void remove_from_parent();
 
@@ -52,7 +54,7 @@ protected:
 
     virtual void update_children_world_transforms();
 
-    std::vector<Entity*> children;
+    std::vector<std::weak_ptr<Entity>> children;
     Entity* parent = nullptr;
 
     transform_t local_transform;
@@ -68,4 +70,5 @@ protected:
 
     vec2f_t force = {0.0f, 0.0f};
 };
+
 #endif
