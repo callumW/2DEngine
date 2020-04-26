@@ -26,7 +26,7 @@ public:
      */
     virtual void set_world_transform(transform_t const& transform);
 
-    virtual void set_hidden(bool hide = true) { hidden = hide; }
+    virtual void set_hidden(bool hide = true) { is_hidden = hide; }
 
     // Add forces, NOTE: forces are in WORLD coordinate space
     virtual void set_force(vec2f_t new_force) { force = new_force; }
@@ -41,7 +41,8 @@ public:
     virtual void face(Entity const& entity);
     virtual void face(vec2f_t const& vec);
 
-    bool is_hidden() const { return hidden; }
+    bool hidden() const { return is_hidden; }
+    bool alive() const { return is_alive; }
 
 protected:
     void apply_forces(float const delta_time);
@@ -57,7 +58,8 @@ protected:
     transform_t local_transform;
     transform_t world_transform;
 
-    bool hidden = false;
+    bool is_hidden = false;
+    bool is_alive = true;
 
     SDL_Texture* tex = nullptr;
     SDL_Rect tex_src = {0};

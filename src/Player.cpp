@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "EntityManager.h"
 #include "input.h"
 
 #include <iostream>
@@ -33,17 +34,6 @@ void Player::update(float delta)
     face(mouse_pos);
 
 
-    for (auto it = bullets.begin(); it != bullets.end();) {
-        (*it)->update(delta);
-        if (!(*it)->alive()) {
-            delete *it;
-            it = bullets.erase(it);
-        }
-        else {
-            it++;
-        }
-    }
-
     time_since_last_fire += delta;
 
     if (INPUT.mouse_left_click) {
@@ -56,13 +46,7 @@ void Player::update(float delta)
     Entity::update(delta);
 }
 
-void Player::render()
-{
-    for (auto& bullet : bullets) {
-        bullet->render();
-    }
-    Entity::render();
-}
+void Player::render() { Entity::render(); }
 
 void Player::fire(vec2f_t const& direction, float impulse)
 {
@@ -74,5 +58,5 @@ void Player::fire(vec2f_t const& direction, float impulse)
 
     bullet->add_force(force);
 
-    bullets.push_back(bullet);
+    g_entity_manager.add_entity(bullet);
 }

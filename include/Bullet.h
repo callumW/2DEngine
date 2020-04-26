@@ -10,10 +10,7 @@ public:
 
     virtual void update(float delta);
 
-    bool alive() const { return is_alive; }
-
 private:
     float age = 0.0f;
-    bool is_alive = true;
 };
 #endif

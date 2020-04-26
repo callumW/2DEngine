@@ -34,7 +34,7 @@ Entity::Entity(std::string const& texture_path, SDL_Rect const& src)
 
 void Entity::render()
 {
-    if (!hidden) {
+    if (!is_hidden) {
         if (tex) {
             draw_dest.x = static_cast<int>(world_transform.position.x) - rot_pivot.x;
             draw_dest.y = static_cast<int>(world_transform.position.y) - rot_pivot.y;

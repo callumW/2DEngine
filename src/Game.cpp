@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "EntityManager.h"
 #include "Globals.h"
 #include "game_math.h"
 #include "input.h"
@@ -26,6 +27,7 @@ Game::~Game() {}
 
 void Game::render()
 {
+    g_entity_manager.render();
     player.render();
     entity.render();
 }
@@ -35,4 +37,6 @@ void Game::update(Uint32 delta)
     float delta_f = static_cast<float>(delta) / 1000.0f;
     player.update(delta_f);
     entity.update(delta_f);
+    g_entity_manager.update(delta_f);
+    g_entity_manager.cull();
 }

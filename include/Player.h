@@ -18,9 +18,6 @@ public:
 
 private:
     void fire(vec2f_t const& direction, float impulse);
-
-    std::vector<Bullet*> bullets;
-
     float time_since_last_fire = 0.0f;
 };
 #endif
