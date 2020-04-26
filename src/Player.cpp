@@ -33,8 +33,15 @@ void Player::update(float delta)
     face(mouse_pos);
 
 
-    for (auto& bullet : bullets) {
-        bullet->update(delta);
+    for (auto it = bullets.begin(); it != bullets.end();) {
+        (*it)->update(delta);
+        if (!(*it)->alive()) {
+            delete *it;
+            it = bullets.erase(it);
+        }
+        else {
+            it++;
+        }
     }
 
     time_since_last_fire += delta;
