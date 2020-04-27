@@ -44,6 +44,8 @@ THIRD_PARTY_INCLUDES= \
 LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/
 
+CPP_FLAGS= -Wall
+
 BINARY_NAME=terminal-reboot-${VERSION}.app
 
 OUTPUT=${BUILD_DIR}${BINARY_NAME}
@@ -61,7 +63,7 @@ ${OUTPUT}: ${BUILD_DIR} ${OBJ} ${BUILD_ASSETS}
 	${COMPILER} -std=${CPP_STD} ${OBJ} ${LD_FLAGS} -o ${OUTPUT}
 
 %.o: %.cpp
-	${COMPILER} -std=${CPP_STD} -MMD -MP ${INCLUDES} ${THIRD_PARTY_INCLUDES} -c $< -o $@
+	${COMPILER} -std=${CPP_STD} -MMD -MP ${CPP_FLAGS} ${INCLUDES} ${THIRD_PARTY_INCLUDES} -c $< -o $@
 
 # Include generated dependency files
 -include ${DEPS}
@@ -72,7 +74,7 @@ ${BUILD_DIR}:
 
 .PHONY: clean
 clean:
-	$(RM) ${OBJ} ${DEPS}
+	$(RM) ${OBJ} ${DEPS} ${TEST_OBJ}
 	$(RM) -r ${BUILD_DIR}
 
 .PHONY: format-code
