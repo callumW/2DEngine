@@ -1,4 +1,5 @@
 #include "EntityManager.h"
+#include "PhysicsManager.h"
 
 #include <cassert>
 
@@ -26,15 +27,9 @@ std::pair<entity_id_t, Entity*> EntityManager::new_entity()
 
 void EntityManager::update_entities(float delta)
 {
-    for (size_t i = 0; i < next_free_space; i++) {
-        entities[i].update(delta);
-    }
-}
-
-void EntityManager::render_entities()
-{
-    for (size_t i = 0; i < next_free_space; i++) {
-        entities[i].render();
+    for (auto const& dirty_entity : PhysicsManager::get().dirty_entities()) {
+        assert(dirty_entity.index() < next_free_space);
+        entities[dirty_entity.index()].update(delta);
     }
 }
 

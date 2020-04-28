@@ -1,93 +1,18 @@
 #include "Entity.h"
 #include "Globals.h"
+#include "PhysicsManager.h"
 #include "loading_helpers.h"
 
 #include <cassert>
 #include <cmath>
 #include <iostream>
 
-Entity::Entity()
+
+void Entity::update(float delta)
 {
-    tex = load_default_texture();
-
-    tex_src.w = 40;
-    tex_src.h = 40;
-
-    draw_dest.w = 40;
-    draw_dest.h = 40;
-
-    rot_pivot.x = tex_src.w / 2;
-    rot_pivot.y = tex_src.h / 2;
-}
-
-Entity::Entity(std::string const& texture_path, SDL_Rect const& src)
-{
-    tex = load_texture(texture_path);
-    tex_src = src;
-
-    draw_dest.w = tex_src.w;
-    draw_dest.h = tex_src.h;
-
-    rot_pivot.x = tex_src.w / 2;
-    rot_pivot.y = tex_src.h / 2;
-}
-
-void Entity::render()
-{
-    if (!hidden) {
-        if (tex) {
-            draw_dest.x = static_cast<int>(world_transform.position.x) - rot_pivot.x;
-            draw_dest.y = static_cast<int>(world_transform.position.y) - rot_pivot.y;
-            SDL_RenderCopyEx(g_renderer, tex, &tex_src, &draw_dest,
-                             static_cast<double>(world_transform.rotation), &rot_pivot,
-                             SDL_FLIP_NONE);
-        }
-    }
-}
-
-void Entity::update(float delta) { apply_forces(delta); }
-
-void Entity::add_child(Entity* node)
-{
-    // if (node) {
-    //     node->remove_from_parent();
-    //
-    //     children.push_back(node);
-    //     node->parent = this;
-    //     node->recalc_world_transform();
-    // }
-}
-
-
-void Entity::apply_forces(float const delta_time)
-{
-    if (force.length() != 0.0f) {
-        world_transform.position = world_transform.position + (force * delta_time);
-        recalc_local_transform();
-    }
-}
-
-void Entity::update_children_world_transforms()
-{
-    // for (auto& child : children) {
-    //     child->recalc_world_transform();
-    // }
-}
-
-void Entity::remove_child(Entity* node)
-{
-    // if (node == nullptr) {
-    //     return;
-    // }
-    //
-    // auto end = children.end();
-    // for (auto it = children.begin(); it != end; it++) {
-    //     if (*it == node) {
-    //         children.erase(it);
-    //         (*it)->parent = nullptr;
-    //         return;
-    //     }
-    // }
+    auto physics = PhysicsManager::get().get_physics_component(id);
+    world_transform.position = physics->position;
+    recalc_local_transform();
 }
 
 void Entity::face(Entity const& entity)
@@ -116,36 +41,6 @@ void Entity::set_world_transform(transform_t const& transform)
     recalc_local_transform();
 }
 
-void Entity::recalc_local_transform()
-{
-    // parent
-    // if (parent != nullptr) {
-    //     local_transform.position = world_transform.position - parent->world_transform.position;
-    // }
-    // else {
-    local_transform = world_transform;
-    // }
-    update_children_world_transforms();
-}
+void Entity::recalc_local_transform() { local_transform = world_transform; }
 
-void Entity::recalc_world_transform()
-{
-    // if (parent != nullptr) {
-    //     world_transform.position =
-    //         parent->world_transform.position +
-    //         local_transform.position.get_rotated(parent->local_transform.rotation);
-    //     world_transform.rotation = local_transform.rotation + parent->world_transform.rotation;
-    // }
-    // else {
-    world_transform = local_transform;
-    // }
-    update_children_world_transforms();
-}
-
-void Entity::remove_from_parent()
-{
-    // if (parent != nullptr) {
-    //     parent->remove_child(this);
-    //     parent = nullptr;
-    // }
-}
+void Entity::recalc_world_transform() { world_transform = local_transform; }

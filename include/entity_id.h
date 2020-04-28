@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <functional>
 
 size_t const MAX_NUM_ENTITIES = 1000;
 
@@ -14,8 +15,8 @@ int64_t const ENTITY_GENERATION_MASK = (INT64_C(1) << ENTITY_GENERATION_BITS) - 
 
 typedef struct entity_id_t {
     int64_t idx = 0;
-    int64_t index() { return idx & ENTITY_INDEX_MASK; }
-    int64_t generation() { return (idx >> ENTITY_INDEX_BITS) & ENTITY_GENERATION_MASK; }
+    int64_t index() const { return idx & ENTITY_INDEX_MASK; }
+    int64_t generation() const { return (idx >> ENTITY_INDEX_BITS) & ENTITY_GENERATION_MASK; }
 
     void set_index(int64_t id)
     {
@@ -35,6 +36,17 @@ typedef struct entity_id_t {
     }
 
 } entity_id_t;
+
+typedef struct entity_id_hash_t {
+    std::size_t operator()(entity_id_t const& id) const { return std::hash<int64_t>{}(id.idx); }
+} entity_id_hash_t;
+
+typedef struct entity_id_t_compare_t {
+    bool operator()(entity_id_t const& lhs, entity_id_t const& rhs) const
+    {
+        return lhs.idx == rhs.idx;
+    }
+} entity_id_t_compare_t;
 
 
 #endif
