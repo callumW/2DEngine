@@ -62,6 +62,7 @@ int main(int argc, char* argv[])
     Uint32 last_frame_count_time = SDL_GetTicks();
     Uint32 now = 0;
     Uint32 last = last_frame_count_time;
+    Uint32 frame_time_accumulator = 0;
     Uint32 delta = 0;
     Uint32 render_time = 0;
     Uint32 sleep_time = 0;
@@ -78,9 +79,13 @@ int main(int argc, char* argv[])
         delta = now - last;
         last = now;
 
+        frame_time_accumulator += delta;
+
         if ((now - last_frame_count_time) >= 1000) {
-            std::cout << "FPS: " << frame_count << std::endl;
+            std::cout << "FPS: " << frame_count << " | " << (frame_time_accumulator / frame_count)
+                      << "ms" << std::endl;
             frame_count = 0;
+            frame_time_accumulator = 0;
             last_frame_count_time = now;
         }
 
