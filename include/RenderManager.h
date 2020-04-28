@@ -17,6 +17,8 @@ private:
 
     void render(render_component_t& comp);
 
+    void update_dirty_positions();
+
     size_t first_free_render_component = 0;
     std::array<render_component_t, MAX_NUM_ENTITIES> render_components;
 };

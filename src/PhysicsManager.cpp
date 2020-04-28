@@ -12,8 +12,10 @@ void PhysicsManager::simulate(float delta)
     size_t comp_count = physics_components.size();
     for (size_t i = 0; i < comp_count; i++) {
         physics_component_t& comp = physics_components[i];
-        comp.position += comp.net_force * delta;
-        dirty_components.push_back(comp.owner_id);
+        if (comp.net_force != vec2f_t::zero()) {
+            comp.position += comp.net_force * delta;
+            dirty_components.push_back(comp.owner_id);
+        }
     }
 }
 

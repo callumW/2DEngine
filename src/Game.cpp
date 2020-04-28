@@ -13,8 +13,10 @@
 
 Game::Game()
 {
+    bool toggle = true;
     for (auto& e : entities) {
         auto new_entity = EntityManager::get().new_entity();
+        e = new_entity.first;
 
         auto render_comp = RenderManager::get().new_render_component();
         render_comp->entity_id = new_entity.first;
@@ -26,8 +28,10 @@ Game::Game()
         render_comp->pivot_point = {20, 20};
 
         auto physics = PhysicsManager::get().new_physics_component(new_entity.first);
-        physics->net_force = {10.0f, 10.0f};
-        e = new_entity.first;
+        if (toggle) {
+            physics->net_force = {10.0f, 10.0f};
+        }
+        toggle = !toggle;
     }
 }
 
