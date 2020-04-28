@@ -25,11 +25,18 @@ std::pair<entity_id_t, Entity*> EntityManager::new_entity()
     return std::make_pair(new_id, &entities[new_id.index()]);
 }
 
-void EntityManager::update_entities(float delta)
+void EntityManager::update_dirty_entities(float delta)
 {
     for (auto const& dirty_entity : PhysicsManager::get().dirty_entities()) {
         assert(dirty_entity.index() < next_free_space);
         entities[dirty_entity.index()].update(delta);
+    }
+}
+
+void EntityManager::update_all_entities(float delta)
+{
+    for (size_t i = 0; i < next_free_space; i++) {
+        entities[i].update(delta);
     }
 }
 

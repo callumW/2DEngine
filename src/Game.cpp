@@ -42,5 +42,5 @@ void Game::update(Uint32 delta)
 
     PhysicsManager::get().simulate(delta_f);
 
-    EntityManager::get().update_entities(delta_f);
+    EntityManager::get().update_all_entities(delta_f);
 }
