@@ -13,19 +13,23 @@
 
 Game::Game()
 {
-    auto new_entity = EntityManager::get().new_entity();
 
-    auto render_comp = RenderManager::get().new_render_component();
-    render_comp->entity_id = new_entity.first;
-    render_comp->hidden = false;
-    render_comp->texture = load_default_texture();
-    render_comp->src_rect.w = 40;
-    render_comp->src_rect.h = 40;
-    render_comp->dst_rect = render_comp->src_rect;
-    render_comp->pivot_point = {20, 20};
+    for (auto& e : entities) {
+        auto new_entity = EntityManager::get().new_entity();
 
-    auto physics = PhysicsManager::get().new_physics_component(new_entity.first);
-    physics->net_force = {10.0f, 10.0f};
+        auto render_comp = RenderManager::get().new_render_component();
+        render_comp->entity_id = new_entity.first;
+        render_comp->hidden = false;
+        render_comp->texture = load_default_texture();
+        render_comp->src_rect.w = 40;
+        render_comp->src_rect.h = 40;
+        render_comp->dst_rect = render_comp->src_rect;
+        render_comp->pivot_point = {20, 20};
+
+        auto physics = PhysicsManager::get().new_physics_component(new_entity.first);
+        physics->net_force = {10.0f, 10.0f};
+        e = new_entity.first;
+    }
 }
 
 Game::~Game() {}
