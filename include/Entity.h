@@ -12,7 +12,6 @@ class EntityManager;
 
 class Entity {
 public:
-    friend class EntityManager;
     Entity();
 
     Entity(std::string const& texture_path, SDL_Rect const& src);
@@ -49,7 +48,6 @@ public:
 
     bool is_hidden() const { return hidden; }
 
-protected:
     void apply_forces(float const delta_time);
 
     virtual void recalc_local_transform();

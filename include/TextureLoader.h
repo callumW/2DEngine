@@ -17,7 +17,7 @@ public:
     void clean_up_textures();
 
 private:
-    TextureLoader(){};
+    TextureLoader() = default;
     SDL_Texture* add_texture(std::string const& path);
     std::unordered_map<std::string, SDL_Texture*> textures;
 

@@ -16,7 +16,7 @@ public:
     virtual void update(float delta);
     virtual void render();
 
-private:
+
     void fire(vec2f_t const& direction, float impulse);
 
     std::vector<Bullet*> bullets;

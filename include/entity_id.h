@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cstdint>
 
+size_t const MAX_NUM_ENTITIES = 1000;
+
 int64_t const ENTITY_INDEX_BITS = 54;
 int64_t const ENTITY_INDEX_MASK = (INT64_C(1) << ENTITY_INDEX_BITS) - 1;
 

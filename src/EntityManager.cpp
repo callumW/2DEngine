@@ -3,7 +3,7 @@
 #include <cassert>
 
 
-Entity* EntityManager::is_alive(entity_id_t id)
+Entity* EntityManager::find_entity(entity_id_t id)
 {
     assert(id.index() < MAX_NUM_ENTITIES);
     Entity* tmp = nullptr;
@@ -19,15 +19,10 @@ std::pair<entity_id_t, Entity*> EntityManager::new_entity()
     entity_id_t new_id;
     new_id.set_index(next_free_space++);
     new_id.increment_generation();
+    entities[new_id.index()].id = new_id;
 
     return std::make_pair(new_id, &entities[new_id.index()]);
 }
-
-// void EntityManager::free()
-// {
-//     assert(next_free_space > 0);
-//     std::swap
-// }
 
 void EntityManager::update_entities(float delta)
 {

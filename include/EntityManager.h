@@ -7,13 +7,11 @@
 #include <utility>
 #include <vector>
 
-size_t const MAX_NUM_ENTITIES = 1000;
-
 class EntityManager {
 public:
     static EntityManager& get();
 
-    Entity* is_alive(entity_id_t id);
+    Entity* find_entity(entity_id_t id);
 
     std::pair<entity_id_t, Entity*> new_entity();
     // void free();
