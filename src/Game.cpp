@@ -13,7 +13,6 @@
 
 Game::Game()
 {
-
     for (auto& e : entities) {
         auto new_entity = EntityManager::get().new_entity();
 
