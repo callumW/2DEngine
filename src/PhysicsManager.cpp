@@ -23,7 +23,7 @@ physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
 {
     assert(map.find(id) == map.end());
 
-    physics_component_t comp;
+    physics_component_t comp = {};
     comp.owner_id = id;
     physics_components.push_back(comp);
 

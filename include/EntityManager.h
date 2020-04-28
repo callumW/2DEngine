@@ -14,7 +14,6 @@ public:
     Entity* find_entity(entity_id_t id);
 
     std::pair<entity_id_t, Entity*> new_entity();
-    // void free();
 
     void update_dirty_entities(float delta);
     void update_all_entities(float delta);
