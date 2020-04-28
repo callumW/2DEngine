@@ -10,8 +10,12 @@
 
 Game::Game()
 {
+    bool toggle = true;
     for (auto& e : entities) {
-        e.add_force({10.0f, 10.0f});
+        if (toggle) {
+            e.add_force({10.0f, 10.0f});
+        }
+        toggle = !toggle;
     }
 }
 
