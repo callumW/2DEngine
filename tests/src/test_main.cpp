@@ -1,4 +1,4 @@
-#include "EntityManager.h"
+#include "entity_id.h"
 #include "game_math.h"
 
 #include <cmath>

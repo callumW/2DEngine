@@ -42,32 +42,20 @@ void Entity::render()
                              static_cast<double>(world_transform.rotation), &rot_pivot,
                              SDL_FLIP_NONE);
         }
-
-        for (auto& child : children) {
-            child->render();
-        }
     }
 }
 
-void Entity::update(float delta)
-{
-    apply_forces(delta);
-    update_children_world_transforms();
-
-    for (auto& child : children) {
-        child->update(delta);
-    }
-}
+void Entity::update(float delta) { apply_forces(delta); }
 
 void Entity::add_child(Entity* node)
 {
-    if (node) {
-        node->remove_from_parent();
-
-        children.push_back(node);
-        node->parent = this;
-        node->recalc_world_transform();
-    }
+    // if (node) {
+    //     node->remove_from_parent();
+    //
+    //     children.push_back(node);
+    //     node->parent = this;
+    //     node->recalc_world_transform();
+    // }
 }
 
 
@@ -81,25 +69,25 @@ void Entity::apply_forces(float const delta_time)
 
 void Entity::update_children_world_transforms()
 {
-    for (auto& child : children) {
-        child->recalc_world_transform();
-    }
+    // for (auto& child : children) {
+    //     child->recalc_world_transform();
+    // }
 }
 
 void Entity::remove_child(Entity* node)
 {
-    if (node == nullptr) {
-        return;
-    }
-
-    auto end = children.end();
-    for (auto it = children.begin(); it != end; it++) {
-        if (*it == node) {
-            children.erase(it);
-            (*it)->parent = nullptr;
-            return;
-        }
-    }
+    // if (node == nullptr) {
+    //     return;
+    // }
+    //
+    // auto end = children.end();
+    // for (auto it = children.begin(); it != end; it++) {
+    //     if (*it == node) {
+    //         children.erase(it);
+    //         (*it)->parent = nullptr;
+    //         return;
+    //     }
+    // }
 }
 
 void Entity::face(Entity const& entity)
@@ -130,33 +118,34 @@ void Entity::set_world_transform(transform_t const& transform)
 
 void Entity::recalc_local_transform()
 {
-    if (parent != nullptr) {
-        local_transform.position = world_transform.position - parent->world_transform.position;
-    }
-    else {
-        local_transform = world_transform;
-    }
+    // parent
+    // if (parent != nullptr) {
+    //     local_transform.position = world_transform.position - parent->world_transform.position;
+    // }
+    // else {
+    local_transform = world_transform;
+    // }
     update_children_world_transforms();
 }
 
 void Entity::recalc_world_transform()
 {
-    if (parent != nullptr) {
-        world_transform.position =
-            parent->world_transform.position +
-            local_transform.position.get_rotated(parent->local_transform.rotation);
-        world_transform.rotation = local_transform.rotation + parent->world_transform.rotation;
-    }
-    else {
-        world_transform = local_transform;
-    }
+    // if (parent != nullptr) {
+    //     world_transform.position =
+    //         parent->world_transform.position +
+    //         local_transform.position.get_rotated(parent->local_transform.rotation);
+    //     world_transform.rotation = local_transform.rotation + parent->world_transform.rotation;
+    // }
+    // else {
+    world_transform = local_transform;
+    // }
     update_children_world_transforms();
 }
 
 void Entity::remove_from_parent()
 {
-    if (parent != nullptr) {
-        parent->remove_child(this);
-        parent = nullptr;
-    }
+    // if (parent != nullptr) {
+    //     parent->remove_child(this);
+    //     parent = nullptr;
+    // }
 }

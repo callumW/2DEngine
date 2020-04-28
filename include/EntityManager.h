@@ -1,38 +1,32 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
+#include "Entity.h"
+#include "entity_id.h"
 
-#include <cassert>
-#include <cstdint>
+#include <array>
+#include <utility>
+#include <vector>
 
-int64_t const ENTITY_INDEX_BITS = 54;
-int64_t const ENTITY_INDEX_MASK = (INT64_C(1) << ENTITY_INDEX_BITS) - 1;
+size_t const MAX_NUM_ENTITIES = 1000;
 
-int64_t const ENTITY_GENERATION_BITS = 10;
-int64_t const ENTITY_GENERATION_MASK = (INT64_C(1) << ENTITY_GENERATION_BITS) - 1;
+class EntityManager {
+public:
+    static EntityManager& get();
 
-typedef struct entity_id_t {
-    int64_t idx = 0;
-    int64_t index() { return idx & ENTITY_INDEX_MASK; }
-    int64_t generation() { return (idx >> ENTITY_INDEX_BITS) & ENTITY_GENERATION_MASK; }
+    Entity* is_alive(entity_id_t id);
 
-    void set_index(int64_t id)
-    {
-        assert(id <= ENTITY_INDEX_MASK);
-        idx = (generation() << ENTITY_INDEX_BITS) | id;
-    }
+    std::pair<entity_id_t, Entity*> new_entity();
+    // void free();
 
-    void set_generation(int64_t gen)
-    {
-        assert(gen <= ENTITY_GENERATION_MASK);
-        idx = (gen << ENTITY_INDEX_BITS) | index();
-    }
+    void update_entities(float delta);
 
-    void increment_generation()
-    {
-        set_generation((generation() + 1) % (ENTITY_GENERATION_MASK + 1));
-    }
+    void render_entities();
 
-} entity_id_t;
+private:
+    EntityManager() = default;
 
+    size_t next_free_space = 0;
+    std::array<Entity, MAX_NUM_ENTITIES> entities;
+};
 
 #endif

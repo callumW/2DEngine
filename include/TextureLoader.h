@@ -8,6 +8,8 @@
 
 class TextureLoader {
 public:
+    static TextureLoader& get();
+
     SDL_Texture* load_texture_cached(std::string const& path);
 
     SDL_Texture* default_texture();
@@ -15,12 +17,10 @@ public:
     void clean_up_textures();
 
 private:
+    TextureLoader(){};
     SDL_Texture* add_texture(std::string const& path);
     std::unordered_map<std::string, SDL_Texture*> textures;
 
     SDL_Texture* default_tex = nullptr;
 };
-
-extern TextureLoader texture_loader;
-
 #endif

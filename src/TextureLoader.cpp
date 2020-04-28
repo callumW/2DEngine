@@ -3,6 +3,12 @@
 
 #include <iostream>
 
+TextureLoader& TextureLoader::get()
+{
+    static TextureLoader loader;
+    return loader;
+}
+
 SDL_Texture* TextureLoader::load_texture_cached(std::string const& path)
 {
     auto res = textures.find(path);

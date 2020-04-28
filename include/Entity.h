@@ -5,10 +5,14 @@
 #include <string>
 #include <vector>
 
+#include "entity_id.h"
 #include "game_math.h"
+
+class EntityManager;
 
 class Entity {
 public:
+    friend class EntityManager;
     Entity();
 
     Entity(std::string const& texture_path, SDL_Rect const& src);
@@ -41,6 +45,8 @@ public:
     virtual void face(Entity const& entity);
     virtual void face(vec2f_t const& vec);
 
+    void reset(){};
+
     bool is_hidden() const { return hidden; }
 
 protected:
@@ -51,8 +57,10 @@ protected:
 
     virtual void update_children_world_transforms();
 
-    std::vector<Entity*> children;
-    Entity* parent = nullptr;
+    entity_id_t id;
+
+    std::vector<entity_id_t> children;
+    entity_id_t parent;
 
     transform_t local_transform;
     transform_t world_transform;

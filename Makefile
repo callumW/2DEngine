@@ -18,8 +18,7 @@ DEPS=$(patsubst %.cpp,%.d, ${SRC_FILES})
 TEST_SRC_FILES=$(wildcard tests/src/*.cpp)
 
 FILES_UNDER_TEST= \
-src/game_math.cpp \
-src/EntityManager.cpp
+src/game_math.cpp
 
 TEST_OBJ=$(patsubst %.cpp,%.o, ${TEST_SRC_FILES})
 
