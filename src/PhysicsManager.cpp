@@ -1,5 +1,7 @@
 #include "PhysicsManager.h"
 
+PhysicsManager::PhysicsManager() { physics_components.resize(1000000); }
+
 PhysicsManager& PhysicsManager::get()
 {
     static PhysicsManager phys_mgr;
@@ -21,25 +23,15 @@ void PhysicsManager::simulate(float delta)
 
 physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
 {
-    assert(map.find(id) == map.end());
+    static size_t max_size = physics_components.size();
+    assert(id.index() < max_size);
 
-    physics_component_t comp = {};
-    comp.owner_id = id;
-    physics_components.push_back(comp);
+    physics_components[id.index()].owner_id = id;
 
-    auto idx = physics_components.size() - 1;
-
-    map.insert({id, idx});
-
-    return &physics_components[idx];
+    return &physics_components[id.index()];
 }
 
 physics_component_t const* PhysicsManager::get_physics_component(entity_id_t id)
 {
-    physics_component_t const* ret = nullptr;
-    auto const res = map.find(id);
-    if (res != map.end()) {
-        ret = &physics_components[res->second];
-    }
-    return ret;
+    return &physics_components[id.index()];
 }

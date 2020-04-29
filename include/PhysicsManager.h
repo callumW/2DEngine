@@ -20,9 +20,9 @@ public:
     physics_component_t const* get_physics_component(entity_id_t id);
 
 private:
-    PhysicsManager() = default;
+    PhysicsManager();
 
-    std::unordered_map<entity_id_t, size_t, entity_id_hash_t, entity_id_t_compare_t> map;
+    // std::unordered_map<entity_id_t, size_t, entity_id_hash_t, entity_id_t_compare_t> map;
     std::vector<physics_component_t> physics_components;
 
     std::vector<entity_id_t> dirty_components;
