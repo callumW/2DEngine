@@ -13,6 +13,8 @@
 
 Game::Game()
 {
+    entities.resize(1000000);
+
     bool toggle = true;
     for (auto& e : entities) {
         auto new_entity = EntityManager::get().new_entity();

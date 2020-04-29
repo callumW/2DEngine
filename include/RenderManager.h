@@ -13,13 +13,13 @@ public:
     render_component_t* new_render_component();
 
 private:
-    RenderManager() = default;
+    RenderManager();
 
     void render(render_component_t& comp);
 
     void update_dirty_positions();
 
     size_t first_free_render_component = 0;
-    std::array<render_component_t, MAX_NUM_ENTITIES> render_components;
+    std::vector<render_component_t> render_components;
 };
 #endif

@@ -15,6 +15,6 @@ public:
 
     void update(Uint32 delta);
 
-    std::array<entity_id_t, 50000> entities;
+    std::vector<entity_id_t> entities;
 };
 #endif

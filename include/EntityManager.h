@@ -22,10 +22,10 @@ public:
     void render_entities();
 
 private:
-    EntityManager() = default;
+    EntityManager();
 
     size_t next_free_space = 0;
-    std::array<Entity, MAX_NUM_ENTITIES> entities;
+    std::vector<Entity> entities;
 };
 
 #endif

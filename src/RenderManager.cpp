@@ -5,6 +5,8 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 
+RenderManager::RenderManager() { render_components.resize(1000000); }
+
 RenderManager& RenderManager::get()
 {
     static RenderManager mgr;
