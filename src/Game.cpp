@@ -10,6 +10,8 @@
 
 Game::Game()
 {
+    entities.resize(1000000);
+
     bool toggle = true;
     for (auto& e : entities) {
         if (toggle) {

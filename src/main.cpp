@@ -79,8 +79,6 @@ int main(int argc, char* argv[])
         delta = now - last;
         last = now;
 
-        frame_time_accumulator += delta;
-
         if ((now - last_frame_count_time) >= 1000) {
             std::cout << "FPS: " << frame_count << " | " << (frame_time_accumulator / frame_count)
                       << "ms" << std::endl;
@@ -93,12 +91,13 @@ int main(int argc, char* argv[])
 
         // render
         SDL_RenderClear(g_renderer);
-        game.render();
+        // game.render();
         SDL_RenderPresent(g_renderer);
 
         frame_count++;
         // Sleep to maintain constant FPS
         render_time = SDL_GetTicks() - now;
+        frame_time_accumulator += render_time;
         if (render_time < TARGET_FRAME_DELTA) {
             sleep_time = TARGET_FRAME_DELTA - render_time;
             SDL_Delay(sleep_time);

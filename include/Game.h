@@ -18,7 +18,7 @@ public:
     void update(Uint32 delta);
 
 private:
-    std::array<Entity, 50000> entities;
+    std::vector<Entity> entities;
     Player player;
 };
 #endif
