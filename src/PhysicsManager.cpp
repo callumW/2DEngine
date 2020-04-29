@@ -1,6 +1,7 @@
 #include "PhysicsManager.h"
+#include "Globals.h"
 
-PhysicsManager::PhysicsManager() { physics_components.resize(1000000); }
+PhysicsManager::PhysicsManager() { physics_components.resize(NUM_OF_ENTITIES); }
 
 PhysicsManager& PhysicsManager::get()
 {

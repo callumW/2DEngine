@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-EntityManager::EntityManager() { entities.resize(1000000); }
+EntityManager::EntityManager() { entities.resize(NUM_OF_ENTITIES); }
 
 Entity* EntityManager::find_entity(entity_id_t id)
 {

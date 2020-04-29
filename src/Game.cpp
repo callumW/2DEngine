@@ -13,7 +13,7 @@
 
 Game::Game()
 {
-    entities.resize(1000000);
+    entities.resize(NUM_OF_ENTITIES);
 
     bool toggle = true;
     for (auto& e : entities) {

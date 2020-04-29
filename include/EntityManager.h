@@ -1,6 +1,7 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 #include "Entity.h"
+#include "Globals.h"
 #include "entity_id.h"
 
 #include <array>
