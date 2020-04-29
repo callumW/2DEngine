@@ -37,7 +37,9 @@ void EntityManager::update_dirty_entities(float delta)
 void EntityManager::update_all_entities(float delta)
 {
     for (size_t i = 0; i < next_free_space; i++) {
-        entities[i].update(delta);
+        auto physics = PhysicsManager::get().get_physics_component(entities[i].id);
+        entities[i].world_transform.position = physics->position;
+        entities[i].recalc_local_transform();
     }
 }
 

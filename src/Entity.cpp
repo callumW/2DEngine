@@ -40,7 +40,3 @@ void Entity::set_world_transform(transform_t const& transform)
     world_transform = transform;
     recalc_local_transform();
 }
-
-void Entity::recalc_local_transform() { local_transform = world_transform; }
-
-void Entity::recalc_world_transform() { world_transform = local_transform; }
