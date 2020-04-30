@@ -12,6 +12,8 @@ public:
 
     render_component_t* new_render_component();
 
+    void check_for_dead_entities();
+
 private:
     RenderManager();
 

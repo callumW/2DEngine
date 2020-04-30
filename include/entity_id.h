@@ -34,7 +34,6 @@ typedef struct entity_id_t {
     {
         set_generation((generation() + 1) % (ENTITY_GENERATION_MASK + 1));
     }
-
 } entity_id_t;
 
 typedef struct entity_id_hash_t {
@@ -47,6 +46,13 @@ typedef struct entity_id_t_compare_t {
         return lhs.idx == rhs.idx;
     }
 } entity_id_t_compare_t;
+
+typedef struct entity_id_t_less_t {
+    bool operator()(entity_id_t const& lhs, entity_id_t const& rhs) const
+    {
+        return lhs.idx < rhs.idx;
+    }
+} entity_id_t_less_t;
 
 
 #endif

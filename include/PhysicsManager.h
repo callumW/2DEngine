@@ -11,6 +11,8 @@ class PhysicsManager {
 public:
     static PhysicsManager& get();
 
+    void check_for_dead_entities();
+
     void simulate(float delta);
 
     physics_component_t* new_physics_component(entity_id_t id);

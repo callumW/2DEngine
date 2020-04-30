@@ -60,3 +60,5 @@ void RenderManager::update_dirty_positions()
         }
     }
 }
+
+void RenderManager::check_for_dead_entities() {}

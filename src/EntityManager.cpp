@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "PhysicsManager.h"
 
+#include <algorithm>
 #include <cassert>
 
 EntityManager::EntityManager() { entities.resize(NUM_OF_ENTITIES); }
@@ -9,7 +10,7 @@ Entity* EntityManager::find_entity(entity_id_t id)
 {
     assert(id.index() < MAX_NUM_ENTITIES);
     Entity* tmp = nullptr;
-    if (id.generation() == entities[id.index()].id.generation()) {
+    if (has_entity(id)) {
         tmp = &entities[id.index()];
     }
     return tmp;
@@ -39,4 +40,24 @@ EntityManager& EntityManager::get()
 {
     static EntityManager entity_manager;
     return entity_manager;
+}
+
+void EntityManager::schedule_destruction(entity_id_t const id)
+{
+    if (has_entity(id)) {
+        dead_entities.insert(id);
+    }
+}
+
+void EntityManager::process_dead_entities()
+{
+    std::for_each(dead_entities.begin(), dead_entities.end(),
+                  std::bind(&EntityManager::destroy_entity, this, std::placeholders::_1));
+    dead_entities.clear();
+}
+
+void EntityManager::destroy_entity(entity_id_t const& e)
+{
+    entities[e.index()].reset();
+    entities[e.index()].id.increment_generation();
 }

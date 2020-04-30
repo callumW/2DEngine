@@ -40,3 +40,10 @@ void Entity::set_world_transform(transform_t const& transform)
     world_transform = transform;
     recalc_local_transform();
 }
+
+void Entity::reset()
+{
+    // keep ID as is
+    local_transform = {};
+    world_transform = {};
+}

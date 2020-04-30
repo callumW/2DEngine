@@ -14,6 +14,8 @@ class Entity {
 public:
     Entity() = default;
 
+    void reset();
+
     void update(float delta);
 
     /**
