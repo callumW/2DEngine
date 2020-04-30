@@ -11,7 +11,9 @@
 #include <iostream>
 
 float const PLAYER_MOVEMENT_SPEED = 250.0f;
-
+float const PLAYER_BULLET_SPEED = 100.0f;
+float const PLAYER_FIRE_RATE = 1.0f / 10.0f;
+;
 
 Game::Game()
 {
@@ -65,4 +67,43 @@ void Game::update_player(float delta)
     vec2f_t mouse_pos = {static_cast<float>(INPUT.mouse_x), static_cast<float>(INPUT.mouse_y)};
 
     player->face(mouse_pos);
+
+    static float time_since_last_fire = 99999.0f;
+
+    if (INPUT.mouse_left_click && time_since_last_fire > PLAYER_FIRE_RATE) {
+        time_since_last_fire = 0.0f;
+        vec2f_t const force =
+            (mouse_pos - player->world_transform.position).normalised() * PLAYER_BULLET_SPEED;
+
+        fire_bullet(player->world_transform.position, force);
+    }
+    else {
+        time_since_last_fire += delta;
+    }
+}
+
+void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
+{
+    auto bullet_pair = EntityManager::get().new_entity();
+
+    auto bullet_ent = bullet_pair.second;
+
+    assert(bullet_ent != nullptr);
+
+    // need physics
+    // needs render component
+
+    auto render_comp = RenderManager::get().new_render_component();
+    render_comp->entity_id = bullet_pair.first;
+    render_comp->texture = load_texture("./assets/bullet.bmp");
+    render_comp->src_rect.w = 5;
+    render_comp->src_rect.h = 5;
+    render_comp->dst_rect = render_comp->src_rect;
+    render_comp->dst_rect.x = static_cast<int>(loc.x) - 2;
+    render_comp->dst_rect.y = static_cast<int>(loc.y) - 2;
+    render_comp->pivot_point = {2, 2};
+
+    auto physics_comp = PhysicsManager::get().new_physics_component(bullet_pair.first);
+    physics_comp->position = loc;
+    physics_comp->net_force = force;
 }

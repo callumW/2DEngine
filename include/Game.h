@@ -17,5 +17,8 @@ public:
 
     void update_player(float delta);
     entity_id_t m_player_id;
+
+private:
+    void fire_bullet(vec2f_t const& loc, vec2f_t const& force);
 };
 #endif
