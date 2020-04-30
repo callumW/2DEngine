@@ -44,6 +44,8 @@ LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/
 
 CPP_FLAGS= -Wall
+# Debug
+#CPP_FLAGS+= -DNDEBUG
 
 BINARY_NAME=terminal-reboot-${VERSION}.app
 

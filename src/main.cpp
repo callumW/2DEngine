@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
         // render
         SDL_RenderClear(g_renderer);
-        // game.render();
+        game.render();
         SDL_RenderPresent(g_renderer);
 
         frame_count++;

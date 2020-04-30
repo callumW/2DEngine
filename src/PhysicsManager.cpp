@@ -1,7 +1,7 @@
 #include "PhysicsManager.h"
 #include "Globals.h"
 
-PhysicsManager::PhysicsManager() { physics_components.resize(NUM_OF_ENTITIES); }
+PhysicsManager::PhysicsManager() {}
 
 PhysicsManager& PhysicsManager::get()
 {
@@ -24,15 +24,25 @@ void PhysicsManager::simulate(float delta)
 
 physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
 {
-    static size_t max_size = physics_components.size();
-    assert(id.index() < max_size);
+    assert(map.find(id) == map.end());
 
-    physics_components[id.index()].owner_id = id;
+    physics_component_t comp;
+    comp.owner_id = id;
+    physics_components.push_back(comp);
 
-    return &physics_components[id.index()];
+    auto idx = physics_components.size() - 1;
+
+    map.insert({id, idx});
+
+    return &physics_components[idx];
 }
 
 physics_component_t const* PhysicsManager::get_physics_component(entity_id_t id)
 {
-    return &physics_components[id.index()];
+    physics_component_t const* ret = nullptr;
+    auto const res = map.find(id);
+    if (res != map.end()) {
+        ret = &physics_components[res->second];
+    }
+    return ret;
 }

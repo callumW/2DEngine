@@ -7,8 +7,8 @@
 
 typedef struct render_component_t {
     entity_id_t entity_id;
-    bool hidden;
-    SDL_Texture* texture;
+    bool hidden = false;
+    SDL_Texture* texture = nullptr;
     SDL_Rect src_rect;
     SDL_Rect dst_rect;
     double rotation;

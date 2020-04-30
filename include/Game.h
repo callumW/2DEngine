@@ -15,6 +15,7 @@ public:
 
     void update(Uint32 delta);
 
-    std::vector<entity_id_t> entities;
+    void update_player(float delta);
+    entity_id_t m_player_id;
 };
 #endif

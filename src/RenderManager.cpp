@@ -29,11 +29,18 @@ void RenderManager::render_all()
 render_component_t* RenderManager::new_render_component()
 {
     assert(first_free_render_component < MAX_NUM_ENTITIES);
+
     return &render_components[first_free_render_component++];
 }
 
 void RenderManager::render(render_component_t& comp)
 {
+    auto e = EntityManager::get().find_entity(comp.entity_id);
+
+    comp.dst_rect.x = static_cast<int>(e->world_transform.position.x) - comp.src_rect.w / 2;
+    comp.dst_rect.y = static_cast<int>(e->world_transform.position.y) - comp.src_rect.h / 2;
+    comp.rotation = static_cast<double>(e->world_transform.rotation);
+
     SDL_RenderCopyEx(g_renderer, comp.texture, &comp.src_rect, &comp.dst_rect, comp.rotation,
                      &comp.pivot_point, comp.flip);
 }
