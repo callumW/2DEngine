@@ -13,7 +13,7 @@ SDL_Window* g_window;
 int const WINDOW_WIDTH = 1260;
 int const WINDOW_HEIGHT = 720;
 
-Uint32 const TARGET_FRAME_DELTA = 8;
+Uint32 const TARGET_FRAME_DELTA = 16;
 
 int main(int argc, char* argv[])
 {
@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+    g_renderer =
+        SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if (g_renderer == nullptr) {
         std::cout << "Failed to create renderer: " << SDL_GetError() << std::endl;
