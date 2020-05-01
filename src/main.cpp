@@ -10,8 +10,8 @@
 SDL_Renderer* g_renderer;
 SDL_Window* g_window;
 
-int const WINDOW_WIDTH = 600;
-int const WINDOW_HEIGHT = 400;
+int const WINDOW_WIDTH = 1260;
+int const WINDOW_HEIGHT = 720;
 
 Uint32 const TARGET_FRAME_DELTA = 8;
 
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
 
     if (g_window == nullptr) {
