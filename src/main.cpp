@@ -10,10 +10,10 @@
 SDL_Renderer* g_renderer;
 SDL_Window* g_window;
 
-int const WINDOW_WIDTH = 600;
-int const WINDOW_HEIGHT = 400;
+int const WINDOW_WIDTH = 1260;
+int const WINDOW_HEIGHT = 720;
 
-Uint32 const TARGET_FRAME_DELTA = 8;
+Uint32 const TARGET_FRAME_DELTA = 16;
 
 int main(int argc, char* argv[])
 {
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
 
     if (g_window == nullptr) {
@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+    g_renderer =
+        SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if (g_renderer == nullptr) {
         std::cout << "Failed to create renderer: " << SDL_GetError() << std::endl;
@@ -89,10 +90,14 @@ int main(int argc, char* argv[])
 
         game.update(delta);
 
+        frame_time_accumulator += SDL_GetTicks() - now;
+
         // render
         SDL_RenderClear(g_renderer);
         // game.render();
         SDL_RenderPresent(g_renderer);
+
+        game.cleanup();
 
         frame_count++;
         // Sleep to maintain constant FPS

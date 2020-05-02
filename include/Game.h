@@ -1,11 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 #include <SDL2/SDL.h>
-
 #include <array>
 
 #include "Entity.h"
-#include "Player.h"
 #include "game_math.h"
 
 class Game {
@@ -17,8 +15,12 @@ public:
 
     void update(Uint32 delta);
 
+    void cleanup();
+
+    void update_player(float delta);
+    entity_id_t m_player_id;
+
 private:
-    std::vector<Entity> entities;
-    Player player;
+    void fire_bullet(vec2f_t const& loc, vec2f_t const& force);
 };
 #endif

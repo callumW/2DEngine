@@ -48,6 +48,14 @@ typedef struct vec2f_t {
 
     static vec2f_t from_angle(float angle, float len = 1.0f);
 
+    static vec2f_t& zero()
+    {
+        static vec2f_t zero{};
+        return zero;
+    }
+
+    bool operator==(vec2f_t const& other) const { return other.x == x && other.y == y; }
+    bool operator!=(vec2f_t const& other) const { return !(*this == other); }
 } vec2f_t;
 
 vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs);
