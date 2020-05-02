@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 
         // render
         SDL_RenderClear(g_renderer);
-        // game.render();
+        game.render();
         SDL_RenderPresent(g_renderer);
 
         game.cleanup();
@@ -102,7 +102,6 @@ int main(int argc, char* argv[])
         frame_count++;
         // Sleep to maintain constant FPS
         render_time = SDL_GetTicks() - now;
-        frame_time_accumulator += render_time;
         if (render_time < TARGET_FRAME_DELTA) {
             sleep_time = TARGET_FRAME_DELTA - render_time;
             SDL_Delay(sleep_time);
