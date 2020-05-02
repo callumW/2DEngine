@@ -38,7 +38,6 @@ void Game::render() { RenderManager::get().render_all(); }
 
 void Game::update(Uint32 delta)
 {
-    std::cout << "Game update" << std::endl;
     float delta_f = static_cast<float>(delta) / 1000.0f;
 
     TimingSystem::get().update(delta_f);
@@ -122,7 +121,6 @@ void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
 
 void Game::cleanup()
 {
-    std::cout << "Game cleanup" << std::endl;
     EntityManager::get().clear_dead_entities();
     EntityManager::get().clear_moved_entities();
 

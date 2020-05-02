@@ -5,11 +5,7 @@
 #include <cassert>
 #include <iostream>
 
-EntityManager::EntityManager()
-{
-    entities.resize(NUM_OF_ENTITIES);
-    std::cout << "EntityManager address: " << (void*) this << std::endl;
-}
+EntityManager::EntityManager() { entities.resize(NUM_OF_ENTITIES); }
 
 Entity* EntityManager::find_entity(entity_id_t id)
 {
@@ -51,7 +47,6 @@ EntityManager& EntityManager::get()
 void EntityManager::schedule_destruction(entity_id_t const id)
 {
     if (has_entity(id)) {
-        std::cout << "Scheduling destructor for: " << id << std::endl;
         marked_for_death.insert(id);
     }
     else {
@@ -68,7 +63,6 @@ void EntityManager::process_dead_entities()
 
 void EntityManager::destroy_entity(entity_id_t const& e)
 {
-    std::cout << "EntityManager: Destoying entity: " << e << std::endl;
     entities[e.index()].reset();
     entities[e.index()].id.increment_generation();
 
@@ -83,15 +77,9 @@ void EntityManager::destroy_entity(entity_id_t const& e)
 
         moved_entities.insert(swapped_pair);
 
-        std::cout << "Adding moved record: " << swapped_pair.first.index() << "->"
-                  << swapped_pair.second.index() << std::endl;
-
         std::swap(entities[swapped_pair.second.index()], entities[swapped_pair.first.index()]);
 
         entities[swapped_pair.second.index()].id = swapped_pair.second;
-
-        std::cout << swapped_pair.first << " vs. " << entities[swapped_pair.second.index()].id
-                  << std::endl;
 
         assert(swapped_pair.first.generation() ==
                entities[swapped_pair.second.index()].id.generation());

@@ -28,9 +28,6 @@ void PhysicsManager::simulate(float delta)
 
 physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
 {
-    std::cout << "Getting new physics component for " << id << std::endl;
-
-    log_map();
     assert(map.find(id) == map.end());
 
     physics_component_t comp;
@@ -40,8 +37,6 @@ physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
     auto idx = physics_components.size() - 1;
 
     map.insert({id, idx});
-
-    validate_map();
 
     return &physics_components[idx];
 }
@@ -62,10 +57,7 @@ void PhysicsManager::check_for_dead_entities()
 
     // TODO check that the removed entity actually has a physics component?
     for (auto& e : dead_list) {
-        std::cout << "PhysicsManager: removing entity: " << e << std::endl;
-        log_map();
         if (physics_components.size() > 1) {
-            std::cout << "swap path, num components: " << physics_components.size() << std::endl;
 
             // locate removed entity
             auto dead_location = map.find(e);
@@ -92,17 +84,11 @@ void PhysicsManager::check_for_dead_entities()
             else {
                 physics_components.pop_back();
             }
-
-            std::cout << "Size after removal: " << physics_components.size() << std::endl;
-            log_map();
         }
         else {
-            std::cout << "popping back" << std::endl;
             physics_components.pop_back();
             map.erase(e);
         }
-        verify_removed(e);
-        validate_map();
     }
 }
 
@@ -120,8 +106,6 @@ void PhysicsManager::check_for_moved_entities()
 
 void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_t const& new_id)
 {
-    std::cout << "Updating entity mapping" << old_id << " -> " << new_id << std::endl;
-    log_map();
     // update id in vector
     auto find_result = map.find(old_id);
 
@@ -135,8 +119,6 @@ void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_
     // update mapping
     map.erase(find_result);
     map[new_id] = component_pos;
-
-    log_map();
 
     verify_removed(old_id);
     validate_map();
