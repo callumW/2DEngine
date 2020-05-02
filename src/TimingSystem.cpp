@@ -13,8 +13,6 @@ void TimingSystem::update(float delta)
 {
     current_time += delta;
 
-    check_for_invalidated_entities();
-
     for (auto it = tasks.begin(); it != tasks.end();) {
         auto delay = std::get<0>(it->second);
 
@@ -61,3 +59,5 @@ void TimingSystem::check_for_invalidated_entities()
         it++;
     }
 }
+
+void TimingSystem::cleanup() { check_for_invalidated_entities(); }

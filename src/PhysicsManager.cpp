@@ -16,9 +16,6 @@ void PhysicsManager::simulate(float delta)
 {
     dirty_components.clear();
 
-    check_for_dead_entities();
-    check_for_moved_entities();
-
     size_t comp_count = physics_components.size();
     for (size_t i = 0; i < comp_count; i++) {
         physics_component_t& comp = physics_components[i];
@@ -31,6 +28,9 @@ void PhysicsManager::simulate(float delta)
 
 physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
 {
+    std::cout << "Getting new physics component for " << id << std::endl;
+
+    log_map();
     assert(map.find(id) == map.end());
 
     physics_component_t comp;
@@ -40,6 +40,8 @@ physics_component_t* PhysicsManager::new_physics_component(entity_id_t id)
     auto idx = physics_components.size() - 1;
 
     map.insert({id, idx});
+
+    validate_map();
 
     return &physics_components[idx];
 }
@@ -60,6 +62,8 @@ void PhysicsManager::check_for_dead_entities()
 
     // TODO check that the removed entity actually has a physics component?
     for (auto& e : dead_list) {
+        std::cout << "PhysicsManager: removing entity: " << e << std::endl;
+        log_map();
         if (physics_components.size() > 1) {
             std::cout << "swap path, num components: " << physics_components.size() << std::endl;
 
@@ -71,25 +75,34 @@ void PhysicsManager::check_for_dead_entities()
             // erase removed entity from entitiy_id -> component map
             map.erase(dead_location);
 
-            // swap removed entity with valid entity add end of vector
-            std::swap(physics_components[dead_idx],
-                      physics_components[physics_components.size() - 1]);
+            if (dead_idx < physics_components.size() - 1) {
 
-            // remove component of removed entity
-            physics_components.pop_back();
+                // swap removed entity with valid entity add end of vector
+                std::swap(physics_components[dead_idx],
+                          physics_components[physics_components.size() - 1]);
 
-            // update
-            auto moved_ent_id = physics_components[dead_idx].owner_id;
+                // remove component of removed entity
+                physics_components.pop_back();
 
-            map[moved_ent_id] = dead_idx;
+                // update
+                auto moved_ent_id = physics_components[dead_idx].owner_id;
+
+                map[moved_ent_id] = dead_idx;
+            }
+            else {
+                physics_components.pop_back();
+            }
 
             std::cout << "Size after removal: " << physics_components.size() << std::endl;
+            log_map();
         }
         else {
             std::cout << "popping back" << std::endl;
             physics_components.pop_back();
             map.erase(e);
         }
+        verify_removed(e);
+        validate_map();
     }
 }
 
@@ -107,7 +120,8 @@ void PhysicsManager::check_for_moved_entities()
 
 void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_t const& new_id)
 {
-    std::cout << "Updating entity " << old_id.index() << " -> " << new_id.index() << std::endl;
+    std::cout << "Updating entity mapping" << old_id << " -> " << new_id << std::endl;
+    log_map();
     // update id in vector
     auto find_result = map.find(old_id);
 
@@ -121,4 +135,48 @@ void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_
     // update mapping
     map.erase(find_result);
     map[new_id] = component_pos;
+
+    log_map();
+
+    verify_removed(old_id);
+    validate_map();
+}
+
+void PhysicsManager::log_map()
+{
+    std::cout << "Current entities w/ physics components: " << std::endl;
+    for (auto const& ele : map) {
+        std::cout << "\t" << ele.first << "->" << ele.second << std::endl;
+    }
+}
+
+void PhysicsManager::cleanup()
+{
+    check_for_dead_entities();
+    check_for_moved_entities();
+}
+
+void PhysicsManager::validate_map()
+{
+    // verify no duplicate (or cross-generation) entities in map
+
+    for (auto it = map.begin(); it != map.end(); it++) {
+        for (auto inner_it = map.begin(); inner_it != map.end(); inner_it++) {
+            if (it->first.index() == inner_it->first.index() && it != inner_it) {
+                std::cout << "Duplicate detected: " << it->first << " vs. " << inner_it->first
+                          << std::endl;
+                exit(1);
+            }
+        }
+    }
+}
+
+void PhysicsManager::verify_removed(entity_id_t const& id)
+{
+    for (auto it = map.begin(); it != map.end(); it++) {
+        if (it->first.index() == id.index()) {
+            std::cout << id << " was not removed: " << it->first << std::endl;
+            exit(1);
+        }
+    }
 }

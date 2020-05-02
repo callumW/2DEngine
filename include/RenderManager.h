@@ -12,6 +12,8 @@ public:
 
     render_component_t* new_render_component();
 
+    void cleanup();
+
     void check_for_dead_entities();
 
 private:

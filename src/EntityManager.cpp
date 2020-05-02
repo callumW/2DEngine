@@ -25,9 +25,10 @@ std::pair<entity_id_t, Entity*> EntityManager::new_entity()
 {
     assert(next_free_space < MAX_NUM_ENTITIES);
     entity_id_t new_id;
-    new_id.set_index(next_free_space++);
-    new_id.increment_generation();
-    entities[new_id.index()].id = new_id;
+    new_id.set_index(next_free_space);
+    new_id.set_generation(entities[next_free_space].id.generation());
+    entities[next_free_space].id = new_id;
+    next_free_space++;
 
     return std::make_pair(new_id, &entities[new_id.index()]);
 }
@@ -50,7 +51,7 @@ EntityManager& EntityManager::get()
 void EntityManager::schedule_destruction(entity_id_t const id)
 {
     if (has_entity(id)) {
-        std::cout << "Scheduling destructor for: " << id.index() << std::endl;
+        std::cout << "Scheduling destructor for: " << id << std::endl;
         marked_for_death.insert(id);
     }
     else {
@@ -67,7 +68,7 @@ void EntityManager::process_dead_entities()
 
 void EntityManager::destroy_entity(entity_id_t const& e)
 {
-    std::cout << "Destoying entity: " << e.index() << std::endl;
+    std::cout << "EntityManager: Destoying entity: " << e << std::endl;
     entities[e.index()].reset();
     entities[e.index()].id.increment_generation();
 
@@ -94,6 +95,8 @@ void EntityManager::destroy_entity(entity_id_t const& e)
 
         assert(swapped_pair.first.generation() ==
                entities[swapped_pair.second.index()].id.generation());
+
+        entities[next_free_space - 1].id.set_index(next_free_space - 1);
     }
     next_free_space--;
 }

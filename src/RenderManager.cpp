@@ -15,7 +15,6 @@ RenderManager& RenderManager::get()
 
 void RenderManager::render_all()
 {
-    check_for_dead_entities();
     update_dirty_positions();
 
     for (size_t i = 0; i < first_free_render_component; i++) {
@@ -86,3 +85,5 @@ void RenderManager::check_for_dead_entities()
                   render_components[entity_pair.second.index()]);
     }
 }
+
+void RenderManager::cleanup() { check_for_dead_entities(); }

@@ -24,6 +24,8 @@ public:
 
     void update(float delta);
 
+    void cleanup();
+
 private:
     TimingSystem() = default;
 
