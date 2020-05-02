@@ -60,4 +60,15 @@ void EntityManager::destroy_entity(entity_id_t const& e)
 {
     entities[e.index()].reset();
     entities[e.index()].id.increment_generation();
+
+    if (next_free_space > 1) {
+        // setup swap record
+        entity_id_pair_t swapped_pair;
+        swapped_pair.first = entities[next_free_space - 1].id;
+        swapped_pair.second = swapped_pair.first;
+        swapped_pair.second.set_index(e.index());
+
+        std::swap(entities[swapped_pair.second.index()], entities[swapped_pair.first.index()]);
+        next_free_space--;
+    }
 }

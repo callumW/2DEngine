@@ -15,6 +15,7 @@ void PhysicsManager::simulate(float delta)
     dirty_components.clear();
 
     check_for_dead_entities();
+    check_for_moved_entities();
 
     size_t comp_count = physics_components.size();
     for (size_t i = 0; i < comp_count; i++) {
@@ -73,4 +74,32 @@ void PhysicsManager::check_for_dead_entities()
             map[moved_ent_id] = dead_idx;
         }
     }
+}
+
+void PhysicsManager::check_for_moved_entities()
+{
+    auto moved_ents = EntityManager::get().get_moved_set();
+
+    for (auto& pair : moved_ents) {
+        auto old_id = pair.first;
+        auto new_id = pair.second;
+
+        update_entity_mapping(old_id, new_id);
+    }
+}
+
+void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_t const& new_id)
+{
+    // update id in vector
+    auto find_result = map.find(old_id);
+
+    assert(find_result != map.end());
+
+    size_t component_pos = find_result->second;
+
+    physics_components[component_pos].owner_id = new_id;
+
+    // update mapping
+    map.erase(find_result);
+    map[new_id] = component_pos;
 }

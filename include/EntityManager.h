@@ -25,15 +25,14 @@ public:
     void schedule_destruction(entity_id_t const id);
 
     void update_dirty_entities(float delta);
-    void update_all_entities(float delta);
-
 
     void render_entities();
 
     void process_dead_entities();
 
 
-    std::set<entity_id_t, entity_id_t_less_t> const& get_dead_set() const { return dead_entities; }
+    entity_id_t_set_t const& get_dead_set() const { return dead_entities; }
+    entity_id_t_pair_set_t const& get_moved_set() const { return moved_entities; }
 
 private:
     EntityManager();
@@ -43,7 +42,14 @@ private:
     size_t next_free_space = 0;
     std::vector<Entity> entities;
 
-    std::set<entity_id_t, entity_id_t_less_t> dead_entities;
+    entity_id_t_set_t dead_entities;
+
+    /*
+        Set containg entitiy pairs which have been moved on the previous frame.
+
+        The first element is the old id of the entity, the second element is the new id.
+    */
+    entity_id_t_pair_set_t moved_entities;
 };
 
 #endif

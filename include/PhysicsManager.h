@@ -11,6 +11,7 @@ class PhysicsManager {
 public:
     static PhysicsManager& get();
 
+    void check_for_moved_entities();
     void check_for_dead_entities();
 
     void simulate(float delta);
@@ -23,6 +24,8 @@ public:
 
 private:
     PhysicsManager();
+
+    void update_entity_mapping(entity_id_t const& old_id, entity_id_t const& new_id);
 
     std::unordered_map<entity_id_t, size_t, entity_id_hash_t, entity_id_t_compare_t> map;
     std::vector<physics_component_t> physics_components;

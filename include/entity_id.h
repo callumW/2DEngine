@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
+#include <set>
+#include <utility>
 
 size_t const MAX_NUM_ENTITIES = 1000000;
 
@@ -54,5 +56,17 @@ typedef struct entity_id_t_less_t {
     }
 } entity_id_t_less_t;
 
+typedef std::set<entity_id_t, entity_id_t_less_t> entity_id_t_set_t;
+
+typedef std::pair<entity_id_t, entity_id_t> entity_id_pair_t;
+
+typedef struct entity_id_pair_t_less_t {
+    bool operator()(entity_id_pair_t const& lhs, entity_id_pair_t const& rhs) const
+    {
+        return entity_id_t_less_t{}(lhs.first, rhs.second);
+    }
+} entity_id_pair_t_less_t;
+
+typedef std::set<entity_id_pair_t, entity_id_pair_t_less_t> entity_id_t_pair_set_t;
 
 #endif

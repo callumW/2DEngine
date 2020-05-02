@@ -44,6 +44,8 @@ void Game::update(Uint32 delta)
     PhysicsManager::get().simulate(delta_f);
 
     EntityManager::get().update_dirty_entities(delta_f);
+
+    EntityManager::get().process_dead_entities();
 }
 
 void Game::update_player(float delta)
