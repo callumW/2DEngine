@@ -15,6 +15,8 @@ public:
 
     void update(Uint32 delta);
 
+    void cleanup();
+
     void update_player(float delta);
     entity_id_t m_player_id;
 

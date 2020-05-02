@@ -5,6 +5,7 @@
 #include "entity_id.h"
 
 #include <array>
+#include <iostream>
 #include <set>
 #include <utility>
 #include <vector>
@@ -17,7 +18,13 @@ public:
 
     inline bool has_entity(entity_id_t const id)
     {
-        return id.generation() == entities[id.index()].id.generation();
+        if (id.index() < next_free_space) {
+            return id.generation() == entities[id.index()].id.generation();
+        }
+        else {
+            std::cout << "Num entities is too small" << std::endl;
+            return false;
+        }
     }
 
     std::pair<entity_id_t, Entity*> new_entity();
@@ -30,6 +37,8 @@ public:
 
     void process_dead_entities();
 
+    void clear_dead_entities() { dead_entities.clear(); }
+    void clear_moved_entities() { moved_entities.clear(); }
 
     entity_id_t_set_t const& get_dead_set() const { return dead_entities; }
     entity_id_t_pair_set_t const& get_moved_set() const { return moved_entities; }
@@ -41,6 +50,8 @@ private:
 
     size_t next_free_space = 0;
     std::vector<Entity> entities;
+
+    entity_id_t_set_t marked_for_death;
 
     entity_id_t_set_t dead_entities;
 

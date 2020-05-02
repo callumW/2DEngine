@@ -3,8 +3,13 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
-EntityManager::EntityManager() { entities.resize(NUM_OF_ENTITIES); }
+EntityManager::EntityManager()
+{
+    entities.resize(NUM_OF_ENTITIES);
+    std::cout << "EntityManager address: " << (void*) this << std::endl;
+}
 
 Entity* EntityManager::find_entity(entity_id_t id)
 {
@@ -45,30 +50,50 @@ EntityManager& EntityManager::get()
 void EntityManager::schedule_destruction(entity_id_t const id)
 {
     if (has_entity(id)) {
-        dead_entities.insert(id);
+        std::cout << "Scheduling destructor for: " << id.index() << std::endl;
+        marked_for_death.insert(id);
+    }
+    else {
+        std::cout << "Not schedule_destruction as entity " << id << " does not exist" << std::endl;
     }
 }
 
 void EntityManager::process_dead_entities()
 {
-    std::for_each(dead_entities.begin(), dead_entities.end(),
+    std::for_each(marked_for_death.begin(), marked_for_death.end(),
                   std::bind(&EntityManager::destroy_entity, this, std::placeholders::_1));
-    dead_entities.clear();
+    marked_for_death.clear();
 }
 
 void EntityManager::destroy_entity(entity_id_t const& e)
 {
+    std::cout << "Destoying entity: " << e.index() << std::endl;
     entities[e.index()].reset();
     entities[e.index()].id.increment_generation();
 
-    if (next_free_space > 1) {
+    dead_entities.insert(e);
+
+    if (next_free_space > 1 && e.index() != next_free_space - 1) {
         // setup swap record
         entity_id_pair_t swapped_pair;
         swapped_pair.first = entities[next_free_space - 1].id;
         swapped_pair.second = swapped_pair.first;
         swapped_pair.second.set_index(e.index());
 
+        moved_entities.insert(swapped_pair);
+
+        std::cout << "Adding moved record: " << swapped_pair.first.index() << "->"
+                  << swapped_pair.second.index() << std::endl;
+
         std::swap(entities[swapped_pair.second.index()], entities[swapped_pair.first.index()]);
-        next_free_space--;
+
+        entities[swapped_pair.second.index()].id = swapped_pair.second;
+
+        std::cout << swapped_pair.first << " vs. " << entities[swapped_pair.second.index()].id
+                  << std::endl;
+
+        assert(swapped_pair.first.generation() ==
+               entities[swapped_pair.second.index()].id.generation());
     }
+    next_free_space--;
 }

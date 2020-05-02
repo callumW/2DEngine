@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
+#include <ostream>
 #include <set>
 #include <utility>
 
@@ -36,17 +37,21 @@ typedef struct entity_id_t {
     {
         set_generation((generation() + 1) % (ENTITY_GENERATION_MASK + 1));
     }
+
+    entity_id_t() { idx = 0; }
+    entity_id_t(entity_id_t const& other) { idx = other.idx; }
 } entity_id_t;
+
+bool operator==(entity_id_t const& lhs, entity_id_t const& rhs);
+
+std::ostream& operator<<(std::ostream& stream, entity_id_t const& e);
 
 typedef struct entity_id_hash_t {
     std::size_t operator()(entity_id_t const& id) const { return std::hash<int64_t>{}(id.idx); }
 } entity_id_hash_t;
 
 typedef struct entity_id_t_compare_t {
-    bool operator()(entity_id_t const& lhs, entity_id_t const& rhs) const
-    {
-        return lhs.idx == rhs.idx;
-    }
+    bool operator()(entity_id_t const& lhs, entity_id_t const& rhs) const { return lhs == rhs; }
 } entity_id_t_compare_t;
 
 typedef struct entity_id_t_less_t {

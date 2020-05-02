@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
+#include "TimingSystem.h"
 #include "game_math.h"
 #include "input.h"
 #include "loading_helpers.h"
@@ -23,7 +24,7 @@ Game::Game()
 
     auto render_comp = RenderManager::get().new_render_component();
 
-    render_comp->entity_id = m_player_id;
+    render_comp->owner_id = m_player_id;
     render_comp->texture = load_texture("./assets/G.bmp");
     render_comp->dst_rect.w = 40;
     render_comp->dst_rect.h = 40;
@@ -39,13 +40,15 @@ void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
 
+    EntityManager::get().process_dead_entities();
+
+    TimingSystem::get().update(delta_f);
+
     update_player(delta_f);
 
     PhysicsManager::get().simulate(delta_f);
 
     EntityManager::get().update_dirty_entities(delta_f);
-
-    EntityManager::get().process_dead_entities();
 }
 
 void Game::update_player(float delta)
@@ -89,6 +92,7 @@ void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
     auto bullet_pair = EntityManager::get().new_entity();
 
     auto bullet_ent = bullet_pair.second;
+    auto bullet_id = bullet_pair.first;
 
     assert(bullet_ent != nullptr);
 
@@ -96,7 +100,7 @@ void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
     // needs render component
 
     auto render_comp = RenderManager::get().new_render_component();
-    render_comp->entity_id = bullet_pair.first;
+    render_comp->owner_id = bullet_id;
     render_comp->texture = load_texture("./assets/bullet.bmp");
     render_comp->src_rect.w = 5;
     render_comp->src_rect.h = 5;
@@ -105,7 +109,20 @@ void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
     render_comp->dst_rect.y = static_cast<int>(loc.y) - 2;
     render_comp->pivot_point = {2, 2};
 
-    auto physics_comp = PhysicsManager::get().new_physics_component(bullet_pair.first);
+    auto physics_comp = PhysicsManager::get().new_physics_component(bullet_id);
     physics_comp->position = loc;
     physics_comp->net_force = force;
+
+    TimingSystem::timer_task_t remove_task{
+        1.0f,
+        [=](float delta, entity_id_t const& id) { EntityManager::get().schedule_destruction(id); },
+        bullet_id};
+
+    TimingSystem::get().schedule_task(remove_task);
+}
+
+void Game::cleanup()
+{
+    EntityManager::get().clear_dead_entities();
+    EntityManager::get().clear_moved_entities();
 }
