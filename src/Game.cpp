@@ -12,7 +12,7 @@
 #include <iostream>
 
 float const PLAYER_MOVEMENT_SPEED = 250.0f;
-float const PLAYER_BULLET_SPEED = 100.0f;
+float const PLAYER_BULLET_SPEED = 1000.0f;
 float const PLAYER_FIRE_RATE = 1.0f / 10.0f;
 
 
