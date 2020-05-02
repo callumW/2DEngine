@@ -46,4 +46,5 @@ void Entity::reset()
     // keep ID as is
     local_transform = {};
     world_transform = {};
+    components = 0;
 }

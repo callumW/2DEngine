@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "ComponentTypes.h"
 #include "entity_id.h"
 #include "game_math.h"
 
@@ -36,6 +37,7 @@ public:
     inline void recalc_world_transform() { world_transform = local_transform; }
 
     entity_id_t id;
+    int64_t components;
 
     transform_t local_transform;
     transform_t world_transform;

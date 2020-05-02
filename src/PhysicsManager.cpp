@@ -61,7 +61,9 @@ void PhysicsManager::check_for_dead_entities()
 
             // locate removed entity
             auto dead_location = map.find(e);
-            assert(dead_location != map.end());
+            if (dead_location == map.end()) {
+                continue;
+            }
             size_t const dead_idx = dead_location->second;
 
             // erase removed entity from entitiy_id -> component map
@@ -109,8 +111,9 @@ void PhysicsManager::update_entity_mapping(entity_id_t const& old_id, entity_id_
     // update id in vector
     auto find_result = map.find(old_id);
 
-    // TODO check that entity has component
-    assert(find_result != map.end());
+    if (find_result == map.end()) {
+        return;
+    }
 
     size_t component_pos = find_result->second;
 

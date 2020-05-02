@@ -22,6 +22,8 @@ Game::Game()
     assert(player_pair.second != nullptr);
     m_player_id = player_pair.first;
 
+    player_pair.second->components |= RENDER;
+
     auto render_comp = RenderManager::get().new_render_component();
 
     render_comp->owner_id = m_player_id;
@@ -93,6 +95,8 @@ void Game::fire_bullet(vec2f_t const& loc, vec2f_t const& force)
     auto bullet_id = bullet_pair.first;
 
     assert(bullet_ent != nullptr);
+
+    bullet_ent->components |= RENDER | PHYSICS;
 
     // need physics
     // needs render component
