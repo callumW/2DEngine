@@ -4,6 +4,7 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "TimingSystem.h"
+#include "UISystem.h"
 #include "game_math.h"
 #include "input.h"
 #include "loading_helpers.h"
@@ -32,11 +33,17 @@ Game::Game()
     render_comp->dst_rect.h = 40;
     render_comp->src_rect = render_comp->dst_rect;
     render_comp->pivot_point = {render_comp->src_rect.w / 2, render_comp->src_rect.h / 2};
+
+    UISystem::get().add_text({0, 0, 160, 32}, "Terminal Reboot");
 }
 
 Game::~Game() {}
 
-void Game::render() { RenderManager::get().render_all(); }
+void Game::render()
+{
+    RenderManager::get().render_all();
+    UISystem::get().render();
+}
 
 void Game::update(Uint32 delta)
 {
