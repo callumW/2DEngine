@@ -47,7 +47,7 @@ CPP_FLAGS= -Wall
 # Debug
 #CPP_FLAGS+= -DNDEBUG
 
-BINARY_NAME=terminal-reboot-${VERSION}.app
+BINARY_NAME=2d-sandbox-${VERSION}.app
 
 OUTPUT=${BUILD_DIR}${BINARY_NAME}
 
