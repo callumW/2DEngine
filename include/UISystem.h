@@ -24,7 +24,14 @@ public:
     void deinit();
 
 private:
+    typedef std::pair<SDL_Rect, SDL_Texture*> text_entity;
+
     UISystem();
+
+    void render_entity(text_entity const& e);
+    void deinit_entity(text_entity const& e);
+
+    SDL_Rect calculate_rect(SDL_Point p, std::string const& str);
 
     SDL_Texture* load_text(std::string const& str);
 
@@ -32,7 +39,6 @@ private:
 
     TTF_Font* font;
 
-    typedef std::pair<SDL_Rect, SDL_Texture*> text_entity;
     std::vector<text_entity> static_text_entities;
 
     std::vector<text_entity> dynamic_text_entities;

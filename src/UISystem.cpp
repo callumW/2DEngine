@@ -1,6 +1,8 @@
 #include "UISystem.h"
 #include "Globals.h"
 
+#include <algorithm>
+#include <functional>
 #include <iostream>
 
 UISystem& UISystem::get()
@@ -11,13 +13,7 @@ UISystem& UISystem::get()
 
 void UISystem::add_static_text(SDL_Point location, std::string const& str)
 {
-    SDL_Rect text_location;
-    text_location.x = location.x;
-    text_location.y = location.y;
-
-    text_location.w = str.size() * 16;
-    text_location.h = 32;
-    add_static_text(text_location, str);
+    add_static_text(calculate_rect(location, str), str);
 }
 
 void UISystem::add_static_text(SDL_Rect location, std::string const& str)
@@ -27,15 +23,13 @@ void UISystem::add_static_text(SDL_Rect location, std::string const& str)
 
 void UISystem::render()
 {
-    for (auto& entity : static_text_entities) {
-        SDL_RenderCopyEx(g_renderer, entity.second, nullptr, &entity.first, 0.0, nullptr,
-                         SDL_FLIP_NONE);
-    }
+    static std::function<void(text_entity const&)> render_ent =
+        std::bind(&UISystem::render_entity, this, std::placeholders::_1);
 
-    for (auto& entity : dynamic_text_entities) {
-        SDL_RenderCopyEx(g_renderer, entity.second, nullptr, &entity.first, 0.0, nullptr,
-                         SDL_FLIP_NONE);
-    }
+    std::for_each(static_text_entities.begin(), static_text_entities.end(), render_ent);
+
+    std::for_each(dynamic_text_entities.begin(), dynamic_text_entities.end(), render_ent);
+
     clear_dynamic_text();
 }
 
@@ -74,9 +68,11 @@ void UISystem::deinit()
 
 void UISystem::clear_dynamic_text()
 {
-    for (auto& entity : dynamic_text_entities) {
-        SDL_DestroyTexture(entity.second);
-    }
+    static std::function<void(text_entity const&)> destroy =
+        std::bind(&UISystem::deinit_entity, this, std::placeholders::_1);
+
+    std::for_each(static_text_entities.begin(), static_text_entities.end(), destroy);
+
     dynamic_text_entities.clear();
 }
 
@@ -87,11 +83,17 @@ void UISystem::add_dynamic_text(SDL_Rect location, std::string const& str)
 
 void UISystem::add_dynamic_text(SDL_Point location, std::string const& str)
 {
-    SDL_Rect text_location;
-    text_location.x = location.x;
-    text_location.y = location.y;
+    add_dynamic_text(calculate_rect(location, str), str);
+}
 
-    text_location.w = str.size() * 16;
-    text_location.h = 32;
-    add_dynamic_text(text_location, str);
+void UISystem::render_entity(text_entity const& e)
+{
+    SDL_RenderCopyEx(g_renderer, e.second, nullptr, &e.first, 0.0, nullptr, SDL_FLIP_NONE);
+}
+
+void UISystem::deinit_entity(text_entity const& e) { SDL_DestroyTexture(e.second); }
+
+SDL_Rect UISystem::calculate_rect(SDL_Point p, std::string const& str)
+{
+    return {p.x, p.y, static_cast<int>(str.size() * 20), 32};
 }
