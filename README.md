@@ -1,6 +1,5 @@
-# Terminal Jam Reboot
-My Entry for the [Terminal Jam Reboot](https://itch.io/jam/terminal-jam-reboot) on
-[itch.io](https://itch.io/).
+# A Simple 2D Game Sandbox
+Currently this repo is a little 2D Game sandbox where I test out game/programming ideas
 
 **Note:** This repo uses [Git LFS](https://git-lfs.github.com).
 

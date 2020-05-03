@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    g_window = SDL_CreateWindow("terminal-reboot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    g_window = SDL_CreateWindow("2D Sandbox", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
 
     if (g_window == nullptr) {
