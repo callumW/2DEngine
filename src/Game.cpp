@@ -44,7 +44,9 @@ Game::Game()
     auto collision_comp = CollisionSystem::get().new_collision_component(floor_id);
     collision_comp->box = {0.0f, transform.position.y, static_cast<float>(WINDOW_WIDTH), 10.0f};
 
-    collision_comp->on_collide = []() { std::cout << "floor collides!" << std::endl; };
+    collision_comp->on_collide = [](collision_component_t const& other) {
+        std::cout << "floor collides!" << std::endl;
+    };
 }
 
 Game::~Game() {}

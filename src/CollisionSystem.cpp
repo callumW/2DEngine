@@ -21,7 +21,7 @@ void CollisionSystem::check_for_collisions()
             if (it != other_it) {
                 if (aabb_test_collision(it->box, other_it->box)) {
                     if (it->on_collide) {
-                        it->on_collide();
+                        it->on_collide(*other_it);
                     }
                 }
             }
