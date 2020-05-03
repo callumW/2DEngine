@@ -85,7 +85,8 @@ void Game::update_player(float delta)
         vec2f_t const force =
             (mouse_pos - player->world_transform.position).normalised() * PLAYER_BULLET_SPEED;
 
-        fire_bullet(player->world_transform.position, force);
+        // fire_bullet(player->world_transform.position, force);
+        spawn_ball(mouse_pos);
     }
     else {
         time_since_last_fire += delta;
@@ -138,4 +139,34 @@ void Game::cleanup()
     PhysicsManager::get().cleanup();
     RenderManager::get().cleanup();
     TimingSystem::get().cleanup();
+}
+
+void Game::spawn_ball(vec2f_t const& loc)
+{
+    std::cout << "Spawn ball @ " << loc << std::endl;
+    auto ball_pair = EntityManager::get().new_entity();
+
+    auto ball = ball_pair.second;
+    auto ball_id = ball_pair.first;
+
+    assert(ball != nullptr);
+
+    transform_t ball_world_transform;
+    ball_world_transform.position = loc;
+    ball->components |= RENDER;
+    ball->set_world_transform(ball_world_transform);
+
+    auto render_comp = RenderManager::get().new_render_component();
+    render_comp->owner_id = ball_id;
+    render_comp->texture = load_texture("./assets/bullet.bmp");
+    render_comp->src_rect.w = 5;
+    render_comp->src_rect.h = 5;
+    render_comp->dst_rect = render_comp->src_rect;
+    render_comp->dst_rect.x = static_cast<int>(loc.x) - 2;
+    render_comp->dst_rect.y = static_cast<int>(loc.y) - 2;
+    render_comp->pivot_point = {2, 2};
+
+    auto physics_comp = PhysicsManager::get().new_physics_component(ball_id);
+    physics_comp->position = loc;
+    physics_comp->is_affected_by_gravity = true;
 }

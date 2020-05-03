@@ -23,6 +23,11 @@ void PhysicsManager::simulate(float delta)
             comp.position += comp.net_force * delta;
             dirty_components.push_back(comp.owner_id);
         }
+
+        if (comp.is_affected_by_gravity) {
+            comp.position.y += PhysicsManager::GRAVITY * delta;
+            dirty_components.push_back(comp.owner_id);
+        }
     }
 }
 

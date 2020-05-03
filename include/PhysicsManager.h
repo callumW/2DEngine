@@ -9,6 +9,8 @@
 
 class PhysicsManager {
 public:
+    static constexpr float GRAVITY = 300.0f;
+
     static PhysicsManager& get();
 
     void cleanup();
