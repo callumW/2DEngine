@@ -58,7 +58,6 @@ void Game::cleanup()
 
 void Game::spawn_ball(vec2f_t const& loc)
 {
-    std::cout << "Spawn ball @ " << loc << std::endl;
     auto ball_pair = EntityManager::get().new_entity();
 
     auto ball = ball_pair.second;
