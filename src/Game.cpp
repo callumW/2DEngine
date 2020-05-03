@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "CollisionSystem.h"
 #include "EntityManager.h"
 #include "Globals.h"
 #include "InputSystem.h"
@@ -21,6 +22,30 @@ float const PLAYER_FIRE_RATE = 1.0f / 10.0f;
 Game::Game()
 {
     InputSystem::get().on_mouse_left_click([&](vec2f_t const& loc) { this->spawn_ball(loc); });
+
+    auto floor_pair = EntityManager::get().new_entity();
+
+    auto floor = floor_pair.second;
+    auto floor_id = floor_pair.first;
+
+    assert(floor != nullptr);
+
+    transform_t transform;
+    transform.position = {static_cast<float>(WINDOW_WIDTH) / 2.0f,
+                          static_cast<float>(WINDOW_HEIGHT)};
+    floor->set_world_transform(transform);
+    floor->components |= RENDER | PHYSICS | COLLISION;
+
+    auto render_comp = RenderManager::get().new_render_component();
+    render_comp->owner_id = floor_id;
+    render_comp->texture = nullptr;
+    render_comp->hidden = true;
+
+    auto collision_comp = CollisionSystem::get().new_collision_component(floor_id);
+    collision_comp->box = {transform.position.x, transform.position.y,
+                           static_cast<float>(WINDOW_WIDTH), 1.0f};
+
+    collision_comp->on_collide = []() { std::cout << "floor collides!" << std::endl; };
 }
 
 Game::~Game() {}
@@ -34,6 +59,8 @@ void Game::render()
 void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
+
+    CollisionSystem::get().check_for_collisions();
 
     InputSystem::get().update();
 
@@ -67,7 +94,7 @@ void Game::spawn_ball(vec2f_t const& loc)
 
     transform_t ball_world_transform;
     ball_world_transform.position = loc;
-    ball->components |= RENDER;
+    ball->components |= RENDER | PHYSICS | COLLISION;
     ball->set_world_transform(ball_world_transform);
 
     auto render_comp = RenderManager::get().new_render_component();
@@ -83,4 +110,9 @@ void Game::spawn_ball(vec2f_t const& loc)
     auto physics_comp = PhysicsManager::get().new_physics_component(ball_id);
     physics_comp->position = loc;
     physics_comp->is_affected_by_gravity = true;
+
+    auto collision_comp = CollisionSystem::get().new_collision_component(ball_id);
+    collision_comp->box = {
+        static_cast<float>(render_comp->dst_rect.x), static_cast<float>(render_comp->dst_rect.y),
+        static_cast<float>(render_comp->dst_rect.w), static_cast<float>(render_comp->dst_rect.h)};
 }
