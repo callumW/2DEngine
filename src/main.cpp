@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2_mixer/SDL_mixer.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include <iostream>
 
 #include "Game.h"
@@ -53,6 +54,32 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    /*** FONT STUFF ***/
+    if (TTF_Init() == -1) {
+        std::cout << "Failed to init SDL_TTF: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
+
+    TTF_Font* font = TTF_OpenFont("./assets/SpaceMono-Regular.ttf", 16);
+    SDL_Texture* text_texture = nullptr;
+    if (font == nullptr) {
+        std::cout << "Failed to init font: " << TTF_GetError() << std::endl;
+    }
+    else {
+        SDL_Surface* tmp = TTF_RenderUTF8_Solid(font, "TEXT!", {0x12, 0x16, 0x19});
+        if (tmp != nullptr) {
+            text_texture = SDL_CreateTextureFromSurface(g_renderer, tmp);
+            SDL_FreeSurface(tmp);
+        }
+        else {
+            std::cout << "Failed to make text surface: " << TTF_GetError() << std::endl;
+        }
+
+        TTF_CloseFont(font);
+    }
+
+    /**********/
+
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
     Game game;
@@ -94,6 +121,8 @@ int main(int argc, char* argv[])
 
         // render
         SDL_RenderClear(g_renderer);
+        if (text_texture)
+            SDL_RenderCopy(g_renderer, text_texture, nullptr, nullptr);
         game.render();
         SDL_RenderPresent(g_renderer);
 
@@ -110,6 +139,8 @@ int main(int argc, char* argv[])
 
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(g_window);
+
+    TTF_Quit();
 
     if (wave_file)
         Mix_FreeChunk(wave_file);

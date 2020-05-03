@@ -40,7 +40,7 @@ INCLUDES=-Iinclude
 THIRD_PARTY_INCLUDES= \
 -F/Users/cwilson/Libs/SDL/
 
-LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer
+LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/
 
 CPP_FLAGS= -Wall
