@@ -34,7 +34,7 @@ Game::Game()
     transform.position = {static_cast<float>(WINDOW_WIDTH) / 2.0f,
                           static_cast<float>(WINDOW_HEIGHT)};
     floor->set_world_transform(transform);
-    floor->components |= RENDER | PHYSICS | COLLISION;
+    floor->components |= RENDER | COLLISION;
 
     auto render_comp = RenderManager::get().new_render_component();
     render_comp->owner_id = floor_id;
@@ -42,8 +42,7 @@ Game::Game()
     render_comp->hidden = true;
 
     auto collision_comp = CollisionSystem::get().new_collision_component(floor_id);
-    collision_comp->box = {transform.position.x, transform.position.y,
-                           static_cast<float>(WINDOW_WIDTH), 1.0f};
+    collision_comp->box = {0.0f, transform.position.y, static_cast<float>(WINDOW_WIDTH), 10.0f};
 
     collision_comp->on_collide = []() { std::cout << "floor collides!" << std::endl; };
 }
