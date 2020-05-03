@@ -12,7 +12,8 @@ class UISystem {
 public:
     static UISystem& get();
 
-    void add_text(SDL_Rect location, std::string const& str);
+    void add_static_text(SDL_Rect location, std::string const& str);
+    void add_static_text(SDL_Point location, std::string const& str);
 
     void render();
 
@@ -27,6 +28,6 @@ private:
     TTF_Font* font;
 
     typedef std::pair<SDL_Rect, SDL_Texture*> text_entity;
-    std::vector<text_entity> text_entities;
+    std::vector<text_entity> static_text_entities;
 };
 #endif

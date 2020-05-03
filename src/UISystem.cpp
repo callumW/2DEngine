@@ -9,14 +9,25 @@ UISystem& UISystem::get()
     return sys;
 }
 
-void UISystem::add_text(SDL_Rect location, std::string const& str)
+void UISystem::add_static_text(SDL_Point location, std::string const& str)
 {
-    text_entities.push_back({location, load_text(str)});
+    SDL_Rect text_location;
+    text_location.x = location.x;
+    text_location.y = location.y;
+
+    text_location.w = str.size() * 16;
+    text_location.h = 32;
+    add_static_text(text_location, str);
+}
+
+void UISystem::add_static_text(SDL_Rect location, std::string const& str)
+{
+    static_text_entities.push_back({location, load_text(str)});
 }
 
 void UISystem::render()
 {
-    for (auto& entity : text_entities) {
+    for (auto& entity : static_text_entities) {
         SDL_RenderCopyEx(g_renderer, entity.second, nullptr, &entity.first, 0.0, nullptr,
                          SDL_FLIP_NONE);
     }
@@ -46,10 +57,10 @@ UISystem::UISystem()
 
 void UISystem::deinit()
 {
-    for (auto& entity : text_entities) {
+    for (auto& entity : static_text_entities) {
         SDL_DestroyTexture(entity.second);
     }
-    text_entities.clear();
+    static_text_entities.clear();
 
     TTF_CloseFont(font);
     font = nullptr;

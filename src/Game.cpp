@@ -34,7 +34,7 @@ Game::Game()
     render_comp->src_rect = render_comp->dst_rect;
     render_comp->pivot_point = {render_comp->src_rect.w / 2, render_comp->src_rect.h / 2};
 
-    UISystem::get().add_text({0, 0, 160, 32}, "Terminal Reboot");
+    UISystem::get().add_static_text(SDL_Point{0, 0}, "Terminal Reboot");
 }
 
 Game::~Game() {}
