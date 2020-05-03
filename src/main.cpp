@@ -2,6 +2,7 @@
 #include <SDL2_mixer/SDL_mixer.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include <iostream>
+#include <sstream>
 
 #include "Game.h"
 #include "Globals.h"
@@ -74,6 +75,9 @@ int main(int argc, char* argv[])
     Uint32 delta = 0;
     Uint32 render_time = 0;
     Uint32 sleep_time = 0;
+
+    std::string performance_stats_string;
+
     while (!quit) {
         now = SDL_GetTicks();
         while (SDL_PollEvent(&e)) {
@@ -88,12 +92,19 @@ int main(int argc, char* argv[])
         last = now;
 
         if ((now - last_frame_count_time) >= 1000) {
-            std::cout << "FPS: " << frame_count << " | " << (frame_time_accumulator / frame_count)
-                      << "ms" << std::endl;
+            std::stringstream str_stream;
+            str_stream << "FPS: " << frame_count << " | " << (frame_time_accumulator / frame_count)
+                       << "ms";
+
+            performance_stats_string = str_stream.str();
+            std::cout << performance_stats_string << std::endl;
+
             frame_count = 0;
             frame_time_accumulator = 0;
             last_frame_count_time = now;
         }
+
+        UISystem::get().add_dynamic_text(SDL_Point{0, 0}, performance_stats_string);
 
         game.update(delta);
 

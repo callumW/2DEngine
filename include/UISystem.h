@@ -15,6 +15,9 @@ public:
     void add_static_text(SDL_Rect location, std::string const& str);
     void add_static_text(SDL_Point location, std::string const& str);
 
+    void add_dynamic_text(SDL_Rect location, std::string const& str);
+    void add_dynamic_text(SDL_Point location, std::string const& str);
+
     void render();
 
 
@@ -25,9 +28,13 @@ private:
 
     SDL_Texture* load_text(std::string const& str);
 
+    void clear_dynamic_text();
+
     TTF_Font* font;
 
     typedef std::pair<SDL_Rect, SDL_Texture*> text_entity;
     std::vector<text_entity> static_text_entities;
+
+    std::vector<text_entity> dynamic_text_entities;
 };
 #endif
