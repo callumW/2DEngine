@@ -15,10 +15,10 @@ public:
 
     /* timer callback, takes a float which is the number of seconds that has passed since task
         was added. */
-    typedef std::function<void(float, entity_t const&)> timer_task_cb_t;
+    typedef std::function<void(float)> timer_task_cb_t;
 
     /* pair of wait time & callback to execute after wait time */
-    typedef std::tuple<float, timer_task_cb_t, entity_t> timer_task_t;
+    typedef std::pair<timer_task_cb_t, float> timer_task_t;
     void schedule_task(timer_task_t& task) { tasks.push_back({current_time, task}); }
 
 

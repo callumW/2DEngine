@@ -4,7 +4,12 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 
-RenderManager::RenderManager() {}
+RenderManager& RenderManager::get()
+{
+    static RenderManager render_manager;
+    return render_manager;
+}
+
 
 void RenderManager::render_all()
 {
@@ -24,4 +29,10 @@ void RenderManager::render_all()
                              comp.rotation, &comp.pivot_point, comp.flip);
         }
     }
+}
+
+render_component_t* RenderManager::create_component(entity_t* entity)
+{
+    entity->components |= RENDER;
+    return ComponentManager::create_component(entity);
 }

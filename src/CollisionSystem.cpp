@@ -2,6 +2,13 @@
 
 #include "PhysicsManager.h"
 
+
+CollisionSystem& CollisionSystem::get()
+{
+    static CollisionSystem system;
+    return system;
+}
+
 void CollisionSystem::check_for_collisions()
 {
     for (auto it = components.begin(); it != components.end(); it++) {
@@ -15,4 +22,10 @@ void CollisionSystem::check_for_collisions()
             }
         }
     }
+}
+
+collision_component_t* CollisionSystem::create_component(entity_t* entity)
+{
+    entity->components |= COLLISION;
+    CollisionSystem::create_component(entity);
 }

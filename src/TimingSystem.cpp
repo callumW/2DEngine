@@ -13,13 +13,11 @@ void TimingSystem::update(float delta)
     current_time += delta;
 
     for (auto it = tasks.begin(); it != tasks.end();) {
-        auto delay = std::get<0>(it->second);
+        auto task = it->second;
+        float const delay = task.second;
 
         if (it->first + delay < current_time) {
-            auto callback = std::get<1>(it->second);
-            auto id = std::get<2>(it->second);
-
-            callback(current_time - it->first, id);
+            task.first(current_time - it->first);
 
             it = tasks.erase(it);
         }

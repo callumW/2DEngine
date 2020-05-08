@@ -7,7 +7,13 @@
 
 class RenderManager : public ComponentManager<render_component_t> {
 public:
-    RenderManager();
+    static RenderManager& get();
+
     void render_all();
+
+    virtual render_component_t* create_component(entity_t* entity) override;
+
+private:
+    RenderManager() = default;
 };
 #endif

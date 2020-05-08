@@ -23,3 +23,9 @@ void PhysicsManager::simulate(float delta)
         }
     }
 }
+
+physics_component_t* PhysicsManager::create_component(entity_t* entity)
+{
+    entity->components |= PHYSICS;
+    return ComponentManager::create_component(entity);
+}

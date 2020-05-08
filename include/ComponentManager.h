@@ -22,7 +22,7 @@ public:
         return &components[find_res->second];
     }
 
-    T* create_component(entity_t* entity)
+    virtual T* create_component(entity_t* entity)
     {
         assert(map.find(*entity) == map.end());
 
@@ -36,7 +36,7 @@ public:
         return component;
     }
 
-    void remove_component(entity_t entity)
+    void remove_component(entity_t const& entity)
     {
         auto find_res = map.find(entity);
         assert(find_res != map.end());
@@ -45,7 +45,7 @@ public:
 
         size_t const end_pos = components.size() - 1;
 
-        if (pos < end_pos && pos > 0) {
+        if (pos < end_pos) {
             auto swapped_entity = entities[end_pos];
 
             // update mapping for swapped entity

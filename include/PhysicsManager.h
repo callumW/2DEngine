@@ -16,6 +16,8 @@ public:
 
     void simulate(float delta);
 
+    virtual physics_component_t* create_component(entity_t* entity) override;
+
 private:
     PhysicsManager() = default;
 };

@@ -3,9 +3,8 @@
 #include <SDL2/SDL.h>
 #include <array>
 
-#include "EntityManager.h"
-#include "PhysicsManager.h"
-#include "RenderManager.h"
+#include "game_math.h"
+
 
 class Game {
 public:
@@ -18,8 +17,5 @@ public:
 
 private:
     void spawn_ball(vec2f_t const& position);
-
-    EntityManager entity_manager;
-    RenderManager render_manager;
 };
 #endif

@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "CollisionSystem.h"
+#include "EntityManager.h"
 #include "Globals.h"
 #include "InputSystem.h"
 #include "PhysicsManager.h"
@@ -12,6 +13,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <utility>
 
 float const PLAYER_MOVEMENT_SPEED = 250.0f;
 float const PLAYER_BULLET_SPEED = 1000.0f;
@@ -25,11 +27,13 @@ Game::Game()
     InputSystem::get().on_mouse_left_click(spawn_func);
 }
 
-void Game::render() { render_manager.render_all(); }
+void Game::render() { RenderManager::get().render_all(); }
 
 void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
+
+    TimingSystem::get().update(delta_f);
 
     PhysicsManager::get().simulate(delta_f);
 
@@ -39,15 +43,25 @@ void Game::update(Uint32 delta)
 void Game::spawn_ball(vec2f_t const& position)
 {
     std::cout << "Spawn ball" << std::endl;
-    auto entity = entity_manager.create_entity();
+    entity_t* entity = EntityManager::get().create_entity();
 
     auto physics_comp = PhysicsManager::get().create_component(entity);
     physics_comp->position = position;
     physics_comp->is_affected_by_gravity = true;
 
-    auto render_comp = render_manager.create_component(entity);
+    auto render_comp = RenderManager::get().create_component(entity);
     render_comp->texture = load_texture("./assets/bullet.bmp");
     render_comp->src_rect = {0, 0, 5, 5};
     render_comp->dst_rect = {static_cast<int>(position.x), static_cast<int>(position.y), 5, 5};
     render_comp->pivot_point = {2, 2};
+
+    assert(entity->components & RENDER);
+    assert(entity->components & PHYSICS);
+
+    TimingSystem::timer_task_cb_t delete_func = [entity](float delta) {
+        EntityManager::get().destroy_entity(*entity);
+    };
+
+    auto delete_task = std::make_pair(delete_func, 1.0f);
+    TimingSystem::get().schedule_task(delete_task);
 }
