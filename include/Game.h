@@ -20,7 +20,6 @@ private:
     void spawn_ball(vec2f_t const& position);
 
     EntityManager entity_manager;
-    PhysicsManager physics_manager;
     RenderManager render_manager;
 };
 #endif

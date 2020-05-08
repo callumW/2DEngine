@@ -3,6 +3,12 @@
 
 #include <iostream>
 
+PhysicsManager& PhysicsManager::get()
+{
+    static PhysicsManager physics_manager;
+    return physics_manager;
+}
+
 void PhysicsManager::simulate(float delta)
 {
     size_t comp_count = components.size();

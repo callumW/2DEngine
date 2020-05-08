@@ -10,8 +10,13 @@
 
 class PhysicsManager : public ComponentManager<physics_component_t> {
 public:
+    static PhysicsManager& get();
+
     static constexpr float GRAVITY = 300.0f;
 
     void simulate(float delta);
+
+private:
+    PhysicsManager() = default;
 };
 #endif

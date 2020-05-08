@@ -9,8 +9,5 @@ class RenderManager : public ComponentManager<render_component_t> {
 public:
     RenderManager();
     void render_all();
-
-private:
-    void render(render_component_t& comp);
 };
 #endif

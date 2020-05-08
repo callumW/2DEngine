@@ -31,7 +31,7 @@ void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
 
-    physics_manager.simulate(delta_f);
+    PhysicsManager::get().simulate(delta_f);
 
     InputSystem::get().update();
 }
@@ -41,7 +41,7 @@ void Game::spawn_ball(vec2f_t const& position)
     std::cout << "Spawn ball" << std::endl;
     auto entity = entity_manager.create_entity();
 
-    auto physics_comp = physics_manager.create_component(entity);
+    auto physics_comp = PhysicsManager::get().create_component(entity);
     physics_comp->position = position;
     physics_comp->is_affected_by_gravity = true;
 
