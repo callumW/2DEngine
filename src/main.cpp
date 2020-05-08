@@ -113,9 +113,8 @@ int main(int argc, char* argv[])
         // render
         SDL_RenderClear(g_renderer);
         game.render();
+        UISystem::get().render();
         SDL_RenderPresent(g_renderer);
-
-        game.cleanup();
 
         frame_count++;
         // Sleep to maintain constant FPS

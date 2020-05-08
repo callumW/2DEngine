@@ -2,11 +2,11 @@
 #define RENDER_COMPONENT_H
 #include <SDL2/SDL.h>
 
-#include "entity_id.h"
+#include "ComponentManager.h"
+#include "Entity.h"
 
 
 typedef struct render_component_t {
-    entity_id_t owner_id;
     bool hidden = false;
     SDL_Texture* texture = nullptr;
     SDL_Rect src_rect;
@@ -17,7 +17,6 @@ typedef struct render_component_t {
 
     void reset()
     {
-        owner_id = {};
         hidden = false;
         texture = nullptr;
         src_rect = {};

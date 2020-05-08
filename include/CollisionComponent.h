@@ -1,7 +1,7 @@
 #ifndef COLLISION_COMPONENT_H
 #define COLLISION_COMPONENT_H
 
-#include "entity_id.h"
+#include "Entity.h"
 
 #include <functional>
 
@@ -33,7 +33,6 @@ typedef struct aabb_t {
 bool aabb_test_collision(aabb_t const& lhs, aabb_t const& rhs);
 
 typedef struct collision_component_t {
-    entity_id_t owner_id = {};
     aabb_t box = {};
     std::function<void(collision_component_t const&)> on_collide = {};
 } collision_component_t;

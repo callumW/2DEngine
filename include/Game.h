@@ -14,12 +14,5 @@ public:
     void render();
 
     void update(Uint32 delta);
-
-    void cleanup();
-
-private:
-    void fire_bullet(vec2f_t const& loc, vec2f_t const& force);
-
-    void spawn_ball(vec2f_t const& loc);
 };
 #endif

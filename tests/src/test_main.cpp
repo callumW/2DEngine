@@ -1,4 +1,4 @@
-#include "entity_id.h"
+#include "Entity.h"
 #include "game_math.h"
 
 #include <cmath>
@@ -44,51 +44,5 @@ int main()
                   << std::endl;
         failed_tests++;
     }
-
-    entity_id_t entity_id;
-
-    if (entity_id.generation() != 0 || entity_id.index() != 0) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << " | " << entity_id.index() << std::endl;
-        failed_tests++;
-    }
-
-    entity_id.increment_generation();
-    if (entity_id.generation() != 1) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << std::endl;
-        failed_tests++;
-    }
-
-
-    entity_id.set_index(890);
-    if (entity_id.generation() != 1 || entity_id.index() != 890) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << " | " << entity_id.index() << std::endl;
-        failed_tests++;
-    }
-
-    entity_id.set_generation(1023);
-    if (entity_id.generation() != 1023 || entity_id.index() != 890) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << " | " << entity_id.index() << std::endl;
-        failed_tests++;
-    }
-
-    entity_id.increment_generation();
-    if (entity_id.generation() != 0 || entity_id.index() != 890) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << " | " << entity_id.index() << std::endl;
-        failed_tests++;
-    }
-
-    entity_id.set_generation(1022);
-    entity_id.increment_generation();
-    if (entity_id.generation() != 1023 || entity_id.index() != 890) {
-        std::cout << "entity_id_t failed " << __FILE__ << ":" << __LINE__ << " "
-                  << entity_id.generation() << " | " << entity_id.index() << std::endl;
-        failed_tests++;
-    }
-
     return failed_tests;
 }

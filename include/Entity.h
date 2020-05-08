@@ -1,45 +1,57 @@
 #ifndef ENTITY_H
 #define ENTITY_H
-#include <SDL2/SDL.h>
 
-#include <string>
-#include <vector>
+#include <cassert>
+#include <cstdint>
+#include <functional>
+#include <ostream>
+#include <set>
+#include <utility>
 
 #include "ComponentTypes.h"
-#include "entity_id.h"
-#include "game_math.h"
 
-class EntityManager;
+size_t const MAX_NUM_ENTITIES = 1000000;
 
-class Entity {
-public:
-    Entity() = default;
+int64_t const ENTITY_INDEX_BITS = 54;
+int64_t const ENTITY_INDEX_MASK = (INT64_C(1) << ENTITY_INDEX_BITS) - 1;
 
-    void reset();
+int64_t const ENTITY_GENERATION_BITS = 10;
+int64_t const ENTITY_GENERATION_MASK = (INT64_C(1) << ENTITY_GENERATION_BITS) - 1;
 
-    void update(float delta);
+typedef struct entity_t {
+    int64_t uuid = 0;
+    COMPONENT_TYPE components = 0;
 
-    /**
-     * Change position local to parent
-     */
-    void set_local_transform(transform_t const& transform);
+    inline bool has_component(COMPONENT_TYPE comp) { return components & comp; }
+} entity_t;
 
-    /**
-     * Change position in world space (irrelevant of parent position)
-     */
-    void set_world_transform(transform_t const& transform);
+bool operator==(entity_t const& lhs, entity_t const& rhs);
 
-    void face(Entity const& entity);
-    void face(vec2f_t const& vec);
+std::ostream& operator<<(std::ostream& stream, entity_t const& e);
 
-    inline void recalc_local_transform() { local_transform = world_transform; }
+typedef struct entity_hash_t {
+    std::size_t operator()(entity_t const& id) const { return std::hash<int64_t>{}(id.uuid); }
+} entity_hash_t;
 
-    inline void recalc_world_transform() { world_transform = local_transform; }
+typedef struct entity_t_compare_t {
+    bool operator()(entity_t const& lhs, entity_t const& rhs) const { return lhs == rhs; }
+} entity_t_compare_t;
 
-    entity_id_t id;
-    int64_t components;
+typedef struct entity_t_less_t {
+    bool operator()(entity_t const& lhs, entity_t const& rhs) const { return lhs.uuid < rhs.uuid; }
+} entity_t_less_t;
 
-    transform_t local_transform;
-    transform_t world_transform;
-};
+typedef std::set<entity_t, entity_t_less_t> entity_set_t;
+
+typedef std::pair<entity_t, entity_t> entity_pair_t;
+
+typedef struct entity_pair_t_less_t {
+    bool operator()(entity_pair_t const& lhs, entity_pair_t const& rhs) const
+    {
+        return entity_t_less_t{}(lhs.first, rhs.second);
+    }
+} entity_pair_t_less_t;
+
+typedef std::set<entity_pair_t, entity_pair_t_less_t> entity_pair_set_t;
+
 #endif
