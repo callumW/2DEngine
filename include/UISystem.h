@@ -7,6 +7,9 @@
 #include <utility>
 #include <vector>
 
+#include "PhysicsManager.h"
+#include "RenderManager.h"
+
 
 class UISystem {
 public:

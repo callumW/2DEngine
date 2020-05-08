@@ -22,16 +22,16 @@ public:
         return &components[find_res->second];
     }
 
-    T* create_component(entity_t entity)
+    T* create_component(entity_t* entity)
     {
-        assert(map.find(entity) == map.end());
+        assert(map.find(*entity) == map.end());
 
         size_t const next_free_space = components.size();
         components.resize(next_free_space + 1);
 
         T* component = &components[next_free_space];
-        entities.push_back(entity);
-        map[entity] = next_free_space;
+        entities.push_back(*entity);
+        map[*entity] = next_free_space;
 
         return component;
     }
