@@ -34,6 +34,7 @@ bool aabb_test_collision(aabb_t const& lhs, aabb_t const& rhs);
 
 typedef struct collision_component_t {
     aabb_t box = {};
+    bool is_static = false;
     std::function<void(collision_component_t const&)> on_collide = {};
 } collision_component_t;
 #endif

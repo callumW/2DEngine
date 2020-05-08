@@ -18,7 +18,14 @@ public:
 
     virtual physics_component_t* create_component(entity_t* entity) override;
 
+    std::vector<std::pair<entity_t, vec2f_t const*>> const& get_dirty_positions()
+    {
+        return dirty_positions;
+    }
+
 private:
     PhysicsManager() = default;
+
+    std::vector<std::pair<entity_t, vec2f_t const*>> dirty_positions;
 };
 #endif

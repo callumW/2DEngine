@@ -21,8 +21,8 @@ void RenderManager::render_all()
 
             auto physics_comp = PhysicsManager::get().get_component(entities[i]);
             if (physics_comp) {
-                comp.dst_rect.x = static_cast<int>(physics_comp->position.x);
-                comp.dst_rect.y = static_cast<int>(physics_comp->position.y);
+                comp.dst_rect.x = static_cast<int>(physics_comp->position.x) - comp.src_rect.w / 2;
+                comp.dst_rect.y = static_cast<int>(physics_comp->position.y) - comp.src_rect.h / 2;
             }
 
             SDL_RenderCopyEx(g_renderer, comp.texture, &comp.src_rect, &comp.dst_rect,

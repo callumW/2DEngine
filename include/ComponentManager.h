@@ -9,7 +9,7 @@
 template<typename T>
 class ComponentManager {
 public:
-    T* get_component(entity_t entity)
+    T* get_component(entity_t const& entity)
     {
         auto find_res = map.find(entity);
 

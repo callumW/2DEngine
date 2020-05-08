@@ -11,12 +11,29 @@ CollisionSystem& CollisionSystem::get()
 
 void CollisionSystem::check_for_collisions()
 {
-    for (auto it = components.begin(); it != components.end(); it++) {
-        for (auto other_it = components.begin(); other_it != components.end(); other_it++) {
-            if (it != other_it) {
-                if (aabb_test_collision(it->box, other_it->box)) {
-                    if (it->on_collide) {
-                        it->on_collide(*other_it);
+    for (auto& pair : PhysicsManager::get().get_dirty_positions()) {
+        entity_t const& entity = pair.first;
+        vec2f_t const* new_pos = pair.second;
+
+        if (entity.has_component(COLLISION)) {
+            auto find_res = map.find(entity);
+            assert(find_res != map.end());
+
+            size_t pos = find_res->second;
+
+            collision_component_t& collision_comp = components[pos];
+            collision_comp.box.x = new_pos->x;
+            collision_comp.box.y = new_pos->y;
+
+            size_t size = components.size();
+            for (size_t i = 0; i < size; i++) {
+                if (i != pos) {
+                    auto const& other_collider = components[i];
+
+                    if (aabb_test_collision(other_collider.box, collision_comp.box)) {
+                        if (collision_comp.on_collide) {
+                            collision_comp.on_collide(other_collider);
+                        }
                     }
                 }
             }
@@ -27,5 +44,5 @@ void CollisionSystem::check_for_collisions()
 collision_component_t* CollisionSystem::create_component(entity_t* entity)
 {
     entity->components |= COLLISION;
-    CollisionSystem::create_component(entity);
+    return ComponentManager::create_component(entity);
 }

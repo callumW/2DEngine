@@ -25,6 +25,14 @@ Game::Game()
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
 
     InputSystem::get().on_mouse_left_click(spawn_func);
+
+    entity_t* floor = EntityManager::get().create_entity();
+
+    auto collision_comp = CollisionSystem::get().create_component(floor);
+    collision_comp->box = {0.0f, static_cast<float>(WINDOW_HEIGHT),
+                           static_cast<float>(WINDOW_WIDTH), 40.0f};
+
+    collision_comp->is_static = true;
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -36,6 +44,7 @@ void Game::update(Uint32 delta)
     TimingSystem::get().update(delta_f);
 
     PhysicsManager::get().simulate(delta_f);
+    CollisionSystem::get().check_for_collisions();
 
     InputSystem::get().update();
 }
@@ -52,11 +61,18 @@ void Game::spawn_ball(vec2f_t const& position)
     auto render_comp = RenderManager::get().create_component(entity);
     render_comp->texture = load_texture("./assets/bullet.bmp");
     render_comp->src_rect = {0, 0, 5, 5};
-    render_comp->dst_rect = {static_cast<int>(position.x), static_cast<int>(position.y), 5, 5};
+    render_comp->dst_rect = {static_cast<int>(position.x) - 2, static_cast<int>(position.y) - 2, 5,
+                             5};
     render_comp->pivot_point = {2, 2};
+
+    auto collision_comp = CollisionSystem::get().create_component(entity);
+    collision_comp->box = {position.x - 2.0f, position.y - 2.0f, 5.0f, 5.0f};
+    collision_comp->is_static = false;
+
 
     assert(entity->components & RENDER);
     assert(entity->components & PHYSICS);
+    assert(entity->components & COLLISION);
 
     TimingSystem::timer_task_cb_t delete_func = [entity](float delta) {
         EntityManager::get().destroy_entity(*entity);

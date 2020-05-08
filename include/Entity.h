@@ -22,7 +22,7 @@ typedef struct entity_t {
     int64_t uuid = 0;
     COMPONENT_TYPE components = 0;
 
-    inline bool has_component(COMPONENT_TYPE comp) { return components & comp; }
+    inline bool has_component(COMPONENT_TYPE comp) const { return components & comp; }
 
     entity_t(int64_t new_uuid) { uuid = new_uuid; }
 } entity_t;
