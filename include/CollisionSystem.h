@@ -16,8 +16,6 @@ public:
 
     void check_for_collisions();
 
-    virtual collision_component_t* create_component(entity_t* entity) override;
-
 private:
     CollisionSystem() = default;
 };

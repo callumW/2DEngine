@@ -28,6 +28,8 @@ Game::Game()
 
     entity_t* floor = EntityManager::get().create_entity();
 
+    floor->add_component(COLLISION);
+
     auto collision_comp = CollisionSystem::get().create_component(floor);
     collision_comp->box = {0.0f, static_cast<float>(WINDOW_HEIGHT),
                            static_cast<float>(WINDOW_WIDTH), 40.0f};
@@ -54,6 +56,8 @@ void Game::spawn_ball(vec2f_t const& position)
     std::cout << "Spawn ball" << std::endl;
     entity_t* entity = EntityManager::get().create_entity();
 
+    entity->add_component(PHYSICS | RENDER | COLLISION);
+
     auto physics_comp = PhysicsManager::get().create_component(entity);
     physics_comp->position = position;
     physics_comp->is_affected_by_gravity = true;
@@ -70,14 +74,14 @@ void Game::spawn_ball(vec2f_t const& position)
     collision_comp->is_static = false;
 
 
-    assert(entity->components & RENDER);
-    assert(entity->components & PHYSICS);
-    assert(entity->components & COLLISION);
+    assert(entity->has_component(RENDER));
+    assert(entity->has_component(PHYSICS));
+    assert(entity->has_component(COLLISION));
 
-    TimingSystem::timer_task_cb_t delete_func = [entity](float delta) {
-        EntityManager::get().destroy_entity(*entity);
-    };
-
-    auto delete_task = std::make_pair(delete_func, 1.0f);
-    TimingSystem::get().schedule_task(delete_task);
+    // TimingSystem::timer_task_cb_t delete_func = [entity](float delta) {
+    //     EntityManager::get().destroy_entity(*entity);
+    // };
+    //
+    // auto delete_task = std::make_pair(delete_func, 1.0f);
+    // TimingSystem::get().schedule_task(delete_task);
 }

@@ -24,7 +24,15 @@ typedef struct entity_t {
 
     inline bool has_component(COMPONENT_TYPE comp) const { return components & comp; }
 
+    inline void add_component(COMPONENT_TYPE comp) { components |= comp; }
+
     entity_t(int64_t new_uuid) { uuid = new_uuid; }
+
+    entity_t(entity_t const& other)
+    {
+        uuid = other.uuid;
+        components = other.components;
+    }
 } entity_t;
 
 bool operator==(entity_t const& lhs, entity_t const& rhs);

@@ -11,8 +11,6 @@ public:
 
     void render_all();
 
-    virtual render_component_t* create_component(entity_t* entity) override;
-
 private:
     RenderManager() = default;
 };

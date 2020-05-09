@@ -30,9 +30,3 @@ void RenderManager::render_all()
         }
     }
 }
-
-render_component_t* RenderManager::create_component(entity_t* entity)
-{
-    entity->components |= RENDER;
-    return ComponentManager::create_component(entity);
-}
