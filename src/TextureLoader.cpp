@@ -25,12 +25,12 @@ texture_t TextureLoader::load_texture_cached(std::string const& path)
 texture_t TextureLoader::add_texture(std::string const& path)
 {
     SDL_Surface* tmp = SDL_LoadBMP(path.c_str());
-    texture_t tex;
+    texture_t tex = {};
 
     if (tmp) {
         tex.tex = SDL_CreateTextureFromSurface(g_renderer, tmp);
-        tex.width = tmp->w;
-        tex.height = tmp->h;
+        tex.src_rect.w = tmp->w;
+        tex.src_rect.h = tmp->h;
         SDL_FreeSurface(tmp);
 
         textures.insert({path, tex});
@@ -54,8 +54,8 @@ texture_t TextureLoader::default_texture()
         SDL_SetRenderTarget(g_renderer, nullptr);
         SDL_SetRenderDrawColor(g_renderer, 255, 255, 255, 255);
 
-        default_tex.width = 40;
-        default_tex.height = 40;
+        default_tex.src_rect.w = 40;
+        default_tex.src_rect.h = 40;
     }
 
     assert(default_tex.tex != nullptr);

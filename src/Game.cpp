@@ -61,12 +61,8 @@ void Game::spawn_ball(vec2f_t const& position)
     physics_comp->position = position;
     physics_comp->is_affected_by_gravity = true;
 
-    auto render_comp = RenderManager::get().create_component(entity);
-    render_comp->texture = load_texture("./assets/bullet.bmp");
-    render_comp->src_rect = {0, 0, 5, 5};
-    render_comp->dst_rect = {static_cast<int>(position.x) - 2, static_cast<int>(position.y) - 2, 5,
-                             5};
-    render_comp->pivot_point = {2, 2};
+    auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bullet.bmp");
+    render_comp->set_position(position);
 
     auto collision_comp = CollisionSystem::get().create_component(entity);
     collision_comp->box = {position.x - 2.0f, position.y - 2.0f, 5.0f, 5.0f};

@@ -11,6 +11,8 @@ public:
 
     void render_all();
 
+    render_component_t* create_render_component(entity_t* entity, std::string const& tex_path);
+
 private:
     RenderManager() = default;
 };

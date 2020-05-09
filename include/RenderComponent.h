@@ -10,7 +10,6 @@
 typedef struct render_component_t {
     bool hidden = false;
     texture_t texture;
-    SDL_Rect src_rect;
     SDL_Rect dst_rect;
     double rotation;
     SDL_Point pivot_point;
@@ -20,11 +19,16 @@ typedef struct render_component_t {
     {
         hidden = false;
         texture = {};
-        src_rect = {};
         dst_rect = {};
         rotation = 0.0;
         pivot_point = {};
         flip = SDL_FLIP_NONE;
+    }
+
+    void set_position(vec2f_t const& pos)
+    {
+        dst_rect.x = static_cast<int>(pos.x) - texture.src_rect.w / 2;
+        dst_rect.y = static_cast<int>(pos.y) - texture.src_rect.h / 2;
     }
 } render_component_t;
 #endif

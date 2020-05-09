@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
+#include "loading_helpers.h"
 
 RenderManager& RenderManager::get()
 {
@@ -21,12 +22,23 @@ void RenderManager::render_all()
 
             auto physics_comp = PhysicsManager::get().get_component(entities[i]);
             if (physics_comp) {
-                comp.dst_rect.x = static_cast<int>(physics_comp->position.x) - comp.src_rect.w / 2;
-                comp.dst_rect.y = static_cast<int>(physics_comp->position.y) - comp.src_rect.h / 2;
+                comp.set_position(physics_comp->position);
             }
 
-            SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.src_rect, &comp.dst_rect,
+            SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.texture.src_rect, &comp.dst_rect,
                              comp.rotation, &comp.pivot_point, comp.flip);
         }
     }
+}
+
+render_component_t* RenderManager::create_render_component(entity_t* entity,
+                                                           std::string const& tex_path)
+{
+    render_component_t* comp = create_component(entity);
+
+    comp->texture = load_texture(tex_path);
+    comp->pivot_point = {comp->texture.src_rect.w / 2, comp->texture.src_rect.h / 2};
+    comp->dst_rect = comp->texture.src_rect;
+
+    return comp;
 }

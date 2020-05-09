@@ -4,7 +4,6 @@
 
 typedef struct texture_t {
     SDL_Texture* tex = nullptr;
-    int width = -1;
-    int height = -1;
+    SDL_Rect src_rect = {};
 } texture_t;
 #endif
