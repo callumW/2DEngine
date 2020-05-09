@@ -53,7 +53,6 @@ void Game::update(Uint32 delta)
 
 void Game::spawn_ball(vec2f_t const& position)
 {
-    std::cout << "Spawn ball" << std::endl;
     entity_t* entity = EntityManager::get().create_entity();
 
     entity->add_component(PHYSICS | RENDER | COLLISION);

@@ -32,7 +32,6 @@ void CollisionSystem::check_for_collisions()
                     auto const& other_collider = components[i];
                     // move back where it came from?
                     if (aabb_test_collision(other_collider.box, collision_comp.box)) {
-                        std::cout << "Collision" << std::endl;
                         if (collision_comp.on_collide) {
                             collision_comp.on_collide(other_collider);
                         }
