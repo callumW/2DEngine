@@ -1,11 +1,10 @@
 #ifndef LOADING_HELPERS_H
 #define LOADING_HELPERS_H
-#include <SDL2/SDL.h>
-#include <SDL2_mixer/SDL_mixer.h>
-
 #include <string>
 
-SDL_Texture* load_texture(std::string const& path);
-SDL_Texture* load_default_texture();
+#include "Texture.h"
+
+texture_t load_texture(std::string const& path);
+texture_t load_default_texture();
 
 #endif

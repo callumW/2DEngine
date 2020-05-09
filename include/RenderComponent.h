@@ -4,11 +4,12 @@
 
 #include "ComponentManager.h"
 #include "Entity.h"
+#include "Texture.h"
 
 
 typedef struct render_component_t {
     bool hidden = false;
-    SDL_Texture* texture = nullptr;
+    texture_t texture;
     SDL_Rect src_rect;
     SDL_Rect dst_rect;
     double rotation;
@@ -18,7 +19,7 @@ typedef struct render_component_t {
     void reset()
     {
         hidden = false;
-        texture = nullptr;
+        texture = {};
         src_rect = {};
         dst_rect = {};
         rotation = 0.0;

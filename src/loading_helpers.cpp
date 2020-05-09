@@ -2,9 +2,9 @@
 #include "Globals.h"
 #include "TextureLoader.h"
 
-SDL_Texture* load_texture(std::string const& path)
+texture_t load_texture(std::string const& path)
 {
     return TextureLoader::get().load_texture_cached(path);
 }
 
-SDL_Texture* load_default_texture() { return TextureLoader::get().default_texture(); }
+texture_t load_default_texture() { return TextureLoader::get().default_texture(); }

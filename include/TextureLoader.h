@@ -6,21 +6,24 @@
 #include <unordered_map>
 
 
+#include "Texture.h"
+
+
 class TextureLoader {
 public:
     static TextureLoader& get();
 
-    SDL_Texture* load_texture_cached(std::string const& path);
+    texture_t load_texture_cached(std::string const& path);
 
-    SDL_Texture* default_texture();
+    texture_t default_texture();
 
     void clean_up_textures();
 
 private:
     TextureLoader() = default;
-    SDL_Texture* add_texture(std::string const& path);
-    std::unordered_map<std::string, SDL_Texture*> textures;
+    texture_t add_texture(std::string const& path);
+    std::unordered_map<std::string, texture_t> textures;
 
-    SDL_Texture* default_tex = nullptr;
+    texture_t default_tex = {};
 };
 #endif

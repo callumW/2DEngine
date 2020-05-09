@@ -25,7 +25,7 @@ void RenderManager::render_all()
                 comp.dst_rect.y = static_cast<int>(physics_comp->position.y) - comp.src_rect.h / 2;
             }
 
-            SDL_RenderCopyEx(g_renderer, comp.texture, &comp.src_rect, &comp.dst_rect,
+            SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.src_rect, &comp.dst_rect,
                              comp.rotation, &comp.pivot_point, comp.flip);
         }
     }
