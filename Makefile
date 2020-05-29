@@ -41,14 +41,19 @@ BOX_2D_PATH= /Users/cwilson/Libs/box2d/1025f9a
 BOX_2D_INCLUDES= -I${BOX_2D_PATH}/include
 BOX_2D_FLAGS= -L${BOX_2D_PATH} -lbox2d
 
+JSON_CPP_PATH= /Users/cwilson/Libs/jsoncpp/1.8.4
+JSON_CPP_INCLUDES= -I${JSON_CPP_PATH}/include
+JSON_CPP_FLAGS= -L${JSON_CPP_PATH} -ljsoncpp
+
 THIRD_PARTY_INCLUDES= \
 -F/Users/cwilson/Libs/SDL/ \
-${BOX_2D_INCLUDES}
+${BOX_2D_INCLUDES} \
+${JSON_CPP_INCLUDES}
 
 
 LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf \
 -framework SDL2_image
-LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS}
+LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS} ${JSON_CPP_FLAGS}
 
 CPP_FLAGS= -Wall
 # Debug
