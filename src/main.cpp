@@ -114,6 +114,7 @@ int main(int argc, char* argv[])
         frame_time_accumulator += SDL_GetTicks() - now;
 
         // render
+        SDL_SetRenderDrawColor(g_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(g_renderer);
         game.render();
         UISystem::get().render();
