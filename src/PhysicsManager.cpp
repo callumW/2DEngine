@@ -1,7 +1,9 @@
 #include "PhysicsManager.h"
 #include "Globals.h"
+#include "UISystem.h"
 
 #include <iostream>
+#include <sstream>
 
 PhysicsManager& PhysicsManager::get()
 {
@@ -11,24 +13,16 @@ PhysicsManager& PhysicsManager::get()
 
 void PhysicsManager::simulate(float delta)
 {
-    dirty_positions.clear();
+    world.Step(delta, 8, 3);
+    std::stringstream str_stream;
+    str_stream << "Physics Body Count: " << world.GetBodyCount();
 
-    size_t comp_count = components.size();
-    for (size_t i = 0; i < comp_count; i++) {
-        physics_component_t& comp = components[i];
-        bool pos_changed = false;
-        if (comp.net_force != vec2f_t::zero()) {
-            comp.position += comp.net_force * delta;
-            pos_changed = true;
-        }
+    UISystem::get().add_dynamic_text(SDL_Point{0, 16}, str_stream.str());
+}
 
-        if (comp.is_affected_by_gravity) {
-            comp.position.y += PhysicsManager::GRAVITY * delta;
-            pos_changed = true;
-        }
-
-        if (pos_changed) {
-            dirty_positions.push_back(std::make_pair(entities[i], &comp.position));
-        }
+void PhysicsManager::pre_remove(physics_component_t* component)
+{
+    if (component && component->body) {
+        world.DestroyBody(component->body);
     }
 }

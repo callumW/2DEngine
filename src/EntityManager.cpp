@@ -1,5 +1,4 @@
 #include "EntityManager.h"
-#include "CollisionSystem.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 
@@ -25,9 +24,6 @@ void EntityManager::destroy_entity(entity_t const& entity)
     }
     if (entity.components & PHYSICS) {
         PhysicsManager::get().remove_component(entity);
-    }
-    if (entity.components & COLLISION) {
-        CollisionSystem::get().remove_component(entity);
     }
     if (entity.components & ANIMATION) {
     }

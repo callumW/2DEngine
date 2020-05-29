@@ -43,6 +43,8 @@ public:
 
         size_t pos = find_res->second;
 
+        pre_remove(&components[pos]);
+
         size_t const end_pos = components.size() - 1;
 
         if (pos < end_pos) {
@@ -78,6 +80,9 @@ public:
     }
 
 protected:
+    // Called pre removal
+    virtual void pre_remove(T* component){};
+
     std::vector<T> components;
     std::vector<entity_t> entities;
     std::unordered_map<entity_t, size_t, entity_hash_t, entity_t_compare_t> map;
