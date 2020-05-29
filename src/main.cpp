@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
     Uint32 now = 0;
     Uint32 last = last_frame_count_time;
     Uint32 frame_time_accumulator = 0;
+    Uint32 loop_time_accumlator = 0;
     Uint32 delta = 0;
     Uint32 render_time = 0;
     Uint32 sleep_time = 0;
@@ -90,17 +91,19 @@ int main(int argc, char* argv[])
 
         delta = now - last;
         last = now;
+        loop_time_accumlator += delta;
 
         if ((now - last_frame_count_time) >= 1000) {
             std::stringstream str_stream;
             str_stream << "FPS: " << frame_count << " | " << (frame_time_accumulator / frame_count)
-                       << "ms";
+                       << "ms | " << (loop_time_accumlator / frame_count) << "ms";
 
             performance_stats_string = str_stream.str();
             std::cout << performance_stats_string << std::endl;
 
             frame_count = 0;
             frame_time_accumulator = 0;
+            loop_time_accumlator = 0;
             last_frame_count_time = now;
         }
 
