@@ -25,16 +25,6 @@ Game::Game() : world(gravity)
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
 
     InputSystem::get().on_mouse_left_click(spawn_func);
-
-    float viewport_width = static_cast<float>(WINDOW_WIDTH);
-    float viewport_height = static_cast<float>(WINDOW_HEIGHT);
-    vec2f_t screen_center = {viewport_width / 2.0f, viewport_height / 2.0f};
-
-    assert(RenderManager::get().convert_to_world_pos(screen_center) == vec2f_t::zero());
-
-    vec2f_t viewport_pos = {0.0f - viewport_width / 2.0f, viewport_height / 2.0f};
-
-    assert(RenderManager::get().convert_to_screen_space(viewport_pos) == vec2f_t::zero());
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -54,10 +44,6 @@ void Game::spawn_ball(vec2f_t const& position)
 {
     vec2f_t world_pos = RenderManager::get().convert_to_world_pos(position);
     entity_t* entity = EntityManager::get().create_entity();
-
-    std::cout << "COnverted mouse pos " << position << " to " << world_pos << std::endl;
-    std::cout << "Converted back: " << RenderManager::get().convert_to_screen_space(world_pos)
-              << std::endl;
 
     entity->add_component(RENDER | PHYSICS);
 
