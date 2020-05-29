@@ -57,8 +57,8 @@ void Game::spawn_ball(vec2f_t const& position)
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
-    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()),
-                         static_cast<float>(render_comp->texture.height()));
+    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()) / 2.0f,
+                         static_cast<float>(render_comp->texture.height()) / 2.0f);
 
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
