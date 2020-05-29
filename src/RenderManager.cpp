@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
+#include "TextureLoader.h"
 #include "loading_helpers.h"
 
 RenderManager& RenderManager::get()
@@ -62,12 +63,54 @@ void RenderManager::render_all()
     }
 }
 
-render_component_t* RenderManager::create_render_component(entity_t* entity,
-                                                           std::string const& tex_path)
+void RenderManager::update_animations(float delta)
+{
+    size_t const num_components = components.size();
+    for (size_t i = 0; i < num_components; i++) {
+        render_component_t& comp = components[i];
+        if (comp.is_animated) {
+            auto& animation = comp.animation;
+            animation.cur_time += delta;
+            comp.texture = update_animation(animation);
+        }
+    }
+}
+
+texture_t RenderManager::update_animation(animation_t& animation)
+{
+    if (animation.frames[animation.cur_pos].duration < animation.cur_time) {
+        animation.cur_time -= animation.frames[animation.cur_pos].duration;
+        animation.cur_pos = (animation.cur_pos + 1) % animation.frames.size();
+        return update_animation(animation);
+    }
+    else {
+        std::cout << "Cur pos updated to: " << animation.cur_pos << std::endl;
+        return animation.frames[animation.cur_pos].texture;
+    }
+}
+
+render_component_t* RenderManager::create_static_render_component(entity_t* entity,
+                                                                  std::string const& tex_path)
 {
     render_component_t* comp = create_component(entity);
 
     comp->texture = load_texture(tex_path);
+    comp->pivot_point = {comp->texture.src_rect.w / 2, comp->texture.src_rect.h / 2};
+    comp->dst_rect = comp->texture.src_rect;
+    comp->is_animated = false;
+
+    return comp;
+}
+
+render_component_t*
+RenderManager::create_animated_render_component(entity_t* entity, std::string const& animation_path)
+{
+    render_component_t* comp = create_component(entity);
+    comp->is_animated = true;
+
+    assert(TextureLoader::get().load_animation_frames(animation_path, comp->animation));
+
+    comp->texture = comp->animation.frames[0].texture;
     comp->pivot_point = {comp->texture.src_rect.w / 2, comp->texture.src_rect.h / 2};
     comp->dst_rect = comp->texture.src_rect;
 

@@ -55,7 +55,7 @@ LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framewor
 -framework SDL2_image
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS} ${JSON_CPP_FLAGS}
 
-CPP_FLAGS= -Wall
+CPP_FLAGS= -Wall -g
 # Debug
 #CPP_FLAGS+= -DNDEBUG
 
@@ -95,7 +95,7 @@ format-code:
 	clang-format --style=file -i ${SRC_FILES} ${INCLUDE_FILES} ${TEST_SRC_FILES} ${TEST_INCLUDES_FILES}
 
 ${BUILD_ASSETS}:
-	cp -r assets ${BUILD_DIR}/assets
+	cp -r assets ${BUILD_DIR}
 
 .PHONY: tests
 tests: ${TEST_OUTPUT}

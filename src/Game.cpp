@@ -34,6 +34,8 @@ void Game::update(Uint32 delta)
 
     TimingSystem::get().update(delta_f);
 
+    RenderManager::get().update_animations(delta_f);
+
     PhysicsManager::get().simulate(delta_f);
 
     InputSystem::get().update();
@@ -46,7 +48,8 @@ void Game::spawn_ball(vec2f_t const& position)
 
     entity->add_component(RENDER | PHYSICS);
 
-    auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bomb.png");
+    auto render_comp = RenderManager::get().create_animated_render_component(
+        entity, "./assets/sprite-0001/Sprite-0001.json");
     render_comp->set_position(world_pos);
 
     auto physics_comp = PhysicsManager::get().create_component(entity);

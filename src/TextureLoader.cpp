@@ -1,5 +1,6 @@
 #include "TextureLoader.h"
 #include "Globals.h"
+#include "file_utils.h"
 
 #include <SDL2_image/SDL_image.h>
 
@@ -63,4 +64,108 @@ texture_t TextureLoader::default_texture()
     assert(default_tex.tex != nullptr);
 
     return default_tex;
+}
+
+bool TextureLoader::load_animation_frames(std::string const& path, animation_t& animation)
+{
+    auto file_contents = read_file(path);
+    if (file_contents.first == nullptr) {
+        std::cout << "Failed to load animation frames from: " << path << std::endl;
+        return false;
+    }
+
+    Json::CharReaderBuilder reader_builder;
+    Json::CharReader* reader = reader_builder.newCharReader();
+    Json::Value root;
+    std::string err;
+    if (!reader->parse(file_contents.first.get(), file_contents.first.get() + file_contents.second,
+                       &root, &err)) {
+        std::cout << "Failed to parse animation frames file (" << path << "): " << err << std::endl;
+        return false;
+    }
+    else {
+        assert(is_valid_animation(root));
+        if (create_animation_frames(root, animation.frames)) {
+            std::string texture_path;
+
+            auto pos = path.rfind("/");
+            assert(pos != std::string::npos);
+
+            texture_path = path.substr(0, pos + 1) + root["meta"]["image"].asString();
+            auto tex = load_texture_cached(texture_path);
+            assert(tex.tex != nullptr);
+
+            for (auto& frame : animation.frames) {
+                animation.total_duration += frame.duration;
+                frame.texture.tex = tex.tex;
+            }
+        }
+        else {
+            std::cout << "Failed to create animation frames" << std::endl;
+            return false;
+        }
+    }
+    delete reader;
+    return true;
+}
+
+bool TextureLoader::create_animation_frames(Json::Value& root,
+                                            std::vector<animation_frame_t>& animation)
+{
+    auto frames = root["frames"];
+    int num_frames = frames.size();
+    animation.resize(num_frames);
+    size_t i = 0;
+    for (auto& frame : frames) {
+        animation[i].duration = frame["duration"].asFloat() / 1000.0f;
+        animation[i].texture.src_rect = {frame["frame"]["x"].asInt(), frame["frame"]["y"].asInt(),
+                                         frame["spriteSourceSize"]["w"].asInt(),
+                                         frame["spriteSourceSize"]["h"].asInt()};
+        i++;
+    }
+    return true;
+}
+
+bool TextureLoader::is_valid_animation(Json::Value& root)
+{
+    // Needs frames object with at least one frame
+    // frame needs to include frame element with x, y, w, h elements
+    if (root.isMember("frames")) {
+        auto frames = root["frames"];
+        if (frames.isObject() && frames.size() > 0) {
+            for (auto& frame : frames) {
+                if (frame.isMember("frame")) {
+                    auto frame_dim = frame["frame"];
+                    if (!frame_dim.isMember("x") || !frame_dim.isMember("y") ||
+                        !frame_dim.isMember("w") || !frame_dim.isMember("h")) {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
+
+                if (!frame.isMember("duration")) {
+                    return false;
+                }
+
+                if (frame.isMember("spriteSourceSize")) {
+                    auto source_size = frame["spriteSourceSize"];
+                    if (!source_size.isMember("x") || !source_size.isMember("y") ||
+                        !source_size.isMember("w") || !source_size.isMember("h")) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        std::cout << "Missing frames element" << std::endl;
+        return false;
+    }
+
+    return true;
 }
