@@ -46,7 +46,7 @@ void Game::spawn_ball(vec2f_t const& position)
 
     entity->add_component(RENDER | PHYSICS);
 
-    auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bullet.bmp");
+    auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bomb.png");
     render_comp->set_position(world_pos);
 
     auto physics_comp = PhysicsManager::get().create_component(entity);
@@ -57,7 +57,8 @@ void Game::spawn_ball(vec2f_t const& position)
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
-    dynamic_box.SetAsBox(5.0f, 5.0f);
+    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()),
+                         static_cast<float>(render_comp->texture.height()));
 
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;

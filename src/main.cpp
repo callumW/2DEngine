@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
 #include <SDL2_mixer/SDL_mixer.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include <iostream>
@@ -58,6 +59,11 @@ int main(int argc, char* argv[])
     /*** FONT STUFF ***/
     if (TTF_Init() == -1) {
         std::cout << "Failed to init SDL_TTF: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
+
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        std::cout << "Failed to init SDL_Image: " << IMG_GetError() << std::endl;
         exit(1);
     }
 
@@ -132,6 +138,8 @@ int main(int argc, char* argv[])
 
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(g_window);
+
+    IMG_Quit();
 
     TTF_Quit();
 

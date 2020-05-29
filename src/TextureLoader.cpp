@@ -1,6 +1,8 @@
 #include "TextureLoader.h"
 #include "Globals.h"
 
+#include <SDL2_image/SDL_image.h>
+
 #include <cassert>
 #include <iostream>
 
@@ -24,7 +26,7 @@ texture_t TextureLoader::load_texture_cached(std::string const& path)
 
 texture_t TextureLoader::add_texture(std::string const& path)
 {
-    SDL_Surface* tmp = SDL_LoadBMP(path.c_str());
+    SDL_Surface* tmp = IMG_Load(path.c_str());
     texture_t tex = {};
 
     if (tmp) {

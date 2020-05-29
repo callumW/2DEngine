@@ -46,7 +46,8 @@ THIRD_PARTY_INCLUDES= \
 ${BOX_2D_INCLUDES}
 
 
-LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf
+LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf \
+-framework SDL2_image
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS}
 
 CPP_FLAGS= -Wall
