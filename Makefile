@@ -37,11 +37,17 @@ INCLUDE_FILES=$(wildcard include/*.h)
 
 INCLUDES=-Iinclude
 
+BOX_2D_PATH= /Users/cwilson/Libs/box2d/1025f9a
+BOX_2D_INCLUDES= -I${BOX_2D_PATH}/include
+BOX_2D_FLAGS= -L${BOX_2D_PATH} -lbox2d
+
 THIRD_PARTY_INCLUDES= \
--F/Users/cwilson/Libs/SDL/
+-F/Users/cwilson/Libs/SDL/ \
+${BOX_2D_INCLUDES}
+
 
 LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf
-LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/
+LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS}
 
 CPP_FLAGS= -Wall
 # Debug

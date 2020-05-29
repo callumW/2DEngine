@@ -11,6 +11,8 @@
 #include "input.h"
 #include "loading_helpers.h"
 
+#include <box2d/box2d.h>
+
 #include <cmath>
 #include <iostream>
 #include <utility>
@@ -35,6 +37,9 @@ Game::Game()
                            static_cast<float>(WINDOW_WIDTH), 40.0f};
 
     collision_comp->is_static = true;
+
+    b2Vec2 gravity(0.0f, -10.0f);
+    b2World world(gravity);
 }
 
 void Game::render() { RenderManager::get().render_all(); }
