@@ -9,4 +9,6 @@ extern int const WINDOW_WIDTH;
 extern int const WINDOW_HEIGHT;
 
 size_t const NUM_OF_ENTITIES = 1000;
+
+bool const SHOW_COLLISION_DEBUG = false;
 #endif
