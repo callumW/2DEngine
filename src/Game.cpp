@@ -25,16 +25,6 @@ Game::Game() : world(gravity)
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
 
     InputSystem::get().on_mouse_left_click(spawn_func);
-    //
-    // entity_t* floor = EntityManager::get().create_entity();
-    //
-    // floor->add_component(COLLISION);
-    //
-    // auto collision_comp = CollisionSystem::get().create_component(floor);
-    // collision_comp->box = {0.0f, static_cast<float>(WINDOW_HEIGHT),
-    //                        static_cast<float>(WINDOW_WIDTH), 40.0f};
-    //
-    // collision_comp->is_static = true;
 }
 
 void Game::render() { RenderManager::get().render_all(); }
