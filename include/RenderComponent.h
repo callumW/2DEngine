@@ -1,6 +1,7 @@
 #ifndef RENDER_COMPONENT_H
 #define RENDER_COMPONENT_H
 #include <SDL2/SDL.h>
+#include <box2d/box2d.h>
 
 #include "ComponentManager.h"
 #include "Entity.h"
@@ -15,6 +16,8 @@ typedef struct render_component_t {
     SDL_Point pivot_point;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 
+    b2Body* physics_body = nullptr;
+
     void reset()
     {
         hidden = false;
@@ -26,6 +29,12 @@ typedef struct render_component_t {
     }
 
     void set_position(vec2f_t const& pos)
+    {
+        dst_rect.x = static_cast<int>(pos.x) - texture.src_rect.w / 2;
+        dst_rect.y = static_cast<int>(pos.y) - texture.src_rect.h / 2;
+    }
+
+    void set_position(b2Vec2 const& pos)
     {
         dst_rect.x = static_cast<int>(pos.x) - texture.src_rect.w / 2;
         dst_rect.y = static_cast<int>(pos.y) - texture.src_rect.h / 2;

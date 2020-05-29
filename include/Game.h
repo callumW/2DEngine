@@ -1,7 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
-#include <SDL2/SDL.h>
 #include <array>
+
+#include <SDL2/SDL.h>
+#include <box2d/box2d.h>
 
 #include "game_math.h"
 
@@ -17,5 +19,8 @@ public:
 
 private:
     void spawn_ball(vec2f_t const& position);
+
+    b2Vec2 gravity = {0.0f, -10.0f};
+    b2World world;
 };
 #endif
