@@ -86,6 +86,6 @@ void Game::spawn_ball(vec2f_t const& position)
     //     EntityManager::get().destroy_entity(*entity);
     // };
     //
-    // auto delete_task = std::make_pair(delete_func, 1.0f);
+    // auto delete_task = std::make_pair(delete_func, 3.0f);
     // TimingSystem::get().schedule_task(delete_task);
 }
