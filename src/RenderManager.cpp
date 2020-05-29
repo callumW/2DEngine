@@ -20,13 +20,11 @@ void RenderManager::render_all()
 
         if (!comp.hidden) {
 
-            // auto physics_comp = PhysicsManager::get().get_component(entities[i]);
-            // if (physics_comp) {
-            //     comp.set_position(physics_comp->position);
-            // }
-
-            if (comp.physics_body) {
-                comp.set_position(comp.physics_body->GetPosition());
+            if (entities[i].has_component(PHYSICS)) {
+                auto physics_comp = PhysicsManager::get().get_component(entities[i]);
+                if (physics_comp && physics_comp->body) {
+                    comp.set_position(physics_comp->body->GetPosition());
+                }
             }
 
             SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.texture.src_rect, &comp.dst_rect,

@@ -47,10 +47,6 @@ void Game::update(Uint32 delta)
 
     PhysicsManager::get().simulate(delta_f);
 
-    world.Step(delta_f, 8, 3);
-
-    CollisionSystem::get().check_for_collisions();
-
     InputSystem::get().update();
 }
 
@@ -58,15 +54,17 @@ void Game::spawn_ball(vec2f_t const& position)
 {
     entity_t* entity = EntityManager::get().create_entity();
 
-    entity->add_component(RENDER);
+    entity->add_component(RENDER | PHYSICS);
 
     auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bullet.bmp");
     render_comp->set_position(position);
 
+    auto physics_comp = PhysicsManager::get().create_component(entity);
+
     b2BodyDef body_def = {};
     body_def.type = b2_dynamicBody;
     body_def.position.Set(position.x, position.y);
-    b2Body* body = world.CreateBody(&body_def);
+    b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
     dynamic_box.SetAsBox(5.0f, 5.0f);
@@ -79,8 +77,10 @@ void Game::spawn_ball(vec2f_t const& position)
     body->CreateFixture(&fixture_def);
 
     render_comp->physics_body = body;
+    physics_comp->body = body;
 
     assert(entity->has_component(RENDER));
+    assert(entity->has_component(PHYSICS));
 
     // TimingSystem::timer_task_cb_t delete_func = [entity](float delta) {
     //     EntityManager::get().destroy_entity(*entity);
