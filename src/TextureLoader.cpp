@@ -116,12 +116,17 @@ bool TextureLoader::create_animation_frames(Json::Value& root,
     int num_frames = frames.size();
     animation.resize(num_frames);
     size_t i = 0;
+    // TODO this is not sorted!
     for (auto& frame : frames) {
-        animation[i].duration = frame["duration"].asFloat() / 1000.0f;
-        animation[i].texture.src_rect = {frame["frame"]["x"].asInt(), frame["frame"]["y"].asInt(),
-                                         frame["spriteSourceSize"]["w"].asInt(),
-                                         frame["spriteSourceSize"]["h"].asInt()};
-        i++;
+        float duration = frame["duration"].asFloat() / 1000.0f;
+        SDL_Rect src_rect = {frame["frame"]["x"].asInt(), frame["frame"]["y"].asInt(),
+                             frame["spriteSourceSize"]["w"].asInt(),
+                             frame["spriteSourceSize"]["h"].asInt()};
+
+        i = src_rect.x / src_rect.w;
+        assert(i < frames.size());
+        animation[i].duration = duration;
+        animation[i].texture.src_rect = src_rect;
     }
     return true;
 }

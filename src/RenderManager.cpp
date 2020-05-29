@@ -84,7 +84,6 @@ texture_t RenderManager::update_animation(animation_t& animation)
         return update_animation(animation);
     }
     else {
-        std::cout << "Cur pos updated to: " << animation.cur_pos << std::endl;
         return animation.frames[animation.cur_pos].texture;
     }
 }
