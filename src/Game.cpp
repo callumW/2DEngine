@@ -70,6 +70,8 @@ void Game::spawn_ball(vec2f_t const& position)
 
     body->CreateFixture(&fixture_def);
 
+    body->ApplyTorque(1000000000.0f, true);
+
     render_comp->physics_body = body;
     physics_comp->body = body;
 
