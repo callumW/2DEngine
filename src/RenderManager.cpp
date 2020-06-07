@@ -27,6 +27,7 @@ void RenderManager::render_all()
                 if (physics_comp && physics_comp->body) {
                     auto physics_pos = physics_comp->body->GetWorldCenter();
                     comp.set_position(convert_to_screen_space(physics_pos));
+                    comp.rotation = physics_comp->body->GetAngle();
 
                     if (SHOW_COLLISION_DEBUG) {
                         auto fixture = physics_comp->body->GetFixtureList();
