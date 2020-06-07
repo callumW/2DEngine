@@ -6,9 +6,12 @@
 #include "RenderManager.h"
 #include "TimingSystem.h"
 #include "UISystem.h"
+#include "file_utils.h"
 #include "game_math.h"
 #include "input.h"
 #include "loading_helpers.h"
+
+#include <json/json.h>
 
 #include <cmath>
 #include <iostream>
@@ -24,6 +27,8 @@ Game::Game() : world(gravity)
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
 
     InputSystem::get().on_mouse_left_click(spawn_func);
+
+    load_map();
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -84,4 +89,50 @@ void Game::spawn_ball(vec2f_t const& position)
     //
     // auto delete_task = std::make_pair(delete_func, 3.0f);
     // TimingSystem::get().schedule_task(delete_task);
+}
+
+void Game::load_map()
+{
+    std::string const path = "./assets/tiles/grass_lands.map";
+    auto file_contents = read_file(path);
+    if (file_contents.first == nullptr) {
+        std::cout << "Failed to load tilemap from: " << path << std::endl;
+        return;
+    }
+
+
+    Json::CharReaderBuilder reader_builder;
+    Json::CharReader* reader = reader_builder.newCharReader();
+    Json::Value root;
+    std::string err;
+
+    if (!reader->parse(file_contents.first.get(), file_contents.first.get() + file_contents.second,
+                       &root, &err)) {
+        std::cout << "Failed to parse map file (" << path << "): " << err << std::endl;
+    }
+    else {
+        int width = root["chunk"]["size"]["w"].asInt();
+        int height = root["chunk"]["size"]["h"].asInt();
+
+        std::string tile_path = "./assets/tiles/" + root["chunk"]["tile"]["path"].asString();
+        int tile_width = root["chunk"]["tile"]["size"]["w"].asInt();
+        int tile_height = root["chunk"]["tile"]["size"]["h"].asInt();
+
+        std::vector<SDL_Rect> tiles;
+        tiles.resize(width * height);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                entity_t* entity = EntityManager::get().create_entity();
+                entity->add_component(RENDER);
+
+                auto render_comp =
+                    RenderManager::get().create_static_render_component(entity, tile_path);
+                render_comp->set_position(vec2f_t{static_cast<float>(x * tile_width),
+                                                  static_cast<float>(y * tile_height)});
+            }
+        }
+    }
+
+    delete reader;
 }

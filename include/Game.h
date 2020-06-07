@@ -20,6 +20,8 @@ public:
 private:
     void spawn_ball(vec2f_t const& position);
 
+    void load_map();
+
     b2Vec2 gravity = {0.0f, -10.0f};
     b2World world;
 };
