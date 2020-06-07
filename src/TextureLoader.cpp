@@ -123,6 +123,8 @@ bool TextureLoader::create_animation_frames(Json::Value& root,
                              frame["spriteSourceSize"]["h"].asInt()};
 
         i = src_rect.x / src_rect.w;
+        // TODO make this work for different dimensioned sprite sheets! (i.e. row & columns, just
+        // columns, just rows)
         assert(i < frames.size());
         animation[i].duration = duration;
         animation[i].texture.src_rect = src_rect;
