@@ -1,5 +1,7 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
+#include <ostream>
+#include <vector>
 
 #include "Texture.h"
 
@@ -15,5 +17,6 @@ typedef struct animation_t {
     size_t cur_pos = 0;
 } animation_t;
 
+std::ostream& operator<<(std::ostream& str, animation_frame_t const& frame);
 
 #endif

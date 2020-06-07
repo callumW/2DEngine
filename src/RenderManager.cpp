@@ -110,7 +110,8 @@ RenderManager::create_animated_render_component(entity_t* entity, std::string co
     assert(TextureLoader::get().load_animation_frames(animation_path, comp->animation));
 
     comp->texture = comp->animation.frames[0].texture;
-    comp->pivot_point = {comp->texture.src_rect.w / 2, comp->texture.src_rect.h / 2};
+    comp->pivot_point = {comp->texture.src_rect.w / 2 + comp->texture.src_rect.x,
+                         comp->texture.src_rect.h / 2 + comp->texture.src_rect.y};
     comp->dst_rect = comp->texture.src_rect;
 
     return comp;

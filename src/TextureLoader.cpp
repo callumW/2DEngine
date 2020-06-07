@@ -115,6 +115,9 @@ bool TextureLoader::create_animation_frames(Json::Value& root,
     auto frames = root["frames"];
     int num_frames = frames.size();
     animation.resize(num_frames);
+
+    int sheet_width = root["meta"]["size"]["w"].asInt();
+
     size_t i = 0;
     for (auto& frame : frames) {
         float duration = frame["duration"].asFloat() / 1000.0f;
@@ -122,18 +125,35 @@ bool TextureLoader::create_animation_frames(Json::Value& root,
                              frame["spriteSourceSize"]["w"].asInt(),
                              frame["spriteSourceSize"]["h"].asInt()};
 
-        i = src_rect.x / src_rect.w;
-        // TODO make this work for different dimensioned sprite sheets! (i.e. row & columns, just
-        // columns, just rows)
+        i = src_rect.x / src_rect.w + (src_rect.y / src_rect.h * (sheet_width / src_rect.w));
+
         assert(i < frames.size());
         animation[i].duration = duration;
         animation[i].texture.src_rect = src_rect;
     }
+
     return true;
 }
 
 bool TextureLoader::is_valid_animation(Json::Value& root)
 {
+
+    if (root.isMember("meta")) {
+        auto& meta = root["meta"];
+        if (meta.isMember("size")) {
+            auto& size = meta["size"];
+            if (!size.isMember("w") || !size.isMember("h")) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+
     // Needs frames object with at least one frame
     // frame needs to include frame element with x, y, w, h elements
     if (root.isMember("frames")) {
