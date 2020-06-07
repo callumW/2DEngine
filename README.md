@@ -7,6 +7,9 @@ Currently this repo is a little 2D Game sandbox where I test out game/programmin
 * [SDL2](https://www.libsdl.org/download-2.0.php)
 * [SDL_mixer 2.0](https://www.libsdl.org/projects/SDL_mixer/)
 * [SDL_ttf 2.0](https://www.libsdl.org/projects/SDL_ttf/)
+* [SDL_Image 2.0](https://www.libsdl.org/projects/SDL_image/)
+* [Box2d](https://box2d.org)
+* [JsonCpp](https://github.com/open-source-parsers/jsoncpp)
 * [Clang](https://clang.llvm.org/get_started.html) (Although you could probably build it on other
     stuff!)
 

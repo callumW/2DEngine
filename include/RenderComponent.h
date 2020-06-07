@@ -3,18 +3,21 @@
 #include <SDL2/SDL.h>
 #include <box2d/box2d.h>
 
+#include "Animation.h"
 #include "ComponentManager.h"
 #include "Entity.h"
 #include "Texture.h"
 
-
 typedef struct render_component_t {
     bool hidden = false;
+    bool is_animated = false;
     texture_t texture;
     SDL_Rect dst_rect;
     double rotation;
     SDL_Point pivot_point;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+    animation_t animation;
 
     b2Body* physics_body = nullptr;
 

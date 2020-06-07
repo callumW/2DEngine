@@ -34,6 +34,8 @@ void Game::update(Uint32 delta)
 
     TimingSystem::get().update(delta_f);
 
+    RenderManager::get().update_animations(delta_f);
+
     PhysicsManager::get().simulate(delta_f);
 
     InputSystem::get().update();
@@ -46,7 +48,8 @@ void Game::spawn_ball(vec2f_t const& position)
 
     entity->add_component(RENDER | PHYSICS);
 
-    auto render_comp = RenderManager::get().create_render_component(entity, "./assets/bullet.bmp");
+    auto render_comp = RenderManager::get().create_animated_render_component(
+        entity, "./assets/sprite-0001/Sprite-0001.json");
     render_comp->set_position(world_pos);
 
     auto physics_comp = PhysicsManager::get().create_component(entity);
@@ -57,7 +60,8 @@ void Game::spawn_ball(vec2f_t const& position)
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
-    dynamic_box.SetAsBox(5.0f, 5.0f);
+    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()) / 2.0f,
+                         static_cast<float>(render_comp->texture.height()) / 2.0f);
 
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
@@ -65,6 +69,8 @@ void Game::spawn_ball(vec2f_t const& position)
     fixture_def.friction = 0.3f;
 
     body->CreateFixture(&fixture_def);
+
+    body->ApplyTorque(1000000000.0f, true);
 
     render_comp->physics_body = body;
     physics_comp->body = body;
