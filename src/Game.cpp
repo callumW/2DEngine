@@ -135,6 +135,8 @@ void Game::load_map()
             }
         }
 
+        // TODO we need to store tilemap in world space, not screen space!
+
         auto wall_array = root["walls"];
         for (auto& wall : wall_array) {
             int x = wall["coords"]["x"].asInt();
