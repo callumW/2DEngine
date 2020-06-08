@@ -113,12 +113,12 @@ void Game::load_map()
         std::cout << "Failed to parse map file (" << path << "): " << err << std::endl;
     }
     else {
-        int width = root["chunk"]["size"]["w"].asInt();
-        int height = root["chunk"]["size"]["h"].asInt();
+        int width = root["backdrop"]["size"]["w"].asInt();
+        int height = root["backdrop"]["size"]["h"].asInt();
 
-        std::string tile_path = "./assets/tiles/" + root["chunk"]["tile"]["path"].asString();
-        int tile_width = root["chunk"]["tile"]["size"]["w"].asInt();
-        int tile_height = root["chunk"]["tile"]["size"]["h"].asInt();
+        std::string tile_path = "./assets/tiles/" + root["backdrop"]["tile"]["path"].asString();
+        int tile_width = root["backdrop"]["tile"]["size"]["w"].asInt();
+        int tile_height = root["backdrop"]["tile"]["size"]["h"].asInt();
 
         std::vector<SDL_Rect> tiles;
         tiles.resize(width * height);
@@ -133,6 +133,42 @@ void Game::load_map()
                 render_comp->set_position(vec2f_t{static_cast<float>(x * tile_width),
                                                   static_cast<float>(y * tile_height)});
             }
+        }
+
+        auto wall_array = root["walls"];
+        for (auto& wall : wall_array) {
+            int x = wall["coords"]["x"].asInt();
+            int y = wall["coords"]["y"].asInt();
+            std::string const texture_path = "./assets/tiles/" + wall["tile"]["path"].asString();
+            int width = wall["tile"]["size"]["w"].asInt();
+            int height = wall["tile"]["size"]["h"].asInt();
+
+            entity_t* entity = EntityManager::get().create_entity();
+            entity->add_component(RENDER | PHYSICS);
+
+            auto render_comp =
+                RenderManager::get().create_static_render_component(entity, texture_path);
+            render_comp->set_position(vec2f_t{static_cast<float>(x), static_cast<float>(y)});
+
+            b2BodyDef body_def = {};
+            body_def.type = b2_staticBody;
+            body_def.position.Set(static_cast<float>(x), static_cast<float>(y));
+            b2Body* body = PhysicsManager::get().create_body(body_def);
+
+            b2PolygonShape static_box = {};
+            static_box.SetAsBox(static_cast<float>(width) / 2.0f,
+                                static_cast<float>(height) / 2.0f);
+
+            b2FixtureDef fixture_def = {};
+            fixture_def.shape = &static_box;
+            fixture_def.density = 1.0f;
+            fixture_def.friction = 0.3f;
+
+            body->CreateFixture(&fixture_def);
+
+            auto physics_comp = PhysicsManager::get().create_component(entity);
+            physics_comp->body = body;
+            render_comp->physics_body = body;
         }
     }
 
