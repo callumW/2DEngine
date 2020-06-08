@@ -83,7 +83,7 @@ ${OUTPUT}: ${BUILD_DIR} ${OBJ} ${BUILD_ASSETS}
 -include ${TEST_DEPS}
 
 ${BUILD_DIR}:
-	mkdir ${BUILD_DIR}
+	mkdir -p ${BUILD_DIR}
 
 .PHONY: clean
 clean:
@@ -105,4 +105,4 @@ ${TEST_OUTPUT}: ${TEST_BUILD_DIR} ${TEST_OBJ}
 	${COMPILER} -std=${CPP_STD} ${TEST_OBJ} ${OBJS_UNDER_TEST} ${LD_FLAGS} -o ${TEST_OUTPUT}
 
 ${TEST_BUILD_DIR}:
-	mkdir ${TEST_BUILD_DIR}
+	mkdir -p ${TEST_BUILD_DIR}
