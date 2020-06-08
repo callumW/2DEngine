@@ -62,6 +62,10 @@ void RenderManager::render_all()
             }
         }
     }
+
+    if (grid_enabled) {
+        render_grid();
+    }
 }
 
 void RenderManager::update_animations(float delta)
@@ -155,4 +159,33 @@ vec2f_t RenderManager::convert_to_world_pos(b2Vec2 const& screen_pos)
     static vec2f_t world_center = {viewport_width / 2.0f, viewport_height / 2.0f};
 
     return {screen_pos.x - world_center.x, 0 - (screen_pos.y - world_center.y)};
+}
+
+void RenderManager::enable_grid(bool enable, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int width,
+                                int height)
+{
+    grid_enabled = enable;
+    if (!enable) {
+        grid_lines.clear();
+    }
+    else {
+        assert(width > 0 && height > 0);
+        for (int x = 0; x < WINDOW_WIDTH; x += width) {
+            grid_lines.push_back(std::make_pair(SDL_Point{x, 0}, SDL_Point{x, WINDOW_HEIGHT}));
+        }
+
+        for (int y = 0; y < WINDOW_HEIGHT; y += height) {
+            grid_lines.push_back(std::make_pair(SDL_Point{0, y}, SDL_Point{WINDOW_WIDTH, y}));
+        }
+
+        grid_color = {r, g, b, a};
+    }
+}
+
+void RenderManager::render_grid()
+{
+    SDL_SetRenderDrawColor(g_renderer, grid_color.r, grid_color.g, grid_color.b, grid_color.a);
+    for (auto& line : grid_lines) {
+        SDL_RenderDrawLine(g_renderer, line.first.x, line.first.y, line.second.x, line.second.y);
+    }
 }

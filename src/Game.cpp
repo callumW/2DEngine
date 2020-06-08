@@ -29,6 +29,8 @@ Game::Game() : world(gravity)
     InputSystem::get().on_mouse_left_click(spawn_func);
 
     load_map();
+
+    RenderManager::get().enable_grid(true, 0, 0, 255, 255, 64, 64);
 }
 
 void Game::render() { RenderManager::get().render_all(); }
