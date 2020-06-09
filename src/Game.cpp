@@ -38,7 +38,6 @@ void Game::render() { RenderManager::get().render_all(); }
 void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
-
     TimingSystem::get().update(delta_f);
 
     RenderManager::get().update_animations(delta_f);
@@ -46,6 +45,22 @@ void Game::update(Uint32 delta)
     PhysicsManager::get().simulate(delta_f);
 
     InputSystem::get().update();
+
+    if (INPUT.KEY_W) {
+        PhysicsManager::get().World().SetGravity({0.0f, 100.0f});
+    }
+    else if (INPUT.KEY_D) {
+        PhysicsManager::get().World().SetGravity({100.0f, 0.0f});
+    }
+    else if (INPUT.KEY_S) {
+        PhysicsManager::get().World().SetGravity({0.0f, -100.0f});
+    }
+    else if (INPUT.KEY_A) {
+        PhysicsManager::get().World().SetGravity({-100.0f, 0.0f});
+    }
+    else {
+        PhysicsManager::get().World().SetGravity({0.0f, 0.0f});
+    }
 }
 
 void Game::spawn_ball(vec2f_t const& position)
@@ -73,7 +88,7 @@ void Game::spawn_ball(vec2f_t const& position)
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
     fixture_def.density = 1.0f;
-    fixture_def.friction = 0.3f;
+    fixture_def.friction = 1.0f;
 
     body->CreateFixture(&fixture_def);
 
