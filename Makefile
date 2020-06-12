@@ -48,7 +48,7 @@ JSON_CPP_FLAGS= -L${JSON_CPP_PATH} -ljsoncpp
 LIBTMX_PATH= /Users/cwilson/Libs/libtmx/1.0.0
 LIBTMX_INCLUDES= -I${LIBTMX_PATH}/include
 LIBTMX_LIB_PATH=${LIBTMX_PATH}/bin
-LIBTMX_FLAGS=-L${LIBTMX_LIB_PATH} -ltmx
+LIBTMX_FLAGS=-L${LIBTMX_LIB_PATH} -ltmx -lz -lxml2
 
 THIRD_PARTY_INCLUDES= \
 -F/Users/cwilson/Libs/SDL/ \

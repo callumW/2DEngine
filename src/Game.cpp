@@ -106,86 +106,58 @@ void Game::spawn_ball(vec2f_t const& position)
     // TimingSystem::get().schedule_task(delete_task);
 }
 
+static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
+                        unsigned int const tile_height, unsigned int const x, unsigned int const y)
+{
+    texture_t const* tex = static_cast<texture_t const*>(tile->image->resource_image);
+
+    vec2f_t const pos{static_cast<float>(x), static_cast<float>(y)};
+
+    entity_t* entity = EntityManager::get().create_entity();
+    entity->add_component(RENDER);
+
+    auto render_comp = RenderManager::get().create_static_render_component(entity, *tex);
+    render_comp->set_position(pos);
+    render_comp->dst_rect.w = tile_width;
+    render_comp->dst_rect.h = tile_height;
+}
+
 void Game::load_map()
 {
-    std::string const path = "./assets/tiles/grass_lands.map";
-    auto file_contents = read_file(path);
-    if (file_contents.first == nullptr) {
-        std::cout << "Failed to load tilemap from: " << path << std::endl;
+
+    tmx_img_load_func = tmx_load_texture;
+    tmx_img_free_func = nullptr;
+
+    tmx_map* map = tmx_load("./assets/tilemap.tmx");
+    if (map == nullptr) {
+        std::cout << "Failed to load tilemap!" << std::endl;
         return;
     }
 
+    auto map_width = map->width;
+    auto map_height = map->height;
 
-    Json::CharReaderBuilder reader_builder;
-    Json::CharReader* reader = reader_builder.newCharReader();
-    Json::Value root;
-    std::string err;
+    std::cout << "Loaded tilemap: " << std::endl
+              << "width: " << map_width << std::endl
+              << "height: " << map_height << std::endl
+              << "tile width: " << map->tile_width << std::endl
+              << "tile height: " << map->tile_height << std::endl;
 
-    if (!reader->parse(file_contents.first.get(), file_contents.first.get() + file_contents.second,
-                       &root, &err)) {
-        std::cout << "Failed to parse map file (" << path << "): " << err << std::endl;
-    }
-    else {
-        int width = root["backdrop"]["size"]["w"].asInt();
-        int height = root["backdrop"]["size"]["h"].asInt();
+    tmx_layer* layer = map->ly_head;
 
-        std::string tile_path = "./assets/tiles/" + root["backdrop"]["tile"]["path"].asString();
-        int tile_width = root["backdrop"]["tile"]["size"]["w"].asInt();
-        int tile_height = root["backdrop"]["tile"]["size"]["h"].asInt();
-
-        std::vector<SDL_Rect> tiles;
-        tiles.resize(width * height);
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                entity_t* entity = EntityManager::get().create_entity();
-                entity->add_component(RENDER);
-
-                auto render_comp =
-                    RenderManager::get().create_static_render_component(entity, tile_path);
-                render_comp->set_position(vec2f_t{static_cast<float>(x * tile_width),
-                                                  static_cast<float>(y * tile_height)});
+    if (layer != nullptr) {
+        for (int x = 0; x < map_width; x++) {
+            for (int y = 0; y < map_height; y++) {
+                unsigned int gid =
+                    (layer->content.gids[(x * map_width) + y]) & TMX_FLIP_BITS_REMOVAL;
+                if (map->tiles[gid] != nullptr) {
+                    create_tile(map->tiles[gid], map->tile_width, map->tile_height,
+                                x * map->tile_width, y * map->tile_height);
+                }
             }
         }
-
-        // TODO we need to store tilemap in world space, not screen space!
-
-        auto wall_array = root["walls"];
-        for (auto& wall : wall_array) {
-            int x = wall["coords"]["x"].asInt();
-            int y = wall["coords"]["y"].asInt();
-            std::string const texture_path = "./assets/tiles/" + wall["tile"]["path"].asString();
-            int width = wall["tile"]["size"]["w"].asInt();
-            int height = wall["tile"]["size"]["h"].asInt();
-
-            entity_t* entity = EntityManager::get().create_entity();
-            entity->add_component(RENDER | PHYSICS);
-
-            auto render_comp =
-                RenderManager::get().create_static_render_component(entity, texture_path);
-            render_comp->set_position(vec2f_t{static_cast<float>(x), static_cast<float>(y)});
-
-            b2BodyDef body_def = {};
-            body_def.type = b2_staticBody;
-            body_def.position.Set(static_cast<float>(x), static_cast<float>(y));
-            b2Body* body = PhysicsManager::get().create_body(body_def);
-
-            b2PolygonShape static_box = {};
-            static_box.SetAsBox(static_cast<float>(width) / 2.0f,
-                                static_cast<float>(height) / 2.0f);
-
-            b2FixtureDef fixture_def = {};
-            fixture_def.shape = &static_box;
-            fixture_def.density = 1.0f;
-            fixture_def.friction = 0.3f;
-
-            body->CreateFixture(&fixture_def);
-
-            auto physics_comp = PhysicsManager::get().create_component(entity);
-            physics_comp->body = body;
-            render_comp->physics_body = body;
-        }
     }
 
-    delete reader;
+
+    tmx_map_free(map);
 }

@@ -15,6 +15,9 @@ public:
 
     render_component_t* create_static_render_component(entity_t* entity,
                                                        std::string const& tex_path);
+
+    render_component_t* create_static_render_component(entity_t* entity, texture_t tex);
+
     render_component_t* create_animated_render_component(entity_t* entity,
                                                          std::string const& animation_path);
 

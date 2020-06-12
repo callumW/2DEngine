@@ -106,6 +106,18 @@ render_component_t* RenderManager::create_static_render_component(entity_t* enti
     return comp;
 }
 
+render_component_t* RenderManager::create_static_render_component(entity_t* entity, texture_t tex)
+{
+    render_component_t* comp = create_component(entity);
+
+    comp->texture = tex;
+    comp->pivot_point = {comp->texture.src_rect.w / 2, comp->texture.src_rect.h / 2};
+    comp->dst_rect = comp->texture.src_rect;
+    comp->is_animated = false;
+
+    return comp;
+}
+
 render_component_t*
 RenderManager::create_animated_render_component(entity_t* entity, std::string const& animation_path)
 {
