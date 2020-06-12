@@ -12,6 +12,7 @@
 #include "loading_helpers.h"
 
 #include <json/json.h>
+#include <tmx.h>
 
 #include <cmath>
 #include <iostream>
