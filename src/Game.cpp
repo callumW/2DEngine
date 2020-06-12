@@ -113,11 +113,14 @@ static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
 
     vec2f_t const pos{static_cast<float>(x), static_cast<float>(y)};
 
+    std::cout << "Creating tile @ " << pos << " | tex: " << *tex << std::endl;
+
     entity_t* entity = EntityManager::get().create_entity();
     entity->add_component(RENDER);
 
     auto render_comp = RenderManager::get().create_static_render_component(entity, *tex);
-    render_comp->set_position(pos);
+    render_comp->dst_rect.x = x;
+    render_comp->dst_rect.y = y;
     render_comp->dst_rect.w = tile_width;
     render_comp->dst_rect.h = tile_height;
 }
@@ -128,7 +131,7 @@ void Game::load_map()
     tmx_img_load_func = tmx_load_texture;
     tmx_img_free_func = nullptr;
 
-    tmx_map* map = tmx_load("./assets/tilemap.tmx");
+    tmx_map* map = tmx_load("./assets/small_map.tmx");
     if (map == nullptr) {
         std::cout << "Failed to load tilemap!" << std::endl;
         return;
