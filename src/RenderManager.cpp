@@ -197,6 +197,7 @@ void RenderManager::enable_grid(bool enable, Uint8 r, Uint8 g, Uint8 b, Uint8 a,
 void RenderManager::render_grid()
 {
     SDL_SetRenderDrawColor(g_renderer, grid_color.r, grid_color.g, grid_color.b, grid_color.a);
+    SDL_SetRenderDrawBlendMode(g_renderer, SDL_BLENDMODE_BLEND);
     for (auto& line : grid_lines) {
         SDL_RenderDrawLine(g_renderer, line.first.x, line.first.y, line.second.x, line.second.y);
     }
