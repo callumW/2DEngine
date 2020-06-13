@@ -149,7 +149,7 @@ void Game::load_map()
     tmx_img_load_func = tmx_load_texture;
     tmx_img_free_func = nullptr;
 
-    tmx_map* map = tmx_load("./assets/small_map.tmx");
+    tmx_map* map = tmx_load("./assets/movable_player_map.tmx");
     if (map == nullptr) {
         std::cout << "Failed to load tilemap!" << std::endl;
         return;
@@ -166,12 +166,19 @@ void Game::load_map()
 
     tmx_layer* layer = map->ly_head;
 
+    if (layer->type != L_LAYER) {
+        std::cout << "Layer is not a tile layer!" << std::endl;
+        return;
+    }
+
     if (layer != nullptr) {
         for (int x = 0; x < map_width; x++) {
             for (int y = 0; y < map_height; y++) {
                 unsigned int gid =
                     (layer->content.gids[(x * map_width) + y]) & TMX_FLIP_BITS_REMOVAL;
-                if (map->tiles[gid] != nullptr) {
+                std::cout << "GID: " << gid << std::endl;
+
+                if (gid != 0 && map->tiles[gid] != nullptr) {
                     create_tile(map->tiles[gid], map->tile_width, map->tile_height,
                                 x * map->tile_width, y * map->tile_height);
                 }
