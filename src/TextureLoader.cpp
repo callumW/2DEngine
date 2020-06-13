@@ -195,3 +195,19 @@ bool TextureLoader::is_valid_animation(Json::Value& root)
 
     return true;
 }
+
+texture_t* TextureLoader::tmx_load_texture_cached(char const* path)
+{
+    auto res = textures.find(path);
+
+    if (res == textures.end()) {
+        if (add_texture(path).tex != nullptr) {
+            return tmx_load_texture_cached(path);
+        }
+    }
+    else {
+        std::cout << "Loaded texture: " << path << std::endl;
+        return &res->second;
+    }
+    return nullptr;
+}

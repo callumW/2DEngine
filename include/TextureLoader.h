@@ -17,6 +17,8 @@ public:
 
     texture_t load_texture_cached(std::string const& path);
 
+    texture_t* tmx_load_texture_cached(char const* path);
+
     texture_t default_texture();
 
     bool load_animation_frames(std::string const& path, animation_t& animation);

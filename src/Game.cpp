@@ -6,17 +6,18 @@
 #include "RenderManager.h"
 #include "TimingSystem.h"
 #include "UISystem.h"
+#include "file_utils.h"
 #include "game_math.h"
 #include "input.h"
 #include "loading_helpers.h"
+
+#include <json/json.h>
+#include <tmx.h>
 
 #include <cmath>
 #include <iostream>
 #include <utility>
 
-float const PLAYER_MOVEMENT_SPEED = 250.0f;
-float const PLAYER_BULLET_SPEED = 1000.0f;
-float const PLAYER_FIRE_RATE = 1.0f / 10.0f;
 
 Game::Game() : world(gravity)
 {
@@ -24,6 +25,11 @@ Game::Game() : world(gravity)
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
 
     InputSystem::get().on_mouse_left_click(spawn_func);
+
+    load_map();
+
+    RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64);
+    PhysicsManager::get().World().SetGravity({0.0f, -100.0f});
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -31,7 +37,6 @@ void Game::render() { RenderManager::get().render_all(); }
 void Game::update(Uint32 delta)
 {
     float delta_f = static_cast<float>(delta) / 1000.0f;
-
     TimingSystem::get().update(delta_f);
 
     RenderManager::get().update_animations(delta_f);
@@ -66,7 +71,7 @@ void Game::spawn_ball(vec2f_t const& position)
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
     fixture_def.density = 1.0f;
-    fixture_def.friction = 0.3f;
+    fixture_def.friction = 1.0f;
 
     body->CreateFixture(&fixture_def);
 
@@ -84,4 +89,96 @@ void Game::spawn_ball(vec2f_t const& position)
     //
     // auto delete_task = std::make_pair(delete_func, 3.0f);
     // TimingSystem::get().schedule_task(delete_task);
+}
+
+static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
+                        unsigned int const tile_height, unsigned int const x, unsigned int const y)
+{
+    texture_t const* tex = static_cast<texture_t const*>(tile->image->resource_image);
+
+    vec2f_t const pos{static_cast<float>(x) + (tile_width / 2.0f),
+                      static_cast<float>(y) + (tile_height / 2.0f)};
+
+
+    std::cout << "Creating tile @ " << pos << " | tex: " << *tex
+              << " | Collision: " << (tile->collision == nullptr ? "n" : "y") << std::endl;
+
+    entity_t* entity = EntityManager::get().create_entity();
+    entity->add_component(RENDER);
+
+    if (tile->collision != nullptr) {
+        entity->add_component(PHYSICS);
+    }
+
+    auto render_comp = RenderManager::get().create_static_render_component(entity, *tex);
+    render_comp->dst_rect.x = x;
+    render_comp->dst_rect.y = y;
+    render_comp->dst_rect.w = tile_width;
+    render_comp->dst_rect.h = tile_height;
+
+    if (tile->collision != nullptr) {
+        vec2f_t world_pos = RenderManager::get().convert_to_world_pos(pos);
+        world_pos +=
+            {static_cast<float>(tile->collision->x), static_cast<float>(tile->collision->y)};
+        auto physics_comp = PhysicsManager::get().create_component(entity);
+
+        b2BodyDef body_def = {};
+        body_def.type = b2_staticBody;
+        body_def.position.Set(world_pos.x, world_pos.y);
+        b2Body* body = PhysicsManager::get().create_body(body_def);
+
+        b2PolygonShape dynamic_box = {};
+        dynamic_box.SetAsBox(static_cast<float>(tile->collision->width) / 2.0f,
+                             static_cast<float>(tile->collision->height) / 2.0f);
+
+        b2FixtureDef fixture_def = {};
+        fixture_def.shape = &dynamic_box;
+        fixture_def.density = 1.0f;
+        fixture_def.friction = 1.0f;
+
+        body->CreateFixture(&fixture_def);
+
+        render_comp->physics_body = body;
+        physics_comp->body = body;
+    }
+}
+
+void Game::load_map()
+{
+
+    tmx_img_load_func = tmx_load_texture;
+    tmx_img_free_func = nullptr;
+
+    tmx_map* map = tmx_load("./assets/small_map.tmx");
+    if (map == nullptr) {
+        std::cout << "Failed to load tilemap!" << std::endl;
+        return;
+    }
+
+    auto map_width = map->width;
+    auto map_height = map->height;
+
+    std::cout << "Loaded tilemap: " << std::endl
+              << "width: " << map_width << std::endl
+              << "height: " << map_height << std::endl
+              << "tile width: " << map->tile_width << std::endl
+              << "tile height: " << map->tile_height << std::endl;
+
+    tmx_layer* layer = map->ly_head;
+
+    if (layer != nullptr) {
+        for (int x = 0; x < map_width; x++) {
+            for (int y = 0; y < map_height; y++) {
+                unsigned int gid =
+                    (layer->content.gids[(x * map_width) + y]) & TMX_FLIP_BITS_REMOVAL;
+                if (map->tiles[gid] != nullptr) {
+                    create_tile(map->tiles[gid], map->tile_width, map->tile_height,
+                                x * map->tile_width, y * map->tile_height);
+                }
+            }
+        }
+    }
+
+
+    tmx_map_free(map);
 }

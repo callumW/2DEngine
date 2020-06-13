@@ -16,6 +16,8 @@ public:
 
     b2Body* create_body(b2BodyDef const& body_def) { return world.CreateBody(&body_def); }
 
+    b2World& World() { return world; }
+
 private:
     PhysicsManager() : world(GRAVITY){};
 

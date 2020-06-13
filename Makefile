@@ -45,15 +45,22 @@ JSON_CPP_PATH= /Users/cwilson/Libs/jsoncpp/1.8.4
 JSON_CPP_INCLUDES= -I${JSON_CPP_PATH}/include
 JSON_CPP_FLAGS= -L${JSON_CPP_PATH} -ljsoncpp
 
+LIBTMX_PATH= /Users/cwilson/Libs/libtmx/1.0.0
+LIBTMX_INCLUDES= -I${LIBTMX_PATH}/include
+LIBTMX_LIB_PATH=${LIBTMX_PATH}/bin
+LIBTMX_FLAGS=-L${LIBTMX_LIB_PATH} -ltmx -lz -lxml2
+
 THIRD_PARTY_INCLUDES= \
 -F/Users/cwilson/Libs/SDL/ \
 ${BOX_2D_INCLUDES} \
-${JSON_CPP_INCLUDES}
+${JSON_CPP_INCLUDES} \
+${LIBTMX_INCLUDES}
 
 
 LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf \
 -framework SDL2_image
-LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS} ${JSON_CPP_FLAGS}
+LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS} ${JSON_CPP_FLAGS} \
+${LIBTMX_FLAGS}
 
 CPP_FLAGS= -Wall -g
 # Debug
@@ -83,7 +90,7 @@ ${OUTPUT}: ${BUILD_DIR} ${OBJ} ${BUILD_ASSETS}
 -include ${TEST_DEPS}
 
 ${BUILD_DIR}:
-	mkdir ${BUILD_DIR}
+	mkdir -p ${BUILD_DIR}
 
 .PHONY: clean
 clean:
@@ -105,4 +112,4 @@ ${TEST_OUTPUT}: ${TEST_BUILD_DIR} ${TEST_OBJ}
 	${COMPILER} -std=${CPP_STD} ${TEST_OBJ} ${OBJS_UNDER_TEST} ${LD_FLAGS} -o ${TEST_OUTPUT}
 
 ${TEST_BUILD_DIR}:
-	mkdir ${TEST_BUILD_DIR}
+	mkdir -p ${TEST_BUILD_DIR}
