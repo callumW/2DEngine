@@ -29,6 +29,7 @@ Game::Game() : world(gravity)
     load_map();
 
     RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64);
+    PhysicsManager::get().World().SetGravity({0.0f, -100.0f});
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -43,22 +44,6 @@ void Game::update(Uint32 delta)
     PhysicsManager::get().simulate(delta_f);
 
     InputSystem::get().update();
-
-    if (INPUT.KEY_W) {
-        PhysicsManager::get().World().SetGravity({0.0f, 100.0f});
-    }
-    else if (INPUT.KEY_D) {
-        PhysicsManager::get().World().SetGravity({100.0f, 0.0f});
-    }
-    else if (INPUT.KEY_S) {
-        PhysicsManager::get().World().SetGravity({0.0f, -100.0f});
-    }
-    else if (INPUT.KEY_A) {
-        PhysicsManager::get().World().SetGravity({-100.0f, 0.0f});
-    }
-    else {
-        PhysicsManager::get().World().SetGravity({0.0f, 0.0f});
-    }
 }
 
 void Game::spawn_ball(vec2f_t const& position)
