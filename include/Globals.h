@@ -11,4 +11,6 @@ extern int const WINDOW_HEIGHT;
 size_t const NUM_OF_ENTITIES = 1000;
 
 bool const SHOW_COLLISION_DEBUG = true;
+
+float const RENDER_SCALE_FACTOR = 100.0f;
 #endif
