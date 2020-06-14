@@ -51,6 +51,8 @@ void Game::spawn_ball(vec2f_t const& position)
     vec2f_t world_pos = RenderManager::get().convert_to_world_pos(position);
     entity_t* entity = EntityManager::get().create_entity();
 
+    std::cout << "Spawning ball @ " << world_pos << std::endl;
+
     entity->add_component(RENDER | PHYSICS);
 
     auto render_comp = RenderManager::get().create_animated_render_component(
@@ -99,9 +101,9 @@ static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
     vec2f_t const pos{static_cast<float>(x) + (tile_width / 2.0f),
                       static_cast<float>(y) + (tile_height / 2.0f)};
 
-
-    std::cout << "Creating tile @ " << pos << " | tex: " << *tex
-              << " | Collision: " << (tile->collision == nullptr ? "n" : "y") << std::endl;
+    //
+    // std::cout << "Creating tile @ " << pos << " | tex: " << *tex
+    //           << " | Collision: " << (tile->collision == nullptr ? "n" : "y") << std::endl;
 
     entity_t* entity = EntityManager::get().create_entity();
     entity->add_component(RENDER);
@@ -166,24 +168,38 @@ void Game::load_map()
 
     tmx_layer* layer = map->ly_head;
 
-    if (layer->type != L_LAYER) {
-        std::cout << "Layer is not a tile layer!" << std::endl;
-        return;
-    }
+    while (layer != nullptr) {
+        if (layer->type == L_LAYER) {
+            for (int x = 0; x < map_width; x++) {
+                for (int y = 0; y < map_height; y++) {
+                    unsigned int gid =
+                        (layer->content.gids[(y * map_width) + x]) & TMX_FLIP_BITS_REMOVAL;
 
-    if (layer != nullptr) {
-        for (int x = 0; x < map_width; x++) {
-            for (int y = 0; y < map_height; y++) {
-                unsigned int gid =
-                    (layer->content.gids[(x * map_width) + y]) & TMX_FLIP_BITS_REMOVAL;
-                std::cout << "GID: " << gid << std::endl;
-
-                if (gid != 0 && map->tiles[gid] != nullptr) {
-                    create_tile(map->tiles[gid], map->tile_width, map->tile_height,
-                                x * map->tile_width, y * map->tile_height);
+                    if (gid != 0 && map->tiles[gid] != nullptr) {
+                        create_tile(map->tiles[gid], map->tile_width, map->tile_height,
+                                    x * map->tile_width, y * map->tile_height);
+                    }
                 }
             }
         }
+        else if (layer->type == L_OBJGR) {
+            auto object_group = layer->content.objgr;
+            auto object = object_group->head;
+            while (object != nullptr) {
+                // if (object->type == OT_POINT) {
+                if (strcmp("player_spawn", object->type) == 0) {
+                    std::cout << "Found player spawn @ " << object->x << ", " << object->y
+                              << std::endl;
+                    spawn_ball(
+                        vec2f_t{static_cast<float>(object->x), static_cast<float>(object->y)});
+                }
+                // }
+
+                object = object->next;
+            }
+        }
+
+        layer = layer->next;
     }
 
 
