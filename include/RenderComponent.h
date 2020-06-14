@@ -21,6 +21,8 @@ typedef struct render_component_t {
 
     b2Body* physics_body = nullptr;
 
+    size_t z_index = 1;
+
     void reset()
     {
         hidden = false;

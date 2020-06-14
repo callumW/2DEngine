@@ -24,6 +24,9 @@ inline void update_key(bool down, SDL_Keycode const& code)
         case SDLK_RSHIFT:
             INPUT.KEY_SHIFT = down;
             break;
+        case SDLK_SPACE:
+            INPUT.KEY_SPACE = down;
+            break;
     }
 }
 

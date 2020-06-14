@@ -9,6 +9,7 @@ typedef struct input_t {
     bool KEY_S = false;
     bool KEY_D = false;
     bool KEY_SHIFT = false;
+    bool KEY_SPACE = false;
 
     Sint32 mouse_x = 0;
     Sint32 mouse_y = 0;

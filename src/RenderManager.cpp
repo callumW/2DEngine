@@ -16,49 +16,51 @@ RenderManager& RenderManager::get()
 void RenderManager::render_all()
 {
     size_t const num_components = components.size();
-    for (size_t i = 0; i < num_components; i++) {
-        render_component_t& comp = components[i];
-        SDL_Point* debug_points = nullptr;
-        int point_count = 0;
-        if (!comp.hidden) {
+    for (size_t level = 0; level < 2; level++) {
+        for (size_t i = 0; i < num_components; i++) {
+            render_component_t& comp = components[i];
+            SDL_Point* debug_points = nullptr;
+            int point_count = 0;
+            if (!comp.hidden && comp.z_index == level) {
 
-            if (entities[i].has_component(PHYSICS)) {
-                auto physics_comp = PhysicsManager::get().get_component(entities[i]);
-                if (physics_comp && physics_comp->body) {
-                    auto physics_pos = physics_comp->body->GetWorldCenter();
-                    comp.set_position(convert_to_screen_space(physics_pos));
-                    comp.rotation = physics_comp->body->GetAngle();
+                if (entities[i].has_component(PHYSICS)) {
+                    auto physics_comp = PhysicsManager::get().get_component(entities[i]);
+                    if (physics_comp && physics_comp->body) {
+                        auto physics_pos = physics_comp->body->GetWorldCenter();
+                        comp.set_position(convert_to_screen_space(physics_pos));
+                        comp.rotation = physics_comp->body->GetAngle();
 
-                    if (SHOW_COLLISION_DEBUG) {
-                        auto fixture = physics_comp->body->GetFixtureList();
-                        if (fixture) {
-                            b2PolygonShape* shape = (b2PolygonShape*) fixture->GetShape();
-                            if (shape) {
-                                point_count = shape->m_count;
-                                debug_points = new SDL_Point[point_count + 1];
-                                for (int i = 0; i < point_count; i++) {
-                                    auto vec =
-                                        convert_to_screen_space(shape->m_vertices[i] + physics_pos);
-                                    debug_points[i] = {static_cast<int>(vec.x),
-                                                       static_cast<int>(vec.y)};
+                        if (SHOW_COLLISION_DEBUG) {
+                            auto fixture = physics_comp->body->GetFixtureList();
+                            if (fixture) {
+                                b2PolygonShape* shape = (b2PolygonShape*) fixture->GetShape();
+                                if (shape) {
+                                    point_count = shape->m_count;
+                                    debug_points = new SDL_Point[point_count + 1];
+                                    for (int i = 0; i < point_count; i++) {
+                                        auto vec = convert_to_screen_space(shape->m_vertices[i] +
+                                                                           physics_pos);
+                                        debug_points[i] = {static_cast<int>(vec.x),
+                                                           static_cast<int>(vec.y)};
+                                    }
+                                    debug_points[point_count] = debug_points[0];
+                                    point_count += 1;
                                 }
-                                debug_points[point_count] = debug_points[0];
-                                point_count += 1;
                             }
                         }
                     }
                 }
-            }
 
-            SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.texture.src_rect, &comp.dst_rect,
-                             comp.rotation, &comp.pivot_point, comp.flip);
+                SDL_RenderCopyEx(g_renderer, comp.texture.tex, &comp.texture.src_rect,
+                                 &comp.dst_rect, comp.rotation, &comp.pivot_point, comp.flip);
 
-            if (debug_points != nullptr) {
-                SDL_SetRenderDrawColor(g_renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDrawLines(g_renderer, debug_points, point_count);
+                if (debug_points != nullptr) {
+                    SDL_SetRenderDrawColor(g_renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                    SDL_RenderDrawLines(g_renderer, debug_points, point_count);
 
-                delete[] debug_points;
-                debug_points = nullptr;
+                    delete[] debug_points;
+                    debug_points = nullptr;
+                }
             }
         }
     }
