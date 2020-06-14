@@ -60,9 +60,9 @@ ${LIBTMX_INCLUDES}
 LIBS= -F/Users/cwilson/Libs/SDL/ -framework SDL2 -framework SDL2_mixer -framework SDL2_ttf \
 -framework SDL2_image
 LD_FLAGS = ${LIBS} -Wl,-rpath,/Users/cwilson/Libs/SDL/ ${BOX_2D_FLAGS} ${JSON_CPP_FLAGS} \
-${LIBTMX_FLAGS}
+${LIBTMX_FLAGS} -fsanitize=address
 
-CPP_FLAGS= -Wall -g
+CPP_FLAGS= -Wall -g -fsanitize=address -fno-omit-frame-pointer
 # Debug
 #CPP_FLAGS+= -DNDEBUG
 
