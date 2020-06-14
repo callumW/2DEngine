@@ -117,6 +117,7 @@ static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
     render_comp->dst_rect.y = y;
     render_comp->dst_rect.w = tile_width;
     render_comp->dst_rect.h = tile_height;
+    render_comp->z_index = 0;
 
     if (tile->collision != nullptr) {
         vec2f_t world_pos = RenderManager::get().convert_to_world_pos(pos);
