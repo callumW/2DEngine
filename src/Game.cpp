@@ -255,4 +255,17 @@ void Game::update_player(float const delta)
 
         physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 150000.0f}, true);
     }
+
+    if (INPUT.KEY_D) {
+        auto physics_comp = PhysicsManager::get().get_component(*player);
+        assert(physics_comp != nullptr);
+
+        physics_comp->body->ApplyLinearImpulseToCenter({100000.0f, 0.0f}, true);
+    }
+    else if (INPUT.KEY_A) {
+        auto physics_comp = PhysicsManager::get().get_component(*player);
+        assert(physics_comp != nullptr);
+
+        physics_comp->body->ApplyLinearImpulseToCenter({-100000.0f, 0.0f}, true);
+    }
 }
