@@ -229,6 +229,7 @@ void Game::spawn_player(vec2f_t const& position)
     b2BodyDef body_def = {};
     body_def.type = b2_dynamicBody;
     body_def.position.Set(world_pos.x, world_pos.y);
+    body_def.fixedRotation = true;
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
@@ -258,19 +259,19 @@ void Game::update_player(float const delta)
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 0.5f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 0.02f}, true);
     }
 
     if (INPUT.KEY_D) {
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({0.075f, 0.0f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({0.05f, 0.0f}, true);
     }
     else if (INPUT.KEY_A) {
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({-0.075f, 0.0f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({-0.05f, 0.0f}, true);
     }
 }
