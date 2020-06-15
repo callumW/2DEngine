@@ -29,7 +29,7 @@ Game::Game() : world(gravity)
     load_map();
 
     RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64);
-    PhysicsManager::get().World().SetGravity({0.0f, -100.0f});
+    PhysicsManager::get().World().SetGravity({0.0f, -10.0f});
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -53,7 +53,9 @@ void Game::spawn_ball(vec2f_t const& position)
     vec2f_t world_pos = RenderManager::get().convert_to_world_pos(position);
     entity_t* entity = EntityManager::get().create_entity();
 
-    std::cout << "Spawning ball @ " << world_pos << std::endl;
+    std::cout << "Spawning ball @ " << world_pos
+              << " screen: " << RenderManager::get().convert_to_screen_space(world_pos)
+              << std::endl;
 
     entity->add_component(RENDER | PHYSICS);
 
@@ -69,8 +71,7 @@ void Game::spawn_ball(vec2f_t const& position)
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
-    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()) / 2.0f,
-                         static_cast<float>(render_comp->texture.height()) / 2.0f);
+    dynamic_box.SetAsBox(0.5f, 0.5f);
 
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
@@ -79,7 +80,7 @@ void Game::spawn_ball(vec2f_t const& position)
 
     body->CreateFixture(&fixture_def);
 
-    body->ApplyTorque(1000000000.0f, true);
+    // body->ApplyTorque(1000000000.0f, true);
 
     render_comp->physics_body = body;
     physics_comp->body = body;
@@ -123,8 +124,10 @@ static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
 
     if (tile->collision != nullptr) {
         vec2f_t world_pos = RenderManager::get().convert_to_world_pos(pos);
-        world_pos +=
-            {static_cast<float>(tile->collision->x), static_cast<float>(tile->collision->y)};
+        // vec2f_t collision_pos = RenderManager::get().convert_to_world_pos(vec2f_t{
+        //     static_cast<float>(tile->collision->x), static_cast<float>(tile->collision->y)});
+        // world_pos += collision_pos;
+
         auto physics_comp = PhysicsManager::get().create_component(entity);
 
         b2BodyDef body_def = {};
@@ -133,8 +136,9 @@ static void create_tile(tmx_tile const* tile, unsigned int const tile_width,
         b2Body* body = PhysicsManager::get().create_body(body_def);
 
         b2PolygonShape dynamic_box = {};
-        dynamic_box.SetAsBox(static_cast<float>(tile->collision->width) / 2.0f,
-                             static_cast<float>(tile->collision->height) / 2.0f);
+        dynamic_box.SetAsBox(
+            static_cast<float>(tile->collision->width) / 2.0f / RENDER_SCALE_FACTOR,
+            static_cast<float>(tile->collision->height) / 2.0f / RENDER_SCALE_FACTOR);
 
         b2FixtureDef fixture_def = {};
         fixture_def.shape = &dynamic_box;
@@ -225,11 +229,13 @@ void Game::spawn_player(vec2f_t const& position)
     b2BodyDef body_def = {};
     body_def.type = b2_dynamicBody;
     body_def.position.Set(world_pos.x, world_pos.y);
+    body_def.fixedRotation = true;
     b2Body* body = PhysicsManager::get().create_body(body_def);
 
     b2PolygonShape dynamic_box = {};
-    dynamic_box.SetAsBox(static_cast<float>(render_comp->texture.width()) / 2.0f,
-                         static_cast<float>(render_comp->texture.height()) / 2.0f);
+    dynamic_box.SetAsBox(
+        static_cast<float>(render_comp->texture.src_rect.w) / 2.0f / RENDER_SCALE_FACTOR,
+        static_cast<float>(render_comp->texture.src_rect.h) / 2.0f / RENDER_SCALE_FACTOR);
 
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
@@ -253,19 +259,19 @@ void Game::update_player(float const delta)
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 150000.0f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 0.02f}, true);
     }
 
     if (INPUT.KEY_D) {
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({100000.0f, 0.0f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({0.05f, 0.0f}, true);
     }
     else if (INPUT.KEY_A) {
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({-100000.0f, 0.0f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({-0.05f, 0.0f}, true);
     }
 }

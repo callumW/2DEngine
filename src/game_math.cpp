@@ -59,6 +59,9 @@ vec2f_t operator*(vec2f_t const& lhs, float const& rhs) { return {(lhs.x * rhs),
 
 vec2f_t operator*(float const& lhs, vec2f_t const& rhs) { return rhs * lhs; }
 
+vec2f_t operator/(vec2f_t const& lhs, float const& rhs) { return {(lhs.x / rhs), (lhs.y / rhs)}; }
+vec2f_t operator/(float const& lhs, vec2f_t const& rhs) { return rhs / lhs; }
+
 std::ostream& operator<<(std::ostream& lhs, vec2f_t const& rhs)
 {
     lhs << "(" << rhs.x << "," << rhs.y << ")";

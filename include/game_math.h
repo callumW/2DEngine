@@ -62,6 +62,8 @@ vec2f_t operator+(vec2f_t const& lhs, vec2f_t const& rhs);
 vec2f_t operator-(vec2f_t const& lhs, vec2f_t const& rhs);
 vec2f_t operator*(vec2f_t const& lhs, float const& rhs);
 vec2f_t operator*(float const& lhs, vec2f_t const& rhs);
+vec2f_t operator/(vec2f_t const& lhs, float const& rhs);
+vec2f_t operator/(float const& lhs, vec2f_t const& rhs);
 
 std::ostream& operator<<(std::ostream& lhs, vec2f_t const& rhs);
 

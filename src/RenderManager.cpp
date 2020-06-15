@@ -138,13 +138,14 @@ RenderManager::create_animated_render_component(entity_t* entity, std::string co
 
 vec2f_t RenderManager::convert_to_screen_space(vec2f_t const& world_pos)
 {
-    static float viewport_width = static_cast<float>(WINDOW_WIDTH);
-    static float viewport_height = static_cast<float>(WINDOW_HEIGHT);
+    static float viewport_width = static_cast<float>(WINDOW_WIDTH) / RENDER_SCALE_FACTOR;
+    static float viewport_height = static_cast<float>(WINDOW_HEIGHT) / RENDER_SCALE_FACTOR;
     static vec2f_t view_port_top_left = {0.0f - viewport_width / 2.0f,
                                          0.0f - viewport_height / 2.0f};
     static vec2f_t world_center = {viewport_width / 2.0f, viewport_height / 2.0f};
 
-    return {world_pos.x - view_port_top_left.x, (0 - world_pos.y) - view_port_top_left.y};
+    return vec2f_t{world_pos.x - view_port_top_left.x, (0 - world_pos.y) - view_port_top_left.y} *
+           RENDER_SCALE_FACTOR;
 }
 vec2f_t RenderManager::convert_to_world_pos(vec2f_t const& screen_pos)
 {
@@ -153,17 +154,19 @@ vec2f_t RenderManager::convert_to_world_pos(vec2f_t const& screen_pos)
 
     static vec2f_t world_center = {viewport_width / 2.0f, viewport_height / 2.0f};
 
-    return {screen_pos.x - world_center.x, 0 - (screen_pos.y - world_center.y)};
+    return vec2f_t{screen_pos.x - world_center.x, 0 - (screen_pos.y - world_center.y)} /
+           RENDER_SCALE_FACTOR;
 }
 
 vec2f_t RenderManager::convert_to_screen_space(b2Vec2 const& world_pos)
 {
-    static float viewport_width = static_cast<float>(WINDOW_WIDTH);
-    static float viewport_height = static_cast<float>(WINDOW_HEIGHT);
+    static float viewport_width = static_cast<float>(WINDOW_WIDTH) / RENDER_SCALE_FACTOR;
+    static float viewport_height = static_cast<float>(WINDOW_HEIGHT) / RENDER_SCALE_FACTOR;
     static vec2f_t view_port_top_left = {0.0f - viewport_width / 2.0f,
                                          0.0f - viewport_height / 2.0f};
 
-    return {world_pos.x - view_port_top_left.x, (0 - world_pos.y) - view_port_top_left.y};
+    return vec2f_t{world_pos.x - view_port_top_left.x, (0 - world_pos.y) - view_port_top_left.y} *
+           RENDER_SCALE_FACTOR;
 }
 vec2f_t RenderManager::convert_to_world_pos(b2Vec2 const& screen_pos)
 {
@@ -172,7 +175,8 @@ vec2f_t RenderManager::convert_to_world_pos(b2Vec2 const& screen_pos)
 
     static vec2f_t world_center = {viewport_width / 2.0f, viewport_height / 2.0f};
 
-    return {screen_pos.x - world_center.x, 0 - (screen_pos.y - world_center.y)};
+    return vec2f_t{screen_pos.x - world_center.x, 0 - (screen_pos.y - world_center.y)} /
+           RENDER_SCALE_FACTOR;
 }
 
 void RenderManager::enable_grid(bool enable, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int width,
