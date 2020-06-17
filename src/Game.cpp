@@ -19,7 +19,7 @@
 #include <utility>
 
 
-Game::Game() : world(gravity)
+Game::Game()
 {
     InputSystem::mouse_click_callback_t spawn_func =
         std::bind(&Game::spawn_ball, this, std::placeholders::_1);
@@ -30,6 +30,7 @@ Game::Game() : world(gravity)
 
     RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64);
     PhysicsManager::get().World().SetGravity({0.0f, -10.0f});
+    PhysicsManager::get().World().SetContactListener(&contact_listener);
 }
 
 void Game::render() { RenderManager::get().render_all(); }
@@ -240,7 +241,9 @@ void Game::spawn_player(vec2f_t const& position)
     b2FixtureDef fixture_def = {};
     fixture_def.shape = &dynamic_box;
     fixture_def.density = 1.0f;
-    fixture_def.friction = 1.0f;
+    fixture_def.friction = 0.3;
+    fixture_def.filter.categoryBits = (1 << 4);
+    fixture_def.userData = static_cast<void*>(this);
 
     body->CreateFixture(&fixture_def);
 
@@ -255,12 +258,14 @@ void Game::update_player(float const delta)
     if (player == nullptr) {
         return;
     }
-    if (INPUT.KEY_SPACE) {
+    if (INPUT.KEY_SPACE && !player_airborne) {
+        player_airborne = true;
         auto physics_comp = PhysicsManager::get().get_component(*player);
         assert(physics_comp != nullptr);
 
-        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 0.02f}, true);
+        physics_comp->body->ApplyLinearImpulseToCenter({0.0f, 0.5f}, true);
     }
+
 
     if (INPUT.KEY_D) {
         auto physics_comp = PhysicsManager::get().get_component(*player);
