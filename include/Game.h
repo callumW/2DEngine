@@ -22,15 +22,6 @@ public:
     void set_player_landed() { player_airborne = false; }
 
 private:
-    void spawn_ball(vec2f_t const& position);
-    void spawn_player(vec2f_t const& position);
-
-    void update_player(float const delta);
-
-    void load_map();
-
-    b2Vec2 gravity = {0.0f, -10.0f};
-    entity_t* player = nullptr;
     ContactListener contact_listener;
     bool player_airborne = false;
 };
