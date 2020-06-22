@@ -15,6 +15,9 @@ RenderManager& RenderManager::get()
 
 void RenderManager::render_all()
 {
+    if (background_enabled) {
+        render_bg();
+    }
     size_t const num_components = components.size();
     for (size_t level = 0; level < 2; level++) {
         for (size_t i = 0; i < num_components; i++) {
@@ -207,4 +210,16 @@ void RenderManager::render_grid()
     for (auto& line : grid_lines) {
         SDL_RenderDrawLine(g_renderer, line.first.x, line.first.y, line.second.x, line.second.y);
     }
+}
+
+void RenderManager::enable_background(bool enable, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    background_enabled = enable;
+    bg_color = {r, g, b, a};
+}
+
+void RenderManager::render_bg()
+{
+    SDL_SetRenderDrawColor(g_renderer, bg_color.r, bg_color.g, bg_color.b, bg_color.a);
+    SDL_RenderClear(g_renderer);
 }

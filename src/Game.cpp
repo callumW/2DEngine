@@ -19,7 +19,11 @@
 #include <utility>
 
 
-Game::Game() { RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64); }
+Game::Game()
+{
+    RenderManager::get().enable_grid(true, 0, 0, 255, 126, 64, 64);
+    RenderManager::get().enable_background(true, 0, 255, 0, 255);
+}
 
 void Game::render() { RenderManager::get().render_all(); }
 
