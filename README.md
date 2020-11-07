@@ -1,5 +1,5 @@
 # A Simple 2D Game Sandbox
-Currently this repo is a little 2D Game sandbox where I test out game/programming ideas
+Currently this repo is a little 2D Game sandbox where I'm testing out implementations of [Entity Components Systems](http://entity-systems.wikidot.com) (ECS)
 
 **Note:** This repo uses [Git LFS](https://git-lfs.github.com).
 
